@@ -1,0 +1,114 @@
+using Avalonia.Controls;
+using Avalonia.Input;
+using Avalonia.Interactivity;
+using Avalonia.Markup.Xaml;
+using AvaloniaTest.ViewModels;
+using System;
+using System.Threading.Tasks;
+using System.Threading.Tasks;
+
+namespace AvaloniaTest.Views
+{
+    public partial class MainWindow : Window
+    {
+        private MainWindowViewModel _viewModel;
+        
+        private bool _isButtonHeld = false;
+        private DateTime _startTime;
+
+        public MainWindow()
+        {
+            
+          //  this.WindowState = WindowState.FullScreen;
+          //  this.Topmost = true;
+          //  this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+
+
+            InitializeComponent();
+           // this.DataContext = new MainWindowViewModel();
+
+            if (Resources.TryGetResource("ForegroundBrush",Avalonia.Styling.ThemeVariant.Light, out var kolorek))
+            {
+                Console.WriteLine("Jest w main");
+            }
+            else
+            {
+                Console.WriteLine("Nie ma w main");
+                // Zasób nie zosta³ znaleziony
+            }
+            //changeThemeButton.Content = "zmiana";
+            //changeThemeButton.PointerPressed += changeThemeButton_OnPointerPressed;
+            //  changeThemeButton.PointerReleased += changeThemeButton_OnPointerReleased;
+
+
+          changeThemeButton.AddHandler(PointerPressedEvent, changeThemeButton_OnPointerPressed, RoutingStrategies.Tunnel);
+          changeThemeButton.AddHandler(PointerReleasedEvent, changeThemeButton_OnPointerReleased, RoutingStrategies.Tunnel);
+        }
+
+        private void changeThemeButton_OnPointerPressed(object? sender, PointerPressedEventArgs e)
+        {     
+            _isButtonHeld = true;
+            _startTime = DateTime.Now;
+            CheckButtonHold();
+        }
+
+        private void changeThemeButton_OnPointerReleased(object? sender, PointerReleasedEventArgs e)
+        {
+            _isButtonHeld = false;
+      
+        }
+        
+        private async void CheckButtonHold()
+        {
+            if (_viewModel is null && DataContext is MainWindowViewModel viewModel)
+            {
+                _viewModel = viewModel;
+            }
+                Console.WriteLine("licznenie");
+            while (_isButtonHeld)
+            {
+                await Task.Delay(100); // SprawdŸ co 100 ms
+                var elapsedTime = DateTime.Now - _startTime;
+                if (elapsedTime.TotalMilliseconds >= 1000) // Czy minê³o 3 sekundy?
+                {
+                    // Tutaj wykonaj coœ po przytrzymaniu przycisku przez 3 sekundy
+                    // Na przyk³ad wywo³aj odpowiedni¹ metodê lub zmieñ stan aplikacji
+                    Console.WriteLine("Przytrzymano przycisk przez 3 sekundy!");
+                   // _viewModel.handleGoToSettgins();
+                   // if (_viewModel is null && DataContext is MainWindowViewModel viewModel)
+                  //  {
+                      //  _viewModel = viewModel;
+                   //     _viewModel.handleGoToSettgins();
+                   // }
+                    if (_viewModel is not null)
+                    {
+                        _viewModel.handleGoToSettgins();
+                    }
+                    break;
+                }
+                
+            }
+            if (_viewModel is not null && !_isButtonHeld)
+            {
+                _viewModel.ChangeTheme();
+            }
+
+
+        }
+
+
+
+
+        private void Binding(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+        }
+
+        
+        private void ThemeBtnReleased(object sender, PointerPressedEventArgs e)
+        {
+            // Obs³uga wciœniêcia przycisku
+            Console.WriteLine("ressd");
+        }
+
+    }
+}

@@ -1,0 +1,129 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="1024" d:DesignHeight="470"
+             xmlns:vm="using:AvaloniaTest.ViewModels"
+             x:DataType="vm:HomePageViewModel"
+             x:Class="AvaloniaTest.Views.HomePageView">
+
+
+  <Panel>
+    
+    <Carousel Name="SlideMenu">
+      
+      <Canvas
+        HorizontalAlignment="Center"
+        Width="1024"
+        Height="470">
+        <Border Canvas.Left="25" Canvas.Top="25" Background="Red" Width="200" Height="200" Margin="10" >
+          <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Width="200">
+            <StackPanel Spacing="10" Height="140" Orientation="Horizontal" HorizontalAlignment="Center" >
+              <TextBlock>jeden</TextBlock>
+              <TextBlock>dwa</TextBlock>
+              <TextBlock>trzy</TextBlock>
+            </StackPanel>
+            <StackPanel Spacing="10" Height="60" Orientation="Horizontal">
+              <TextBlock>cztery</TextBlock>
+              <TextBlock>piec</TextBlock>
+              
+              <Button>guzik</Button>
+            </StackPanel>
+          </StackPanel>
+        </Border>
+        <Canvas Width="300" Height="300" Canvas.Left="250" Canvas.Top="25">
+          <Ellipse Width="200" Height="200" Fill="Transparent" Stroke="{DynamicResource BorderColor}" StrokeThickness="2.5"  StrokeDashArray="4.8" Canvas.Left="50" Canvas.Top="50" />
+          <Ellipse Width="170" Height="170" Fill="Transparent" Stroke="{DynamicResource LightBorderColor}" StrokeThickness="5" Canvas.Left="65" Canvas.Top="65"/>
+          <TextBlock  Canvas.Top="120" Canvas.Left="130" FontSize="50" Text="{Binding Direction}"></TextBlock>
+          <Path Stroke="Yellow" StrokeThickness="2" Fill="Yellow" Canvas.Top="{Binding Arrowy}" Canvas.Left="{Binding Arrowx}">
+            <Path.Data>
+              <!-- Definicja strzałki "M0,0 L0,10 L20,5 Z" -->
+              <PathGeometry Figures="M0,0 L0,10 L20,5 Z"/>
+            </Path.Data>
+            <Path.RenderTransform>
+              <!-- Transformacja dla obrotu strzałki -->
+              <TransformGroup>
+                <!-- Przesunięcie strzałki na obwód okręgu -->
+          
+                <RotateTransform Angle="{Binding Angle}"/>
+                <!-- Kąt obrotu strzałki -->
+              </TransformGroup>
+            </Path.RenderTransform>
+          </Path>      
+        </Canvas>
+<StackPanel Canvas.Top="350" Canvas.Left="15" Width="980" Height="50">
+  <TextBlock Text="{Binding #Myslider.Value}"
+               HorizontalAlignment="Center"/>
+  <Slider Name="Myslider" Value="{Binding SliderValue, Mode=TwoWay}" Maximum="360" IsSnapToTickEnabled="True" TickFrequency="15" TickPlacement="Outside"/>
+
+</StackPanel>
+      </Canvas>
+      <!--GLOWNA ZAWARTOSC-->
+      <ItemsControl ItemsSource="{Binding BorderItemsCollection}">
+        <ItemsControl.ItemsPanel>
+          <ItemsPanelTemplate>
+            <StackPanel Width="1024" Height="470" Orientation="Horizontal"/>
+          </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+        <ItemsControl.ItemTemplate>
+          <DataTemplate>
+            <StackPanel Width="256" Height="470" VerticalAlignment="Center">
+              <ItemsControl ItemsSource="{Binding}">
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate>
+                    <Border                       
+                        BorderBrush="{DynamicResource BorderColor}"
+                        BorderThickness="3"
+                        Margin="10"
+                        Width="200"
+                        Height="{Binding Height}"
+                        BoxShadow="2 2 20 2 Gray"
+                        CornerRadius="8"
+                       >
+                      <StackPanel
+                          VerticalAlignment="Center"
+                          HorizontalAlignment="Center"
+                          Width="200">
+                        <ItemsControl ItemsSource="{Binding StackPanels}">
+                          <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                              <Border BorderBrush="{DynamicResource BorderColor}" BorderThickness="{Binding Margin}">
+                              <StackPanel 
+                                HorizontalAlignment="Center"
+                                  Spacing="10"
+                                  Orientation="Horizontal"
+                                  Height="{Binding ElementHeight}">
+                                <!-- TextBlocks -->
+                                <PathIcon Data="{Binding MyIcon}" VerticalAlignment="Top"></PathIcon>
+                                <TextBlock Text="{Binding Text}" HorizontalAlignment="Center"/>
+                                <!-- Buttons -->
+                                <Button Content="{Binding ButtonContent}"/>
+                                <TextBlock Text="{Binding ButtonContent}" HorizontalAlignment="Center"/>
+                              </StackPanel>
+                              </Border>
+                            </DataTemplate>
+                          </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                      </StackPanel>
+                    </Border>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+            </StackPanel>
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+      </ItemsControl>
+      
+
+
+    </Carousel>
+    <Panel Margin="20">
+      <Button Background="White" Click="Previous">&lt;</Button>
+      <Button Background="White" Click="Next"
+              HorizontalAlignment="Right">&gt;</Button>
+    </Panel>
+
+  </Panel>
+
+
+</UserControl>

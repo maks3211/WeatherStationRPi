@@ -1,0 +1,82 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AvaloniaTest.App"
+             xmlns:local="using:AvaloniaTest"            
+             RequestedThemeVariant="Light">
+             <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
+
+    <Application.DataTemplates>
+        <local:ViewLocator/>
+    </Application.DataTemplates>
+
+  <Application.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.ThemeDictionaries>
+        
+        
+        <ResourceDictionary x:Key='Light'>
+          <LinearGradientBrush x:Key="BackGroundLight" StartPoint="0%,90%" EndPoint="90%,0%">
+            <GradientStop Offset="0" Color="#255393"/>
+            <GradientStop Offset="0.43" Color="#2D639F"/>
+            <GradientStop Offset="1.0" Color="#4F80CC"/>
+          </LinearGradientBrush>
+
+          <SolidColorBrush x:Key='BackgroundBrush'>SpringGreen</SolidColorBrush>
+          <SolidColorBrush x:Key='ForegroundBrush'>Black</SolidColorBrush>
+
+          <SolidColorBrush x:Key='MainButton'>#174CB1</SolidColorBrush>
+          <SolidColorBrush x:Key='MainButtonClicked'>#15145c</SolidColorBrush>
+
+          <SolidColorBrush x:Key='BorderColor'>#12364F</SolidColorBrush>
+          <SolidColorBrush x:Key='LightBorderColor'>#3194d9</SolidColorBrush>
+          <SolidColorBrush x:Key='BackGroundDark'>#26437d</SolidColorBrush>
+
+          
+          <!-- Czcionki -->
+          <SolidColorBrush x:Key='FontBlue'>#22329c</SolidColorBrush>
+
+          
+        </ResourceDictionary>
+        
+        <ResourceDictionary x:Key='Dark'>
+          <LinearGradientBrush x:Key="BackGroundLight" StartPoint="0%,90%" EndPoint="90%,0%">
+            <GradientStop Offset="0" Color="#001E47"/>
+            <GradientStop Offset="0.5" Color="#02254F"/>
+            <GradientStop Offset="1" Color="#084582"/>
+          </LinearGradientBrush>
+          <SolidColorBrush x:Key='BackgroundBrush'>DodgerBlue</SolidColorBrush>
+          <SolidColorBrush x:Key='ForegroundBrush'>White</SolidColorBrush>
+
+
+          <SolidColorBrush x:Key='BackGroundDark'>#0C0E1E</SolidColorBrush>
+
+          <SolidColorBrush x:Key='MainButton'>#1c2755</SolidColorBrush>
+          <SolidColorBrush x:Key='MainButtonClicked'>#15145c</SolidColorBrush>
+
+          <SolidColorBrush x:Key='BorderColor'>#12364F</SolidColorBrush>
+          <SolidColorBrush x:Key='LightBorderColor'>#3194d9</SolidColorBrush>
+          <!-- Czcionki -->
+          <SolidColorBrush x:Key='FontBlue'>#53acce</SolidColorBrush>
+          
+        </ResourceDictionary>
+      </ResourceDictionary.ThemeDictionaries>
+    </ResourceDictionary>
+    <SolidColorBrush x:Key="Warningsss">Yellow</SolidColorBrush>   
+  </Application.Resources>
+
+
+  
+  
+  
+  <Application.Styles>
+      <FluentTheme>
+        <FluentTheme.Palettes>
+          <ColorPaletteResources x:Key="Light" Accent="#ff355dad" AltHigh="White" AltLow="White" AltMedium="White" AltMediumHigh="White" AltMediumLow="White" BaseHigh="Black" BaseLow="#ffa3adb1" BaseMedium="#ff4c7485" BaseMediumHigh="#ff124e67" BaseMediumLow="#ff2f6176" ChromeAltLow="#ff124e67" ChromeBlackHigh="Black" ChromeBlackLow="#ffa3adb1" ChromeBlackMedium="#ff124e67" ChromeBlackMediumLow="#ff4c7485" ChromeDisabledHigh="#ffa3adb1" ChromeDisabledLow="#ff4c7485" ChromeGray="#ff2f6176" ChromeHigh="#ffa3adb1" ChromeLow="#ffcfe4e9" ChromeMedium="#ffc6d9de" ChromeMediumLow="#ffcfe4e9" ChromeWhite="White" ListLow="#ffc6d9de" ListMedium="#ffa3adb1" RegionColor="#ffd5e2e8" />
+          <ColorPaletteResources x:Key="Dark"  Accent="#ff3658d7" AltHigh="Black" AltLow="Black" AltMedium="Black" AltMediumHigh="Black" AltMediumLow="Black" BaseHigh="White" BaseLow="#ff1c2755" BaseMedium="#ff8b94b3" BaseMediumHigh="#ffa7afcb" BaseMediumLow="#ff545d84" ChromeAltLow="#ffa7afcb" ChromeBlackHigh="Black" ChromeBlackLow="#ffa7afcb" ChromeBlackMedium="Black" ChromeBlackMediumLow="Black" ChromeDisabledHigh="#ff1c2755" ChromeDisabledLow="#ff8b94b3" ChromeGray="#ff6f799c" ChromeHigh="#ff6f799c" ChromeLow="#ff060f3a" ChromeMedium="#ff0b1541" ChromeMediumLow="#ff16214e" ChromeWhite="White" ListLow="#ff0b1541" ListMedium="#ff1c2755" RegionColor="#ff12162e" />
+        </FluentTheme.Palettes>
+      </FluentTheme>
+
+      <StyleInclude Source="/Assets/Icons.axaml"></StyleInclude>
+      
+    </Application.Styles>
+</Application>
