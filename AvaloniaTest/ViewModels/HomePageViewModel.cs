@@ -163,16 +163,11 @@ namespace AvaloniaTest.ViewModels
 
         private void OutDoorSensor_DataUpdated(object sender, double e)
         {
-          //  Console.WriteLine("Aktualna wartość i: " + e);
-            BorderItemsCollection[0][0].StackPanels[0].Text = e.ToString() + "°C";
-            
+            BorderItemsCollection[0][0].StackPanels[0].Text = e.ToString() + "°C";        
         }
         private void OutDoorSensor_DataUpdatedTwo(object sender, double e)
         {
-           
-           
-          
-            BorderItemsCollection[0][0].StackPanels[1].Text = e.ToString() + "°C";
+            BorderItemsCollection[0][0].StackPanels[1].Text = e.ToString() + "%";
         }
 
 
@@ -222,8 +217,8 @@ namespace AvaloniaTest.ViewModels
         {
                 jest = true;
                 Task task1 = sen.RunReadData();
-                Task task2 = sen.RunReadDataTwo();
-                await Task.WhenAll(task1, task2);         
+                //Task task2 = sen.RunReadDataTwo();
+                await Task.WhenAll(task1);         
         }
 
         public class BorderModel

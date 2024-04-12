@@ -95,7 +95,7 @@
                                   Height="{Binding ElementHeight}">
                                 <!-- TextBlocks -->
                                 <PathIcon Data="{Binding MyIcon}" VerticalAlignment="Top"></PathIcon>
-                                <TextBlock Text="{Binding Text}" HorizontalAlignment="Center"/>
+                                <TextBlock FontSize="35" Text="{Binding Text}" HorizontalAlignment="Center"/>
                                 <!-- Buttons -->
                                 <Button Content="{Binding ButtonContent}"/>
                                 <TextBlock Text="{Binding ButtonContent}" HorizontalAlignment="Center"/>

@@ -19,9 +19,9 @@ namespace AvaloniaTest.Views
         public MainWindow()
         {
             
-          //  this.WindowState = WindowState.FullScreen;
-          //  this.Topmost = true;
-          //  this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            //this.WindowState = WindowState.FullScreen;
+           // this.Topmost = true;
+            //this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
 
 
             InitializeComponent();
@@ -43,6 +43,12 @@ namespace AvaloniaTest.Views
 
           changeThemeButton.AddHandler(PointerPressedEvent, changeThemeButton_OnPointerPressed, RoutingStrategies.Tunnel);
           changeThemeButton.AddHandler(PointerReleasedEvent, changeThemeButton_OnPointerReleased, RoutingStrategies.Tunnel);
+
+
+        }
+        private void ButtonOnClick(object? sender, RoutedEventArgs e)
+        {
+             this.Close();
         }
 
         private void changeThemeButton_OnPointerPressed(object? sender, PointerPressedEventArgs e)
@@ -50,7 +56,10 @@ namespace AvaloniaTest.Views
             _isButtonHeld = true;
             _startTime = DateTime.Now;
             CheckButtonHold();
+           
         }
+
+   
 
         private void changeThemeButton_OnPointerReleased(object? sender, PointerReleasedEventArgs e)
         {

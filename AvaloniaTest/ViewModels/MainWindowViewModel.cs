@@ -60,8 +60,8 @@ namespace AvaloniaTest.ViewModels
         {
             
             Task task1 = outDoorSens.RunReadData();
-            Task task2 = outDoorSens.RunReadDataTwo();
-            await Task.WhenAll(task1, task2);
+            //Task task2 = outDoorSens.RunReadDataTwo();
+            await Task.WhenAll(task1);
         }
         [ObservableProperty]
         public ViewModelBase _currentPage = new HomePageViewModel();

@@ -2,18 +2,24 @@
 using AvaloniaTest.ViewModels;
 using AvaloniaTest.Views;
 using System;
+using System.IO.Ports;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+//using System.IO.Pipelines;
+
 using System.Threading.Tasks;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+//using System.Device.Gpio;
+
+
 
 namespace AvaloniaTest.Models
 {
     public class OutDoorSensor
     {
-
+       
         public event EventHandler<double> DataUpdated;
         public event EventHandler<double> DataUpdatedTwo;
 
@@ -22,7 +28,7 @@ namespace AvaloniaTest.Models
         private bool isSecond = true;
 
         
-       
+
         //public static OutDoorSensor Instance
         //{
         //    get
@@ -42,19 +48,74 @@ namespace AvaloniaTest.Models
 
         public async Task RunReadData()
         {
-
-          
-            Random rnd = new Random();
-            double i = 0;
+            double temperature = 0.1;
+            double humidity = 0.0;
+            double pressure = 0.0;
+            double altitude = 0.0;
+            Console.WriteLine("TUTAJ");
+            string portName = "/dev/ttyS0";
+            int baudRate = 9600;
+            SerialPort Arduino = new SerialPort(portName,baudRate);
+            try
+            {
+                Arduino.Open();
+                Console.WriteLine("UART START C#");
+            } catch (Exception ex)
+            { 
+                Console.WriteLine($"{ex.Message}");
+            }
 
             while (isFirst)
             {
-                        i = 30.1 + rnd.NextDouble();
-                      double zs = Math.Round(i, 1);
-                  //  Console.WriteLine("while " + i);
-                    
-                DataUpdated?.Invoke(this, zs); // Wywołanie zdarzenia, przekazujące aktualną wartość i
-                await Task.Delay(TimeSpan.FromSeconds(1));   
+                Console.WriteLine("pierwszy");
+                try
+                {
+                    if (Arduino.BytesToRead > 0)
+                    {
+                        string line = Arduino.ReadLine(); // Odczyt jednej linii z portu szeregowego
+                        string secondLine = line.Trim(); // Usunięcie znaków końca linii
+                        string[] parts = line.Split('<');
+                        if (parts.Length >= 4)
+                        {
+                            // Odczytanie i konwersja wartości temperatury
+                            if (double.TryParse(parts[0].Replace("-C", ""), out temperature))
+                            {
+                                // Odczytanie i konwersja wilgotności
+                                if (double.TryParse(parts[1].Replace("-%", ""), out humidity))
+                                {
+                                    // Odczytanie i konwersja ciśnienia
+                                    if (double.TryParse(parts[2].Replace("-hPa",""), out pressure))
+                                    {
+                                        // Odczytanie i konwersja wysokości
+                                        if (double.TryParse(parts[3].Replace("-m",""), out altitude))
+                                        {
+                                            // Wszystkie wartości zostały pomyślnie odczytane i przypisane do zmiennych
+                                          
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            // Nie udało się podzielić ciągu na wystarczającą ilość części
+                            Console.WriteLine("Invalid data format.");
+                        }
+                        Console.WriteLine(secondLine);
+                       // string test = secondLine[0] + secondLine[1];
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+                Console.WriteLine("Temperature: " + temperature);
+                Console.WriteLine("Humidity: " + humidity);
+                Console.WriteLine("Pressure: " + pressure);
+                Console.WriteLine("Altitude: " + altitude);
+                DataUpdated?.Invoke(this, temperature); // Wywołanie zdarzenia, przekazujące aktualną wartość i
+                DataUpdatedTwo?.Invoke(this, humidity);
+                await Task.Delay(TimeSpan.FromSeconds(5));   
         }
     }
 

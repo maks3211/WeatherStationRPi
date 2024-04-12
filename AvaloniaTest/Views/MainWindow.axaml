@@ -67,7 +67,7 @@
             </DataTemplate>
           </ListBox.ItemTemplate>
         </ListBox>
-        
+        <Button Click="ButtonOnClick">ZAMKNIJ</Button>
       </WrapPanel>
       
     </Border>
