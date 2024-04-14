@@ -20,6 +20,7 @@ using Avalonia.Threading;
 using Avalonia.Media.Imaging;
 using System.IO;
 using Avalonia.Styling;
+using Avalonia.Input;
 
 
 namespace AvaloniaTest.Views
@@ -178,6 +179,7 @@ namespace AvaloniaTest.Views
 
             timer.Tick += (sender, e) =>
             {
+                
                 // Pobieramy aktualn¹ godzinê z systemu
                 DateTime currentTime = DateTime.Now; ;
                 string formattedHour = currentTime.Hour.ToString("D2");
@@ -310,6 +312,7 @@ namespace AvaloniaTest.Views
         {
             SlideMenu.Previous();
         }
+       
     }
 
    

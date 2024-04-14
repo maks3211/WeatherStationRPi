@@ -27,6 +27,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using System;
 
 using System.Windows.Input;
+using Avalonia.Platform;
 
 namespace AvaloniaTest.ViewModels
 {
@@ -71,6 +72,51 @@ namespace AvaloniaTest.ViewModels
         [ObservableProperty]
         public string _direction = "N";
 
+        //INDOOR SENSORS 
+        [ObservableProperty]
+        public string _indoortemperature = "-°C";
+
+
+        private DispatcherTimer timer;
+
+        [ObservableProperty]
+        private string _currentDate = DateTime.Now.ToString("dd-MM-yyyy");
+
+        [ObservableProperty]
+        public string _currenttime = DateTime.Now.Hour.ToString("D2") + ":" + DateTime.Now.Minute.ToString("D2");
+
+        
+
+        [ObservableProperty]
+        private string _currentDay = char.ToUpper(DateTime.Now.ToString("dddd")[0]) + DateTime.Now.ToString("dddd").Substring(1);
+
+        [ObservableProperty]
+        private Bitmap _mybitmap = new Bitmap(AssetLoader.Open(new Uri("avares://AvaloniaTest/Assets/Images/icons8-sun-144.png")));
+
+
+        private Bitmap _iconname;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+
+        //ABY ZMIENIC IKONKE POPROSTU PRZYPISZ NOWA BITMAPE DO ICONNAME
+        public Bitmap Iconname
+        {
+            get => _iconname;
+            set
+            {
+                if (_iconname != value)
+                {
+                    _iconname = value;
+                    RaisePropertyChanged(nameof(Iconname));
+                }
+            }
+        }
+        private void RaisePropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
 
         [RelayCommand]
         private void ThemeBtn()
@@ -80,64 +126,36 @@ namespace AvaloniaTest.ViewModels
             
         
         }
+
+      
+        public void ButtonClokceCommand()
+        {
+            Console.WriteLine("guzik");
+            ChangeIcon();
+        }
         [ObservableProperty]
         public string text = "puste";
+
+
+
+
+
 
         public HomePageViewModel()
         {
             Console.WriteLine("NOWY HomePageViewModel" + jest);
+            _iconname = new Bitmap(AssetLoader.Open(new Uri("avares://AvaloniaTest/Assets/Images/icons8-sun-144.png")));
            
             for (int i = 0; i < 4; i++)
             {
                 BorderItemsCollection.Add(new ObservableCollection<BorderModel>());
             }
-
-            BorderItemsCollection[0].Add(new BorderModel
-            {
-                StackPanels = new ObservableCollection<StackPanelModel>
-            {
-                    new StackPanelModel(text, "Guzik 1" ,80, new Thickness(0,0,0,3), "HomeRegular" ),
-                    new StackPanelModel("Napis 2", "Guzik 2" ,110, new Thickness(0,0,0,0), "C0lockRegular" ),
-            },
-                Height = 190,
-
-            });
-
-            BorderItemsCollection[0].Add(new BorderModel
-            {
-                StackPanels = new ObservableCollection<StackPanelModel>
-            {
-                    new StackPanelModel("Napis 1", "Guzik 1" ,80, new Thickness(0,0,0,3), "HomeRegular" ),
-                    new StackPanelModel("Napis 2", "Guzik 2" ,110, new Thickness(0,0,0,0), "ClockRegular" ),
-            },
-                Height = 190,
-            });
-
-            BorderItemsCollection[1].Add(new BorderModel
-            {
-                StackPanels = new ObservableCollection<StackPanelModel>
-            {
-                    new StackPanelModel("Napis 1", "Guzik 1" ,80, new Thickness(0,0,0,3), "HomeRegular" ),
-                    new StackPanelModel("Napis 2", "Guzik 2" ,110, new Thickness(0,0,0,0), "ClockRegular" ),
-            },
-                Height = 190,
-            });
-
-            BorderItemsCollection[1].Add(new BorderModel
-            {
-                StackPanels = new ObservableCollection<StackPanelModel>
-            {
-                    new StackPanelModel("Napis 1", "Guzik 1" ,80, new Thickness(0,0,0,3), "HomeRegular" ),
-                    new StackPanelModel("Napis 2", "Guzik 2" ,110, new Thickness(0,0,0,0), "ClockRegular" ),
-            },
-                Height = 190,
-            });
-
+            timer = new DispatcherTimer();
+            timer.Interval = TimeSpan.FromMinutes(1);
+            StartDataReading();
             MainWindowViewModel.outDoorSens.DataUpdated += OutDoorSensor_DataUpdated;
             MainWindowViewModel.outDoorSens.DataUpdatedTwo += OutDoorSensor_DataUpdatedTwo;
-          //  sen.DataUpdated += OutDoorSensor_DataUpdated;
-             //   sen.DataUpdatedTwo += OutDoorSensor_DataUpdatedTwo;
-             //   StartDataReading();
+               
                     MainWindowViewModel.CurrentPageOpened += ViewModel_Activated;
             //daje suba na zmiane strony
             //jezeli wykryto zmiane to funkcja ktora unsubuje wszystko 
@@ -148,6 +166,8 @@ namespace AvaloniaTest.ViewModels
             if (MainWindowViewModel.CurrentPageSub == "AvaloniaTest.ViewModels.HomePageViewModel")
             {
                 Console.WriteLine("------------witam---------------");
+                timer.Start();
+                StartClock();
             }
             else
             {
@@ -158,18 +178,54 @@ namespace AvaloniaTest.ViewModels
                 MainWindowViewModel.outDoorSens.DataUpdatedTwo -= OutDoorSensor_DataUpdatedTwo;
                 sen.StopEvery();
                 MainWindowViewModel.CurrentPageOpened -= ViewModel_Activated;
+                timer.Stop();
+                StopClock();
             }
         }
 
+    
+        private void StartClock()
+        {
+            timer.Tick += (sender, e) =>
+            {
+                Console.WriteLine("czytanie godziny");
+                DateTime t = DateTime.Now;
+                CurrentDate = t.ToString("dd-MM-yyyy");
+                CurrentDay = char.ToUpper(t.ToString("dddd")[0]) + t.ToString("dddd").Substring(1);
+                Currenttime = t.Hour.ToString("D2") + ":" + t.Minute.ToString("D2");
+                Console.WriteLine(Currenttime);
+            };
+        }
+        private void StopClock()
+        {
+
+            timer.Tick -= (sender, e) =>
+            {
+            };
+        }
+
+
         private void OutDoorSensor_DataUpdated(object sender, double e)
         {
-            BorderItemsCollection[0][0].StackPanels[0].Text = e.ToString() + "°C";        
+          
+            Indoortemperature = e.ToString().Replace(',', '.') + "°C";
+            Console.WriteLine("Czytanie tempe");
+
         }
         private void OutDoorSensor_DataUpdatedTwo(object sender, double e)
         {
             BorderItemsCollection[0][0].StackPanels[1].Text = e.ToString() + "%";
         }
 
+
+        public void ChangeIcon()
+        {
+            // _iconname.Dispose();
+            //  _iconname = new Bitmap(AssetLoader.Open(new Uri("avares://AvaloniaTest/Assets/Images/icons8-cloud-96.png")));
+            Mybitmap = new Bitmap(AssetLoader.Open(new Uri("avares://AvaloniaTest/Assets/Images/icons8-cloud-96.png")));
+
+            Console.WriteLine("asdasdasd");
+        }
 
         public void ChangeArrow(double angle)
         {
@@ -178,7 +234,7 @@ namespace AvaloniaTest.ViewModels
             Arrowy = 145 + 95 * Math.Sin(kat);
             //a += step;
             //PROMIEN BYL 110
-
+          
             double angleBetweenArrowAndCenter = Math.Atan2(Arrowy - 150, Arrowx - 150);
             double rotationAngle = angleBetweenArrowAndCenter - Math.PI;
             Console.WriteLine("Ustawiony kat: " + angle);
@@ -231,11 +287,11 @@ namespace AvaloniaTest.ViewModels
 
         public partial class StackPanelModel : ObservableObject
         {
-          public StackPanelModel(string text, string buttonText, int height, Thickness margin, string iconKey) 
+          public StackPanelModel(string text, int height, Thickness margin, string iconKey) 
           { 
               Text = text;
-              ButtonContent = buttonText;
-             ElementHeight = height;
+            
+              ElementHeight = height;
               Margin = margin;
               Application.Current!.TryFindResource(iconKey, out var res);
              MyIcon = (StreamGeometry)res!;
@@ -263,10 +319,10 @@ namespace AvaloniaTest.ViewModels
             return result;
         }
 
-      
-
-}
 
     
+    }
+
+
 
 }

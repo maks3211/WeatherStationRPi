@@ -67,7 +67,6 @@ namespace AvaloniaTest.Models
 
             while (isFirst)
             {
-                Console.WriteLine("pierwszy");
                 try
                 {
                     if (Arduino.BytesToRead > 0)
@@ -106,7 +105,11 @@ namespace AvaloniaTest.Models
                     }
                 }
                 catch (Exception ex)
-                {
+                {                
+                    double j = new Random().NextDouble();
+                    j += 20;
+                    temperature = Math.Round(j, 1);
+                    DataUpdated?.Invoke(this, temperature); // Wywołanie zdarzenia, przekazujące aktualną wartość i
                     Console.WriteLine(ex.Message);
                 }
                 Console.WriteLine("Temperature: " + temperature);
@@ -114,7 +117,7 @@ namespace AvaloniaTest.Models
                 Console.WriteLine("Pressure: " + pressure);
                 Console.WriteLine("Altitude: " + altitude);
                 DataUpdated?.Invoke(this, temperature); // Wywołanie zdarzenia, przekazujące aktualną wartość i
-                DataUpdatedTwo?.Invoke(this, humidity);
+                //DataUpdatedTwo?.Invoke(this, humidity);
                 await Task.Delay(TimeSpan.FromSeconds(5));   
         }
     }
@@ -126,7 +129,7 @@ namespace AvaloniaTest.Models
             double j = 0;
             while (isFirst)
             {
-             //  Console.WriteLine("j" + j);
+               Console.WriteLine("j" + j);
                  j = 20.0 + rnd.NextDouble();
                   double z = Math.Round(j, 1);
                 DataUpdatedTwo?.Invoke(this, z); // Wywołanie zdarzenia, przekazujące aktualną wartość i

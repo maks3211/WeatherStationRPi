@@ -11,6 +11,120 @@
   <Panel>
     
     <Carousel Name="SlideMenu">
+      <Canvas
+        HorizontalAlignment="Center"
+        Width="1024"
+        Height="470">
+
+        <!--KOLUMNA I-->
+        <!--PIERWSZE OKIENKO-->
+        <Border  
+           Canvas.Top="10" Canvas.Left="10"
+           BorderBrush="{DynamicResource BorderColor}"
+                        BorderThickness="2"                     
+                        BoxShadow="2 2 2 2 Gray"
+                        CornerRadius="10"         >
+          <StackPanel         
+            Width="243.5"
+            Height="146.5"
+            VerticalAlignment="Center">
+
+            <StackPanel Orientation="Horizontal">
+              <PathIcon Data="{StaticResource ClockRegular}" VerticalAlignment="Center" Margin="10,8,10,0"></PathIcon>
+              <TextBlock Margin="10,10,0,0" Text="{Binding CurrentDay}" FontSize="22" VerticalAlignment="Center"></TextBlock>
+            </StackPanel>           
+            <Rectangle Height="2" Width="243.5" Fill="{DynamicResource BorderColor}" Margin="0,10,0,0"></Rectangle>
+            <StackPanel Orientation="Horizontal"   >
+              <TextBlock  FontSize="50" Margin="35,10,0,0" Text="{Binding Currenttime}"></TextBlock>
+              <Image Source="{Binding Mybitmap}" Height="53" Width="53" VerticalAlignment="Center" Margin="10,8,10,0"></Image>   
+            </StackPanel>
+            <TextBlock Margin="0,5,0,0" HorizontalAlignment="Center" Text="{Binding CurrentDate}" FontSize="15"></TextBlock>
+          </StackPanel>
+        </Border>
+        <!--DRUGIE OKIENKO-->
+        <Border
+              Canvas.Top="166.5" Canvas.Left="10"
+              BorderBrush="{DynamicResource BorderColor}"
+              BorderThickness="2"                     
+              BoxShadow="2 2 2 2 Gray"
+              CornerRadius="10"
+              >
+          <StackPanel
+                Width="243.5"
+                Height="293"
+                >
+            <TextBlock HorizontalAlignment="Center">POGODA INTERNETOWA</TextBlock>
+          </StackPanel>
+        </Border>
+
+
+
+
+
+
+
+        <!--KOLUMNA II-->
+        <Border
+          Canvas.Top="10" Canvas.Left="263.5"
+          BorderBrush="{DynamicResource BorderColor}"
+          BorderThickness="2"
+          BoxShadow="2 2 5 2 Gray"
+          CornerRadius="10">
+            <!--pierwszy panel-->
+        <StackPanel       
+          Width="243.5"
+          Height="196.5"
+          VerticalAlignment="Center">
+          
+          <StackPanel  Orientation="Horizontal">
+            <PathIcon Data="{StaticResource HomeRegular}" VerticalAlignment="Top" Margin="10,8,0,8"></PathIcon>
+            <PathIcon Data="{StaticResource ArrrowLeft}" Height="10" Margin="-4,14,10,8" VerticalAlignment="Top" ></PathIcon>
+
+            <TextBlock VerticalAlignment="Center"  FontWeight="DemiBold" Margin="20,5,0,0">TEMPERATURA</TextBlock>
+          </StackPanel>
+
+          <Rectangle Height="2" Width="243.5" Fill="{DynamicResource BorderColor}" Margin="0,10,0,0"></Rectangle>
+          <StackPanel Orientation="Horizontal">
+            <Image Source="avares://AvaloniaTest/Assets/Images/thermometer.png" Width="50" Height="50" Margin="0,10,0,0" ></Image>
+            <TextBlock Text="{Binding Indoortemperature}" FontWeight="DemiBold" FontSize="35" VerticalAlignment="Center" Margin="10,10,0,0">C</TextBlock>
+          </StackPanel>
+        
+          <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="20" >
+            <TextBlock Margin="0,15,0,0" >MAX</TextBlock>          
+            <Line StartPoint="0,1" EndPoint="0,60" Margin="0,15,0,0" Stroke="{DynamicResource LightBorderColor}" StrokeThickness="2" StrokeDashArray="3"/>
+            <TextBlock  Margin="0,15,0,0">WCZORAJ</TextBlock>
+            <Line StartPoint="0,1" EndPoint="0,60" Margin="0,15,0,0" Stroke="{DynamicResource LightBorderColor}" StrokeThickness="2" StrokeDashArray="3"/>
+            <TextBlock Margin="0,15,0,0">MIN</TextBlock>
+          </StackPanel>
+        </StackPanel>
+          
+          
+        </Border>
+
+        <!--KOLUMNA III-->
+        <StackPanel
+  Canvas.Top="10" Canvas.Left="517"
+  Background="Beige"
+  Width="243.5"
+  Height="450"
+  VerticalAlignment="Center">
+          <TextBlock>NAPIS</TextBlock>
+        </StackPanel>
+
+        <!--KOLUMNA IV-->
+        <StackPanel
+  Canvas.Top="10" Canvas.Left="770.5"
+  Background="Beige"
+  Width="243.5"
+  Height="450"
+  VerticalAlignment="Center">
+          <TextBlock>NAPIS</TextBlock>
+        </StackPanel>
+
+
+      </Canvas>
+      
+      
       
       <Canvas
         HorizontalAlignment="Center"
@@ -54,7 +168,7 @@
 <StackPanel Canvas.Top="350" Canvas.Left="15" Width="980" Height="50">
   <TextBlock Text="{Binding #Myslider.Value}"
                HorizontalAlignment="Center"/>
-  <Slider Name="Myslider" Value="{Binding SliderValue, Mode=TwoWay}" Maximum="360" IsSnapToTickEnabled="True" TickFrequency="15" TickPlacement="Outside"/>
+  <Slider Name="Myslider" Value="{Binding SliderValue, Mode=TwoWay}" Maximum="360" IsSnapToTickEnabled="True" TickFrequency="1" TickPlacement="Outside"/>
 
 </StackPanel>
       </Canvas>
@@ -97,7 +211,7 @@
                                 <PathIcon Data="{Binding MyIcon}" VerticalAlignment="Top"></PathIcon>
                                 <TextBlock FontSize="35" Text="{Binding Text}" HorizontalAlignment="Center"/>
                                 <!-- Buttons -->
-                                <Button Content="{Binding ButtonContent}"/>
+
                                 <TextBlock Text="{Binding ButtonContent}" HorizontalAlignment="Center"/>
                               </StackPanel>
                               </Border>
@@ -114,12 +228,16 @@
         </ItemsControl.ItemTemplate>
       </ItemsControl>
       
+      <!--STONA PIERWSZA -->
 
+      
+      
+<TextBlock>asbds</TextBlock>
 
     </Carousel>
-    <Panel Margin="20">
-      <Button Background="White" Click="Previous">&lt;</Button>
-      <Button Background="White" Click="Next"
+    <Panel Margin="20" VerticalAlignment="Bottom"  >
+      <Button Background="{DynamicResource LightBorderColor}" Click="Previous">&lt;</Button>
+      <Button Background="{DynamicResource LightBorderColor}" Click="Next"
               HorizontalAlignment="Right">&gt;</Button>
     </Panel>
 
