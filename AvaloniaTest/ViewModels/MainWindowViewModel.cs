@@ -29,40 +29,33 @@ namespace AvaloniaTest.ViewModels
         //OTWIERANIE SPLIT VIEW
         //  [ObservableProperty]
         //  private bool _isMainPaneOpen = true;
-
-        public static event EventHandler<string> CurrentPageOpened;
+        
+        public static event EventHandler<string> CurrentPageOpened; //Wykorzystanie to informawoania danej strony ze jest otwierana/zamykana
         public static string CurrentPageSub = "";
         public  static OutDoorSensor outDoorSens = new OutDoorSensor();
         public MainWindowViewModel()
         {
-              Console.WriteLine("-------------NOwy MainWindowViewModel--------------");
+             Console.WriteLine("-------------NOwy MainWindowViewModel--------------");
+            //Na start przechodzimy do HomePage
             CurrentPageSub = "AvaloniaTest.ViewModels.HomePageViewModel";
             CurrentPageOpened?.Invoke(this, CurrentPageSub ?? "");
+
             // Ustaw pierwszy element jako domyślnie wybrany
             //    SelectedListItem = Items.FirstOrDefault();
             //outDoorSens.StartMake();
 
             StartDataReading();
-           // outDoorSens.DataUpdatedTwo += Poka;
-           // outDoorSens.DataUpdated += Pokadwa;
         }
 
-     //   private void Poka(object sender, double e)
-      //  {
-      //      Console.WriteLine("JJJJJJ:" + e);
-      //  }
-      // private void Pokadwa(object sender, double e)
-       // {
-       //     Console.WriteLine("IIIIIIII:" + e);
-       // }
+
 
         public async Task StartDataReading()
-        {
-            
+        {            
             Task task1 = outDoorSens.RunReadData();
-            //Task task2 = outDoorSens.RunReadDataTwo();
             await Task.WhenAll(task1);
         }
+
+
         [ObservableProperty]
         public ViewModelBase _currentPage = new HomePageViewModel();
         [ObservableProperty]
@@ -104,7 +97,7 @@ namespace AvaloniaTest.ViewModels
         }
 
 
-
+        //OBSULGA PANEVIEW
         //[RelayCommand]
         //private void BtnClick()
         //{

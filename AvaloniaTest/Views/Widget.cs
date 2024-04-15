@@ -148,7 +148,7 @@ namespace AvaloniaTest.Views
 
         public void addItem(Control obj)
         {
-            Console.WriteLine("Dodanie");
+           
         elements.Add(obj);
         Children.Add((Control)elements.Last());
         }

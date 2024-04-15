@@ -28,12 +28,12 @@
           <SolidColorBrush x:Key='MainButtonClicked'>#15145c</SolidColorBrush>
 
           <SolidColorBrush x:Key='BorderColor'>#12364F</SolidColorBrush>
-          <SolidColorBrush x:Key='LightBorderColor'>#3194d9</SolidColorBrush>
+          <SolidColorBrush x:Key='LightBorderColor'>#01234D</SolidColorBrush>
           <SolidColorBrush x:Key='BackGroundDark'>#26437d</SolidColorBrush>
 
           
           <!-- Czcionki -->
-          <SolidColorBrush x:Key='FontBlue'>#22329c</SolidColorBrush>
+          <SolidColorBrush x:Key='FontBlue'>#081C34</SolidColorBrush>
 
           
         </ResourceDictionary>

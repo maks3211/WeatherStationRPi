@@ -44,25 +44,19 @@ namespace AvaloniaTest.ViewModels
                 if (_sliderValue != value)
                 {
                     _sliderValue = value;
-                   
+
                     ChangeArrow(value);
                 }
             }
         }
 
-        static bool jest = false;
-        double a = 0;
-        double step = 0.1;
 
         // OutDoorSensor sen = new OutDoorSensor();
-        private OutDoorSensor sen = new OutDoorSensor();//.Instance;
-        public ObservableCollection<ObservableCollection<BorderModel>> BorderItemsCollection { get; } = new ObservableCollection<ObservableCollection<BorderModel>>();
-        public ObservableCollection<BorderModel> OneColumn { get; } = new ObservableCollection<BorderModel>();
-        public ObservableCollection<BorderModel> TwoColumn { get; } = new ObservableCollection<BorderModel>();
-        public ObservableCollection<BorderModel> ThreeColumn { get; } = new ObservableCollection<BorderModel>();
-        public ObservableCollection<BorderModel> FourColumn { get; } = new ObservableCollection<BorderModel>();
+      //TUTAJ
+        //private OutDoorSensor sen = new OutDoorSensor();//.Instance;
 
 
+        //WIND DIRECTION
         [ObservableProperty]
         public double _arrowx = 150;
         [ObservableProperty]
@@ -76,29 +70,31 @@ namespace AvaloniaTest.ViewModels
         [ObservableProperty]
         public string _indoortemperature = "-°C";
 
+        //TEMPERATURA
+        //IKONA ZMIANY TEMP WZGLEDEM WCZORAJSZEJ
+        [ObservableProperty]
+        public StreamGeometry _indoortemperaturechangeicon = (StreamGeometry)Application.Current.FindResource("ArrowUp");
+        [ObservableProperty]
+        public string _indoortodaymintemp = "-°C";
+        [ObservableProperty]
+        public string _indoortodaymaxtemp = "-°C";
+        [ObservableProperty]
+        public string _indoorysterdaytemp = "-°C";
 
+        //GODZINA
         private DispatcherTimer timer;
-
         [ObservableProperty]
         private string _currentDate = DateTime.Now.ToString("dd-MM-yyyy");
-
         [ObservableProperty]
         public string _currenttime = DateTime.Now.Hour.ToString("D2") + ":" + DateTime.Now.Minute.ToString("D2");
-
-        
-
         [ObservableProperty]
         private string _currentDay = char.ToUpper(DateTime.Now.ToString("dddd")[0]) + DateTime.Now.ToString("dddd").Substring(1);
 
+        //IKONA POGODY
         [ObservableProperty]
         private Bitmap _mybitmap = new Bitmap(AssetLoader.Open(new Uri("avares://AvaloniaTest/Assets/Images/icons8-sun-144.png")));
-
-
         private Bitmap _iconname;
-
         public event PropertyChangedEventHandler PropertyChanged;
-
-
         //ABY ZMIENIC IKONKE POPROSTU PRZYPISZ NOWA BITMAPE DO ICONNAME
         public Bitmap Iconname
         {
@@ -117,7 +113,7 @@ namespace AvaloniaTest.ViewModels
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-
+        //Zamiana motywu
         [RelayCommand]
         private void ThemeBtn()
         {
@@ -127,7 +123,7 @@ namespace AvaloniaTest.ViewModels
         
         }
 
-      
+      //TESTOWY PRZYCISK 
         public void ButtonClokceCommand()
         {
             Console.WriteLine("guzik");
@@ -143,20 +139,19 @@ namespace AvaloniaTest.ViewModels
 
         public HomePageViewModel()
         {
-            Console.WriteLine("NOWY HomePageViewModel" + jest);
+          //  Console.WriteLine("NOWY HomePageViewModel" + jest);
+          //przypisanie wartosci poczatkowej ikony pogody
             _iconname = new Bitmap(AssetLoader.Open(new Uri("avares://AvaloniaTest/Assets/Images/icons8-sun-144.png")));
            
-            for (int i = 0; i < 4; i++)
-            {
-                BorderItemsCollection.Add(new ObservableCollection<BorderModel>());
-            }
+           //uruchomienie timera- wykorzystany do oddczytywania godziny
             timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromMinutes(1);
-            StartDataReading();
-            MainWindowViewModel.outDoorSens.DataUpdated += OutDoorSensor_DataUpdated;
-            MainWindowViewModel.outDoorSens.DataUpdatedTwo += OutDoorSensor_DataUpdatedTwo;
-               
-                    MainWindowViewModel.CurrentPageOpened += ViewModel_Activated;
+
+            //CZYTANIE DANYCH ROZPOCZYNANE JEST W MAINWINDOWSVIEW - I TRWA CZALY CZAS W TLE
+            //  StartDataReading();
+            //SUB DLA ZMIANY 
+            
+            MainWindowViewModel.CurrentPageOpened += ViewModel_Activated;
             //daje suba na zmiane strony
             //jezeli wykryto zmiane to funkcja ktora unsubuje wszystko 
         }
@@ -165,18 +160,17 @@ namespace AvaloniaTest.ViewModels
         {
             if (MainWindowViewModel.CurrentPageSub == "AvaloniaTest.ViewModels.HomePageViewModel")
             {
-                Console.WriteLine("------------witam---------------");
+                Console.WriteLine("------------WITAM HomePage---------------");
                 timer.Start();
                 StartClock();
+                StartOutDoorReading();
             }
             else
             {
-                Console.WriteLine("-------------------DO WIDZENIA----------------------");
+                Console.WriteLine("-------------------DO WIDZENIA HomePage----------------------");
                 //  sen.DataUpdated -= OutDoorSensor_DataUpdated;
                 //  sen.DataUpdatedTwo -= OutDoorSensor_DataUpdatedTwo;
-                MainWindowViewModel.outDoorSens.DataUpdated -= OutDoorSensor_DataUpdated;
-                MainWindowViewModel.outDoorSens.DataUpdatedTwo -= OutDoorSensor_DataUpdatedTwo;
-                sen.StopEvery();
+                MainWindowViewModel.outDoorSens.IndoorTempUpdated -= OutDoorTemp_DataUpdated;
                 MainWindowViewModel.CurrentPageOpened -= ViewModel_Activated;
                 timer.Stop();
                 StopClock();
@@ -188,12 +182,10 @@ namespace AvaloniaTest.ViewModels
         {
             timer.Tick += (sender, e) =>
             {
-                Console.WriteLine("czytanie godziny");
                 DateTime t = DateTime.Now;
                 CurrentDate = t.ToString("dd-MM-yyyy");
                 CurrentDay = char.ToUpper(t.ToString("dddd")[0]) + t.ToString("dddd").Substring(1);
                 Currenttime = t.Hour.ToString("D2") + ":" + t.Minute.ToString("D2");
-                Console.WriteLine(Currenttime);
             };
         }
         private void StopClock()
@@ -205,25 +197,24 @@ namespace AvaloniaTest.ViewModels
         }
 
 
-        private void OutDoorSensor_DataUpdated(object sender, double e)
+        private void StartOutDoorReading()
         {
-          
-            Indoortemperature = e.ToString().Replace(',', '.') + "°C";
-            Console.WriteLine("Czytanie tempe");
+            MainWindowViewModel.outDoorSens.IndoorTempUpdated += OutDoorTemp_DataUpdated;
+        }
 
-        }
-        private void OutDoorSensor_DataUpdatedTwo(object sender, double e)
+
+        private void OutDoorTemp_DataUpdated(object sender, double e)
         {
-            BorderItemsCollection[0][0].StackPanels[1].Text = e.ToString() + "%";
+            Console.WriteLine("Update temperatury");
+            Indoortemperature = e.ToString().Replace(',', '.') + "°C";          
         }
+
 
 
         public void ChangeIcon()
-        {
-            // _iconname.Dispose();
-            //  _iconname = new Bitmap(AssetLoader.Open(new Uri("avares://AvaloniaTest/Assets/Images/icons8-cloud-96.png")));
+        {          
             Mybitmap = new Bitmap(AssetLoader.Open(new Uri("avares://AvaloniaTest/Assets/Images/icons8-cloud-96.png")));
-
+            Indoortemperaturechangeicon = (StreamGeometry)Application.Current.FindResource("ArrowRepeat");
             Console.WriteLine("asdasdasd");
         }
 
@@ -269,60 +260,6 @@ namespace AvaloniaTest.ViewModels
             }
         }
 
-        public async Task StartDataReading()
-        {
-                jest = true;
-                Task task1 = sen.RunReadData();
-                //Task task2 = sen.RunReadDataTwo();
-                await Task.WhenAll(task1);         
-        }
-
-        public class BorderModel
-        {
-            public ObservableCollection<StackPanelModel> StackPanels { get; set; }
-            public int Height { get; set; }
-        }
    
-        
-
-        public partial class StackPanelModel : ObservableObject
-        {
-          public StackPanelModel(string text, int height, Thickness margin, string iconKey) 
-          { 
-              Text = text;
-            
-              ElementHeight = height;
-              Margin = margin;
-              Application.Current!.TryFindResource(iconKey, out var res);
-             MyIcon = (StreamGeometry)res!;
-          }
-
-            [ObservableProperty]
-            private string text;
-
-            public string ButtonContent { get; set; }
-            public int ElementHeight { get; set; }
-            public Thickness Margin { get; set; }
-        
-            public StreamGeometry MyIcon { get; set; }
-        }
-
-        public int getHeight(int first, int second)
-        {
-            int result = 0;
-            foreach (var el in BorderItemsCollection[0][0].StackPanels)
-            {
-                
-                Console.WriteLine(el.ElementHeight);
-                result += el.ElementHeight;
-            }
-            return result;
-        }
-
-
-    
     }
-
-
-
 }

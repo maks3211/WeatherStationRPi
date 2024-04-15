@@ -11,6 +11,7 @@ using System.Text;
 
 using System.Threading.Tasks;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Diagnostics.Tracing;
 //using System.Device.Gpio;
 
 
@@ -22,7 +23,10 @@ namespace AvaloniaTest.Models
        
         public event EventHandler<double> DataUpdated;
         public event EventHandler<double> DataUpdatedTwo;
-
+        public event EventHandler<double> IndoorTempUpdated;
+        public event EventHandler<double> IndoorHumUpdated;
+        public event EventHandler<double> IndoorPresUpdated;
+        public event EventHandler<double> IndoorAltiUpdated;
         private static OutDoorSensor instance;
         private bool isFirst = true;
         private bool isSecond = true;
@@ -104,19 +108,23 @@ namespace AvaloniaTest.Models
                        // string test = secondLine[0] + secondLine[1];
                     }
                 }
-                catch (Exception ex)
+                catch (Exception ex) //Jezeli nie ma czujnika to losowe wartosci dla testu- docelowo zwracac kod bledu
                 {                
                     double j = new Random().NextDouble();
                     j += 20;
                     temperature = Math.Round(j, 1);
-                    DataUpdated?.Invoke(this, temperature); // Wywołanie zdarzenia, przekazujące aktualną wartość i
+                    IndoorTempUpdated?.Invoke(this, temperature); 
                     Console.WriteLine(ex.Message);
                 }
                 Console.WriteLine("Temperature: " + temperature);
                 Console.WriteLine("Humidity: " + humidity);
                 Console.WriteLine("Pressure: " + pressure);
                 Console.WriteLine("Altitude: " + altitude);
-                DataUpdated?.Invoke(this, temperature); // Wywołanie zdarzenia, przekazujące aktualną wartość i
+
+                IndoorTempUpdated?.Invoke(this, temperature); // Wywołanie zdarzenia, przekazujące aktualną wartość i
+                IndoorHumUpdated?.Invoke(this, humidity);
+                IndoorPresUpdated?.Invoke(this, pressure);
+                IndoorAltiUpdated?.Invoke(this, altitude);
                 //DataUpdatedTwo?.Invoke(this, humidity);
                 await Task.Delay(TimeSpan.FromSeconds(5));   
         }
