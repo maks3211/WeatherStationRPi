@@ -1,0 +1,28 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="1024" d:DesignHeight="470"
+             x:Class="AvaloniaTest.Views.NetworkSettingsView">
+  
+    <Border BorderThickness="0,5,0,5">
+      <ScrollViewer>
+        <StackPanel>
+          <StackPanel>
+            <TextBlock>USTAWIENIA SIECI</TextBlock>
+            <TextBlock>WUSTAIWNIA SIECI</TextBlock>
+          </StackPanel>
+          <Rectangle Margin="0,5,0,5" Width="1024" Height="2" Fill="{DynamicResource BorderColor}"></Rectangle>
+          <StackPanel>
+            <TextBlock>USTAWIENIA SIECI</TextBlock>
+            <TextBlock>WUSTAIWNIA SIECI</TextBlock>
+          </StackPanel>
+          
+
+        </StackPanel>
+        
+        
+      </ScrollViewer>
+
+  </Border>
+</UserControl>

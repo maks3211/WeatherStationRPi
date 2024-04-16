@@ -12,7 +12,7 @@ namespace AvaloniaTest.Views
         public SettingsView()
         {
             InitializeComponent();
-            Console.WriteLine("nowy");
+            Console.WriteLine("Ustawienia");
         }
         private void PointerPressedHandler(object sender, PointerPressedEventArgs args)
         {

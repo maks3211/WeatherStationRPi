@@ -24,7 +24,7 @@ using AvaloniaTest.Models;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using Avalonia.Controls.ApplicationLifetimes;
-using System;
+
 
 using System.Windows.Input;
 using Avalonia.Platform;
@@ -61,6 +61,10 @@ namespace AvaloniaTest.ViewModels
         public double _arrowx = 150;
         [ObservableProperty]
         public double _arrowy = 150;
+        [ObservableProperty]
+        public double _circlex = 150;
+        [ObservableProperty]
+        public double _circley = 150;
         [ObservableProperty]
         public double _angle = 0;
         [ObservableProperty]
@@ -219,18 +223,21 @@ namespace AvaloniaTest.ViewModels
         }
 
         public void ChangeArrow(double angle)
-        {
-            double kat = (2 * Math.PI * angle) / 360;
-            Arrowx = 140 + 95 * Math.Cos(kat);
-            Arrowy = 145 + 95 * Math.Sin(kat);
-            //a += step;
-            //PROMIEN BYL 110
-          
-            double angleBetweenArrowAndCenter = Math.Atan2(Arrowy - 150, Arrowx - 150);
-            double rotationAngle = angleBetweenArrowAndCenter - Math.PI;
-            Console.WriteLine("Ustawiony kat: " + angle);
-            //  Angle += 5.732 * 0.95;
-            Angle = angle;
+        {            
+            double radians = Math.PI * angle / 180;
+            double arrowLength = 95; 
+
+            // Obliczanie pozycji strzałki na okręgu
+            Arrowx = 140 + arrowLength * Math.Sin(radians);
+            Arrowy = 145 - arrowLength * Math.Cos(radians); 
+
+            double circleAngle = angle + 180; // Kąt przeciwny do kąta strzałki
+            double circleRadians = Math.PI * circleAngle / 180;
+            double circleLength = 98;
+
+            Circlex = 140 + circleLength * Math.Sin(circleRadians);
+            Circley = 140 - circleLength * Math.Cos(circleRadians);
+            Angle = angle-90;
             switch (angle)
             {
                 case double v when (v >= 0 && v < 22.5) || (v >= 337.5 && v <= 360):

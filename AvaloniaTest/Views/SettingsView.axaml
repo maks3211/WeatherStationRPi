@@ -5,19 +5,34 @@
              mc:Ignorable="d" d:DesignWidth="1024" d:DesignHeight="470"
              Width="1024"
              Height="470"
-             x:Class="AvaloniaTest.Views.SettingsView">
-  <DockPanel>
-    <Button DockPanel.Dock="Bottom"
-            HorizontalAlignment="Stretch"
-            HorizontalContentAlignment="Center"
+             x:Class="AvaloniaTest.Views.SettingsView"
+             xmlns:vm="using:AvaloniaTest.ViewModels"
+             x:DataType="vm:SettingsViewModel"
              >
-      Add Item
-    </Button>
-    <StackPanel
-       
-       Background="Beige">
-      <CheckBox Margin="4">Walk the dog</CheckBox>
-      <CheckBox Margin="4">Buy some milk</CheckBox>
-    </StackPanel>
-  </DockPanel>
+  <SplitView IsPaneOpen ="True"
+           OpenPaneLength="225"
+           CompactPaneLength="86"
+           DisplayMode="CompactInline"
+           Background="{DynamicResource BackGroundLight}"
+           PaneBackground="{DynamicResource BackGround}">
+    
+    <SplitView.Pane>
+      <ListBox CornerRadius="10" Margin="5,10,5,10" 
+        ItemsSource="{Binding Items}" SelectedItem="{Binding SelectedSettings}" Background="{DynamicResource BackGroundDark}">
+        <ListBox.ItemTemplate>
+          <DataTemplate DataType="{x:Type vm:SettingsListTemplate}">
+            <StackPanel Orientation="Horizontal" Spacing="10" Height="50">
+              <PathIcon Data="{Binding ItemIcon}" Width="25" Height="25" HorizontalAlignment="Center" VerticalAlignment="Center"></PathIcon>
+              <TextBlock Text="{Binding Label}" FontSize="17" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </StackPanel>
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+      </ListBox>
+    </SplitView.Pane>
+    <SplitView.Content>
+      <Border>
+        <TransitioningContentControl Content="{Binding Currentsettingspage}" Margin="10,10,10,10"/>
+      </Border>
+    </SplitView.Content>
+  </SplitView>
 </UserControl>

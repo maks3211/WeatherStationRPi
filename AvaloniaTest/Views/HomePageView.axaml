@@ -15,7 +15,6 @@
         HorizontalAlignment="Center"
         Width="1024"
         Height="470">
-
         <!--KOLUMNA I-->
         <!--PIERWSZE OKIENKO-->
         <Border  
@@ -23,7 +22,7 @@
            BorderBrush="{DynamicResource BorderColor}"
                         BorderThickness="2"                     
                         BoxShadow="2 2 2 2 Gray"
-                        CornerRadius="10"         >
+                        CornerRadius="10">
           <StackPanel         
             Width="243.5"
             Height="146.5"
@@ -57,12 +56,6 @@
  
           </StackPanel>
         </Border>
-
-
-
-
-
-
 
         <!--KOLUMNA II-->
         <Border
@@ -166,17 +159,19 @@
               <RotateTransform Angle="{Binding Angle}" CenterX="0.5" CenterY="0.5" />
             </Image.RenderTransform>
           </Image>
+          
           <Ellipse Width="200" Height="200" Fill="Transparent" Stroke="{DynamicResource BorderColor}" StrokeThickness="2.5"  StrokeDashArray="4.8" Canvas.Left="50" Canvas.Top="50" />
           <Ellipse Width="20" Height="20" Fill="Red" Canvas.Left="140" Canvas.Top="140" />
           <Ellipse Width="170" Height="170" Fill="Transparent" Stroke="{DynamicResource LightBorderColor}" StrokeThickness="5" Canvas.Left="65" Canvas.Top="65"/>
           <TextBlock  Canvas.Top="125" Canvas.Left="130" FontSize="50" Text="{Binding Direction}"></TextBlock>
          
-          <Path Stroke="Yellow" StrokeThickness="2" Fill="Yellow" Canvas.Top="{Binding Arrowy}" Canvas.Left="{Binding Arrowx}">
+          <Path Stroke="Yellow" StrokeThickness="3" Fill="Transparent" Canvas.Top="{Binding Arrowy}" Canvas.Left="{Binding Arrowx}">
             <Path.Data>
               <!-- Definicja strzałki "M0,0 L0,10 L20,5 Z" -->
               <PathGeometry Figures="M0,0 L0,10 L20,5 Z"/>
             </Path.Data>
             <Path.RenderTransform>
+              
               <!-- Transformacja dla obrotu strzałki -->
               <TransformGroup>
                 <!-- Przesunięcie strzałki na obwód okręgu -->
@@ -185,6 +180,12 @@
                 <!-- Kąt obrotu strzałki -->
               </TransformGroup>
             </Path.RenderTransform>
+          </Path>
+          <Path Stroke="Yellow" StrokeThickness="3" Fill="Transparent" Canvas.Top="{Binding Circley}" Canvas.Left="{Binding Circlex}">
+            <Path.Data>
+              <!-- Definicja strzałki "M0,0 L0,10 L20,5 Z" -->
+              <PathGeometry Figures="M 10 0 A 1 1 0 0 0 10 20 A 1 1 0 0 0 10 0"/>
+            </Path.Data>
           </Path>
           <Ellipse Width="200" Height="200" Fill="Red"
                      Stroke="{DynamicResource BorderColor}"
@@ -200,7 +201,7 @@
 <StackPanel Canvas.Top="350" Canvas.Left="15" Width="980" Height="50">
   <TextBlock Text="{Binding #Myslider.Value}"
                HorizontalAlignment="Center"/>
-  <Slider Name="Myslider" Value="{Binding SliderValue, Mode=TwoWay}" Maximum="60" IsSnapToTickEnabled="True" TickFrequency="1" TickPlacement="Outside"/>
+  <Slider Name="Myslider" Value="{Binding SliderValue, Mode=TwoWay}" Maximum="360" IsSnapToTickEnabled="True" TickFrequency="1" TickPlacement="Outside"/>
 
 </StackPanel>
       </Canvas>
