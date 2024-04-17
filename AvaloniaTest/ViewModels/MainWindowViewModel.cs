@@ -33,15 +33,17 @@ namespace AvaloniaTest.ViewModels
         public static event EventHandler<string> CurrentPageOpened; //Wykorzystanie to informawoania danej strony ze jest otwierana/zamykana
         public static string CurrentPageSub = "";
         public  static OutDoorSensor outDoorSens = new OutDoorSensor();
+        public static string lastPage = "";
         public MainWindowViewModel()
         {
-             Console.WriteLine("-------------NOwy MainWindowViewModel--------------");
+            
+            Console.WriteLine("-------------NOwy MainWindowViewModel--------------");
             //Na start przechodzimy do HomePage
             CurrentPageSub = "AvaloniaTest.ViewModels.HomePageViewModel";
             CurrentPageOpened?.Invoke(this, CurrentPageSub ?? "");
 
             // Ustaw pierwszy element jako domyślnie wybrany
-            //    SelectedListItem = Items.FirstOrDefault();
+            // SelectedListItem = Items.FirstOrDefault();
             //outDoorSens.StartMake();
 
             StartDataReading();
@@ -69,7 +71,11 @@ namespace AvaloniaTest.ViewModels
             CurrentPage = (ViewModelBase)istance;
             CurrentPageSub = CurrentPage.ToString();
             Console.WriteLine("TUTAJ JEST TA STREONA:" + CurrentPageSub);
+            Console.WriteLine("TUTAJ JEST TA STREONA druga:" + Items.FirstOrDefault().ModelType.Name.ToString());        
             CurrentPageOpened?.Invoke(this, CurrentPageSub ?? "");
+           
+            
+           
         }
         public ObservableCollection<ListItemTemplate> Items { get; } = new()
         { 
@@ -86,7 +92,7 @@ namespace AvaloniaTest.ViewModels
        
         }
 
-        public void setDefaultItem()
+        public void SetDefaultItem()
         {
             SelectedListItem = Items[0];
             if (SelectedListItem is not null)

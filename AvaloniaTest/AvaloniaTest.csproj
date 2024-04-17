@@ -10,7 +10,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Assets\Images\" />
     <AvaloniaResource Include="Assets\**" />
   </ItemGroup>
 

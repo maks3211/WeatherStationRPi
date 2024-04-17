@@ -27,12 +27,27 @@ namespace AvaloniaTest.Models
         public event EventHandler<double> IndoorHumUpdated;
         public event EventHandler<double> IndoorPresUpdated;
         public event EventHandler<double> IndoorAltiUpdated;
+
+        public event EventHandler<int> IndoorPreasureUpdated;
+
+        public event EventHandler<double> WindDirectionUpdated;
+        public event EventHandler<int> WindSpeedUpdated;
+        public event EventHandler<int> WindGustUpdated;
+
         private static OutDoorSensor instance;
         private bool isFirst = true;
         private bool isSecond = true;
 
-        
+        public double temperature = 0.1;
+        public double humidity = 0.0;
+        public double pressure = 0.0;
+        public double altitude = 0.0;
 
+        public double windDirection = 0.0;
+        public int windSpeed = 0;
+        public int windGust = 0;
+
+        public int preasure = 0;
         //public static OutDoorSensor Instance
         //{
         //    get
@@ -52,10 +67,7 @@ namespace AvaloniaTest.Models
 
         public async Task RunReadData()
         {
-            double temperature = 0.1;
-            double humidity = 0.0;
-            double pressure = 0.0;
-            double altitude = 0.0;
+           
             Console.WriteLine("TUTAJ");
             string portName = "/dev/ttyS0";
             int baudRate = 9600;
@@ -112,19 +124,35 @@ namespace AvaloniaTest.Models
                 {                
                     double j = new Random().NextDouble();
                     j += 20;
+
                     temperature = Math.Round(j, 1);
-                    IndoorTempUpdated?.Invoke(this, temperature); 
+                    humidity = new Random().Next(101);
+
+                    windDirection = new Random().NextDouble() * 360;
+                    windSpeed = new Random().Next(0, 31);
+                    int randomGust= new Random().Next(0, 31);
+                    if (randomGust > windGust)
+                    {
+                        windGust = randomGust;
+                    }
+
+                    preasure = new Random().Next(960, 1060);
+
                     Console.WriteLine(ex.Message);
                 }
                 Console.WriteLine("Temperature: " + temperature);
                 Console.WriteLine("Humidity: " + humidity);
                 Console.WriteLine("Pressure: " + pressure);
-                Console.WriteLine("Altitude: " + altitude);
+                Console.WriteLine("cisnienie: " + preasure);
 
                 IndoorTempUpdated?.Invoke(this, temperature); // Wywołanie zdarzenia, przekazujące aktualną wartość i
                 IndoorHumUpdated?.Invoke(this, humidity);
                 IndoorPresUpdated?.Invoke(this, pressure);
                 IndoorAltiUpdated?.Invoke(this, altitude);
+                WindDirectionUpdated?.Invoke(this, windDirection);
+                WindSpeedUpdated?.Invoke(this, windSpeed);
+                WindGustUpdated?.Invoke(this, windGust);
+                IndoorPreasureUpdated?.Invoke(this, preasure);
                 //DataUpdatedTwo?.Invoke(this, humidity);
                 await Task.Delay(TimeSpan.FromSeconds(5));   
         }

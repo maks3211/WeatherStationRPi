@@ -40,7 +40,7 @@
             <TextBlock Margin="0,5,0,0" HorizontalAlignment="Center" Text="{Binding CurrentDate}" FontSize="15"></TextBlock>
           </StackPanel>
         </Border>
-        <!--DRUGIE OKIENKO-->
+        <!--DRUGIE OKIENKO kolumna I-->
         <Border
               Canvas.Top="166.5" Canvas.Left="10"
               BorderBrush="{DynamicResource BorderColor}"
@@ -92,42 +92,296 @@
             <StackPanel Orientation="Vertical">
               <TextBlock Foreground="{DynamicResource FontBlue}" Margin="0,15,0,0" >WCZORAJ</TextBlock>
               <TextBlock Text="{Binding Indoorysterdaytemp}" FontSize="19" HorizontalAlignment="Center" Margin="0,10,0,0"></TextBlock>
-              <PathIcon  Foreground="{DynamicResource LightBorderColor}"  Data="{Binding Indoortemperaturechangeicon}" VerticalAlignment="Center" Margin="-55,-23,5,0"></PathIcon>
+              <PathIcon   Data="{Binding Indoortemperaturechangeicon}" Foreground="{DynamicResource LightBorderColor}"  VerticalAlignment="Center" Margin="-55,-23,5,0"></PathIcon>
             </StackPanel>
            
             <Line StartPoint="0,1" EndPoint="0,60" Margin="0,15,0,0" Stroke="{DynamicResource LightBorderColor}" StrokeThickness="2" StrokeDashArray="3"/>
             <StackPanel>
               <TextBlock Margin="0,15,0,0">MIN</TextBlock>
-              <TextBlock Text="{Binding Indoortodaymintemp}" HorizontalAlignment="Center" Margin="0,10,0,0">10</TextBlock>            
+              <TextBlock Text="{Binding Indoortodaymintemp}" HorizontalAlignment="Center" Margin="0,10,0,0"></TextBlock>            
             </StackPanel>
 
           </StackPanel>
-
-
-        </StackPanel>
-          
-          
+        </StackPanel>         
         </Border>
 
+        <!--drugi panel - druga kolumna-->
+        <Border
+      Canvas.Top="216.5" Canvas.Left="263.5"
+      BorderBrush="{DynamicResource BorderColor}"
+      BorderThickness="2"
+      BoxShadow="2 2 2 2 Gray"
+      CornerRadius="10"
+              >
+          <StackPanel
+                Width="243.5"
+                Height="242.5"
+                 VerticalAlignment="Center"
+                >
+            <StackPanel Orientation="Horizontal">
+
+              <PathIcon Data="{StaticResource HomeRegular}" VerticalAlignment="Top" Margin="10,8,0,8"></PathIcon>
+              <PathIcon Data="{StaticResource ArrrowLeft}" Height="10" Margin="-4,14,10,8" VerticalAlignment="Top" ></PathIcon>
+
+              <TextBlock VerticalAlignment="Center"  FontWeight="DemiBold" Margin="20,5,0,0">WILGOTNOSC</TextBlock>
+            </StackPanel>
+            <Rectangle Height="2" Width="243.5" Fill="{DynamicResource BorderColor}" Margin="0,10,0,0"></Rectangle>
+            <StackPanel>
+              <Ellipse
+                      Margin="0,10,0,0"
+                      Width="180" Height="180" Fill="Transparent"
+                      Stroke="{DynamicResource FontBlue}"
+                      StrokeThickness="9"
+                      StrokeDashArray="60"
+                      StrokeDashOffset="{Binding Indoorhumiditycircle}"
+                      >
+                <Ellipse.RenderTransform>
+                  <RotateTransform Angle="270" />
+                </Ellipse.RenderTransform>
+              </Ellipse>
+              <Image Source="avares://AvaloniaTest/Assets/Images/hygrometer.png" Width="45" Height="45" Margin="-100,-190,0,0" ></Image>
+              <TextBlock  Margin="100,-115,0,0" Text="{Binding Indoorhumidity}" FontWeight="DemiBold" FontSize="35" VerticalAlignment="Center"></TextBlock>        
+            </StackPanel>
+
+
+
+          </StackPanel>
+        </Border>
         <!--KOLUMNA III-->
-        <StackPanel
-  Canvas.Top="10" Canvas.Left="517"
-  Background="Beige"
-  Width="243.5"
-  Height="450"
-  VerticalAlignment="Center">
-          <TextBlock>NAPIS</TextBlock>
-        </StackPanel>
+        <!--okienko I wiatr-->
+        <Border
+      Canvas.Top="10" Canvas.Left="517"
+      BorderBrush="{DynamicResource BorderColor}"
+      BorderThickness="2"
+      BoxShadow="2 2 2 2 Gray"
+      CornerRadius="10">
+          
+          <StackPanel
+            
+                      Width="243.5"
+                      Height="240"
+                      VerticalAlignment="Center">
+            <StackPanel  Orientation="Horizontal">
+              <PathIcon Data="{StaticResource HomeRegular}" VerticalAlignment="Top" Margin="10,8,0,8"></PathIcon>
+              <PathIcon Data="{StaticResource ArrowRight}" Height="10" Margin="-4,14,10,8" VerticalAlignment="Top" ></PathIcon>
+              <TextBlock VerticalAlignment="Center" FontWeight="DemiBold" Margin="40,5,0,0">WIATR</TextBlock>
+            </StackPanel>
+            
+            <Rectangle Height="2" Width="243.5" Fill="{DynamicResource BorderColor}" Margin="0,10,0,0"></Rectangle>
+            
+            <Canvas >
+              <Ellipse Width="155" Height="155" Fill="Transparent" Stroke="{DynamicResource FontBlue}" StrokeThickness="2.5"  StrokeDashArray="1.45" Canvas.Left="72.5" Canvas.Top="22.5" />
+              <Ellipse Width="130" Height="130" Fill="Transparent" Stroke="{DynamicResource LightBorderColor}" StrokeThickness="5" Canvas.Left="85" Canvas.Top="35" />
+              <TextBlock Canvas.Top="40" Canvas.Left="145" FontWeight="DemiBold">N</TextBlock>
+              <TextBlock Canvas.Top="91.5" Canvas.Left="196.5" FontWeight="DemiBold">E</TextBlock>
+              <TextBlock Canvas.Top="143" Canvas.Left="145" FontWeight="DemiBold">S</TextBlock>
+              <TextBlock Canvas.Top="91.5" Canvas.Left="93.5" FontWeight="DemiBold">W</TextBlock>
+              
+              <StackPanel Orientation="Horizontal" Canvas.Left="5" Canvas.Top="5">
+                <TextBlock Text="{Binding WindSpeed}" FontWeight="DemiBold" FontSize="35" Margin="0,0,2,0"></TextBlock>
+                <TextBlock VerticalAlignment="Center" FontSize="18">m/s</TextBlock>
+              </StackPanel>
+              
+              <Image Source="avares://AvaloniaTest/Assets/Images/windgauge.png" Canvas.Top="60" Canvas.Left="5" Width="55" Height="55" ></Image>
+              <TextBlock Canvas.Left="5" Canvas.Top="140" FontSize="15">Porywy</TextBlock>
+              <StackPanel Orientation="Horizontal" Canvas.Left="5" Canvas.Top="155">
+                <TextBlock Text="{Binding WindGust}" Margin="0,0,2,0"  FontSize="25"></TextBlock>
+                <TextBlock VerticalAlignment="Center" FontSize="14">m/s</TextBlock>
+              </StackPanel>
+
+              <Ellipse Width="55" Height="55" Fill="Transparent" Stroke="{DynamicResource FontBlue}" StrokeThickness="2"  StrokeDashArray="" Canvas.Left="122.5" Canvas.Top="72.5" />
+              <StackPanel  Canvas.Left="127.5" Canvas.Top="84" Width="45">
+                <TextBlock Text="{Binding WindDirection}" HorizontalAlignment="Center" FontSize="25" FontWeight="DemiBold"></TextBlock>
+              </StackPanel>
+              
+              <Path Stroke="Yellow" StrokeThickness="3" Fill="Transparent" Canvas.Top="{Binding Arrowy}" Canvas.Left="{Binding Arrowx}">
+                <Path.Data>
+                  <PathGeometry Figures="M0,0 L0,10 L20,5 Z"/>
+                </Path.Data>
+                <Path.RenderTransform>
+                  <TransformGroup>
+                    <RotateTransform Angle="{Binding Angle}"/>
+                  </TransformGroup>
+                </Path.RenderTransform>
+              </Path>
+              <Path Stroke="Yellow" StrokeThickness="3" Fill="Transparent" Canvas.Top="{Binding Circley}" Canvas.Left="{Binding Circlex}">
+                <Path.Data>
+                  <PathGeometry Figures="M 10 0 A 1 1 0 0 0 10 20 A 1 1 0 0 0 10 0"/>
+                </Path.Data>
+              </Path>
+            </Canvas>
+            
+            
+          </StackPanel>
+        </Border>
+        
+        <!--kolumna III okienko drugie-->
+        <!--Opady-->
+        <Border
+       Canvas.Top="260" Canvas.Left="517"
+      BorderBrush="{DynamicResource BorderColor}"
+      BorderThickness="2"
+      BoxShadow="2 2 2 2 Gray"
+      CornerRadius="10">
+          <StackPanel
+            Width="243.5"
+            Height="196.5"
+            VerticalAlignment="Center">
+
+            <StackPanel  Orientation="Horizontal">
+              <PathIcon Data="{StaticResource HomeRegular}" VerticalAlignment="Top" Margin="10,8,0,8"></PathIcon>
+              <PathIcon Data="{StaticResource ArrowRight}" Height="10" Margin="-4,14,10,8" VerticalAlignment="Top" ></PathIcon>
+              <TextBlock VerticalAlignment="Center"  FontWeight="DemiBold" Margin="40,5,0,0">OPADY</TextBlock>
+            </StackPanel>
+            <Rectangle Height="2" Width="243.5" Fill="{DynamicResource BorderColor}" Margin="0,10,0,5"></Rectangle>
+            <StackPanel>
+              <TextBlock FontSize="20" HorizontalAlignment="Center">Suma dzienna:</TextBlock>
+              <TextBlock  FontWeight="DemiBold" HorizontalAlignment="Center" FontSize="35">50mm</TextBlock>     
+            </StackPanel>
+            <Image Source="avares://AvaloniaTest/Assets/Images/raingauge.png" Margin="0,-40,190,-55" Width="55" Height="55" ></Image>
+            <StackPanel Spacing="-6">
+              <TextBlock Margin="0,6,0,0" FontSize="18" HorizontalAlignment="Center">Chwilowo:</TextBlock>
+              <TextBlock  FontWeight="DemiBold" HorizontalAlignment="Center" FontSize="30">1mm</TextBlock>
+            </StackPanel>
+
+            </StackPanel>
+          </Border>
+       
 
         <!--KOLUMNA IV-->
-        <StackPanel
-  Canvas.Top="10" Canvas.Left="770.5"
-  Background="Beige"
-  Width="243.5"
-  Height="450"
-  VerticalAlignment="Center">
-          <TextBlock>NAPIS</TextBlock>
-        </StackPanel>
+        <!--okienko pierwsze temperatura zewnetrzna -->
+        <Border
+      Canvas.Top="10" Canvas.Left="770.5"
+      BorderBrush="{DynamicResource BorderColor}"
+      BorderThickness="2"
+      BoxShadow="2 2 2 2 Gray"
+      CornerRadius="10">
+          <StackPanel
+            Width="243.5"
+            Height="196.5"
+            VerticalAlignment="Center">
+
+            <StackPanel  Orientation="Horizontal">
+              <PathIcon Data="{StaticResource HomeRegular}" VerticalAlignment="Top" Margin="10,8,0,8"></PathIcon>
+              <PathIcon Data="{StaticResource ArrowRight}" Height="10" Margin="-4,14,10,8" VerticalAlignment="Top" ></PathIcon>
+
+              <TextBlock VerticalAlignment="Center"  FontWeight="DemiBold" Margin="20,5,0,0">TEMPERATURA</TextBlock>
+            </StackPanel>
+
+            <Rectangle Height="2" Width="243.5" Fill="{DynamicResource BorderColor}" Margin="0,10,0,0"></Rectangle>
+            <StackPanel Orientation="Horizontal">
+              <Image Source="avares://AvaloniaTest/Assets/Images/temperatureOut.png" Width="50" Height="50" Margin="-6,10,0,0" ></Image>
+              <TextBlock Text="{Binding Indoortemperature}" FontWeight="DemiBold" FontSize="35" VerticalAlignment="Center" Margin="15,10,0,0">C</TextBlock>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="20" >
+              <StackPanel>
+                <TextBlock Margin="0,15,0,0" >MAX</TextBlock>
+                <TextBlock Text="{Binding Indoortodaymaxtemp}" HorizontalAlignment="Center" Margin="0,10,0,0"></TextBlock>
+              </StackPanel>
+              <Line StartPoint="0,1" EndPoint="0,60" Margin="0,15,0,0" Stroke="{DynamicResource LightBorderColor}" StrokeThickness="2" StrokeDashArray="3"/>
+              <StackPanel Orientation="Vertical">
+                <TextBlock Foreground="{DynamicResource FontBlue}" Margin="0,15,0,0" >WCZORAJ</TextBlock>
+                <TextBlock Text="{Binding Indoorysterdaytemp}" FontSize="19" HorizontalAlignment="Center" Margin="0,10,0,0"></TextBlock>
+                <PathIcon   Data="{Binding Indoortemperaturechangeicon}" Foreground="{DynamicResource LightBorderColor}"  VerticalAlignment="Center" Margin="-55,-23,5,0"></PathIcon>
+              </StackPanel>
+
+              <Line StartPoint="0,1" EndPoint="0,60" Margin="0,15,0,0" Stroke="{DynamicResource LightBorderColor}" StrokeThickness="2" StrokeDashArray="3"/>
+              <StackPanel>
+                <TextBlock Margin="0,15,0,0">MIN</TextBlock>
+                <TextBlock Text="{Binding Indoortodaymintemp}" HorizontalAlignment="Center" Margin="0,10,0,0"></TextBlock>
+              </StackPanel>
+
+            </StackPanel>
+          </StackPanel>
+        </Border>
+        <!--kolumna IV okienko II-->
+        <!--cisnienie-->
+        <Border
+       Canvas.Top="216.5" Canvas.Left="770.5"
+      BorderBrush="{DynamicResource BorderColor}"
+      BorderThickness="2"
+      BoxShadow="2 2 2 2 Gray"
+      CornerRadius="10">
+          <StackPanel
+            Width="243.5"
+            Height="240"
+            VerticalAlignment="Center">
+
+            <StackPanel  Orientation="Horizontal">
+              <PathIcon Data="{StaticResource HomeRegular}" VerticalAlignment="Top" Margin="10,8,0,8"></PathIcon>
+              <PathIcon Data="{StaticResource ArrrowLeft}" Height="10" Margin="-4,8,10,8" VerticalAlignment="Top" ></PathIcon>
+              <PathIcon Data="{StaticResource ArrowRight}" Height="10" Margin="-28,18,10,8" VerticalAlignment="Top" ></PathIcon>
+              <TextBlock VerticalAlignment="Center"  FontWeight="DemiBold" Margin="30,5,0,0">CISNIENIE</TextBlock>
+            </StackPanel>
+            <Rectangle Height="2" Width="243.5" Fill="{DynamicResource BorderColor}" Margin="0,10,0,5"></Rectangle>
+
+            <StackPanel Orientation="Horizontal" Spacing="20">
+              <StackPanel>
+                <Rectangle
+                  HorizontalAlignment="Left"
+                  RadiusX="7"
+                  RadiusY="7"
+                  Height="15" Width="45"
+                  Fill="{Binding Indoorpreasurecolors[0]}"
+                  Margin="15,10,0,0"
+                ></Rectangle>
+                <Rectangle
+    HorizontalAlignment="Left"
+    RadiusX="7"
+    RadiusY="7"
+    Height="15" Width="45"
+     Fill="{Binding Indoorpreasurecolors[1]}"
+    Margin="15,10,0,0"
+                ></Rectangle>
+                <Rectangle
+    HorizontalAlignment="Left"
+    RadiusX="7"
+    RadiusY="7"
+    Height="15" Width="45"
+     Fill="{Binding Indoorpreasurecolors[2]}"
+    Margin="15,10,0,0"
+                ></Rectangle>
+                <Rectangle
+    HorizontalAlignment="Left"
+    RadiusX="7"
+    RadiusY="7"
+    Height="15" Width="45"
+      Fill="{Binding Indoorpreasurecolors[3]}"
+    Margin="15,10,0,0"
+                ></Rectangle>
+                <Rectangle
+    HorizontalAlignment="Left"
+    RadiusX="7"
+    RadiusY="7"
+    Height="15" Width="45"
+      Fill="{Binding Indoorpreasurecolors[4]}"
+    Margin="15,10,0,0"
+                ></Rectangle>
+                <Rectangle
+    HorizontalAlignment="Left"
+    RadiusX="7"
+    RadiusY="7"
+    Height="15" Width="45"
+      Fill="{Binding Indoorpreasurecolors[5]}"
+    Margin="15,10,0,0"
+                ></Rectangle>
+                <Rectangle
+    HorizontalAlignment="Left"
+    RadiusX="7"
+    RadiusY="7"
+    Height="15" Width="45"
+      Fill="{Binding Indoorpreasurecolors[6]}"
+    Margin="15,10,0,0"
+                ></Rectangle>
+              </StackPanel>
+              <TextBlock Text="{Binding Indoorpreasure}">1000 hPa</TextBlock>
+            </StackPanel>
+           
+
+          </StackPanel>
+        </Border>
+        
 
 
       </Canvas>
@@ -160,10 +414,10 @@
             </Image.RenderTransform>
           </Image>
           
-          <Ellipse Width="200" Height="200" Fill="Transparent" Stroke="{DynamicResource BorderColor}" StrokeThickness="2.5"  StrokeDashArray="4.8" Canvas.Left="50" Canvas.Top="50" />
+          <Ellipse Width="160" Height="160" Fill="Transparent" Stroke="{DynamicResource BorderColor}" StrokeThickness="2.5"  StrokeDashArray="4.8" Canvas.Left="70" Canvas.Top="20" />
           <Ellipse Width="20" Height="20" Fill="Red" Canvas.Left="140" Canvas.Top="140" />
-          <Ellipse Width="170" Height="170" Fill="Transparent" Stroke="{DynamicResource LightBorderColor}" StrokeThickness="5" Canvas.Left="65" Canvas.Top="65"/>
-          <TextBlock  Canvas.Top="125" Canvas.Left="130" FontSize="50" Text="{Binding Direction}"></TextBlock>
+          <Ellipse Width="130" Height="130" Fill="Transparent" Stroke="{DynamicResource LightBorderColor}" StrokeThickness="5" Canvas.Left="85" Canvas.Top="35"/>
+          <TextBlock  Canvas.Top="125" Canvas.Left="130" FontSize="50" Text="{Binding WindDirection}"></TextBlock>
          
           <Path Stroke="Yellow" StrokeThickness="3" Fill="Transparent" Canvas.Top="{Binding Arrowy}" Canvas.Left="{Binding Arrowx}">
             <Path.Data>
@@ -187,8 +441,8 @@
               <PathGeometry Figures="M 10 0 A 1 1 0 0 0 10 20 A 1 1 0 0 0 10 0"/>
             </Path.Data>
           </Path>
-          <Ellipse Width="200" Height="200" Fill="Red"
-                     Stroke="{DynamicResource BorderColor}"
+          <Ellipse Width="180" Height="180" Fill="Red"
+                     Stroke="{DynamicResource FontBlue}"
                      StrokeThickness="10"
                      StrokeDashArray="60"
                      StrokeDashOffset="{Binding Angle}"

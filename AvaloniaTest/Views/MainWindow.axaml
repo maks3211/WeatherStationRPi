@@ -51,7 +51,7 @@
         <!--DYNAMICZNIE DODAWNE PRZYCISKI-->
         <ListBox Grid.Row="1" Grid.Column="0" SelectedItem="{Binding SelectedListItem}" ItemsSource="{Binding Items}"
                  Background="{DynamicResource MainButton}"
-                 Margin="5,0,0,0"
+                 Margin="5,0,0,0"                
                  CornerRadius="5 5 5 5">
           <ListBox.ItemsPanel >
             <ItemsPanelTemplate>
@@ -67,7 +67,7 @@
             </DataTemplate>
           </ListBox.ItemTemplate>
         </ListBox>
-        <Button Click="ButtonOnClick">ZAMKNIJ</Button>
+        <Button Margin="530,0,0,0" Height="40"  Click="ButtonOnClick" HorizontalContentAlignment="Center" Background="{DynamicResource MainButton}" VerticalContentAlignment="Center">ZAMKNIJ</Button>
       </WrapPanel>
       
     </Border>
