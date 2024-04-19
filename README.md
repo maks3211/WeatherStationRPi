@@ -1,23 +1,26 @@
-Program do kopiowania plików z Windowsa na RPi 
-https://ninite.com/winscp/
+**Weather Station**
+<br>RPI Weather Station with wirless sensors.
+SOFTWARE:
+<br>Main program - C# + AvaloniaUI
+<br>Arduino - C/C++
+HARDWARE:
+<br>The project uses Raspberry Pi 4 as the main unit with touch screen and indoor sensors. 
+<br>Additionally, RPi connects to ESP32 via Wi-Fi.
 
-login: pi
-haslo: raspberry
+<br>Indoor sensors: AHT20 + BMP280 + DF Robot CO:   
+-Pressure
+<br>-Temperature
+<br>-Humidity
+<br>-CO
 
-Uruchamianie programu na RPi:
-Na windowsie uruchomić cmd tam gdzie jest plik .sln
-Wpisać komende:
-dotnet publish -r linux-arm
-Skopiować plik linux-arm z  AvaloniaTest/bin/Release/net8.0 do RPi- najlepiej na pulpit
-Na Rpi wejść w skopiowany folder wejść w Tools-> Open Current Folder in Terminal
-Wpisać komende dotnet AvaloniaTest.dll
+<br>Outdoor sensors (Enviro + air quality):
+<br>-Temperature
+<br>-Pressure
+<br>-Humidity
+<br>-Light intensity
+<br>-CO
+<br>-NO2
+<br>-DIY rain sensor
+<br>-DIY wind sensor
 
-
-Połączenie Arduino do RPi:
-GND->GND
-RX(Arduino) -> TX(RPi)
-TX(Arduino)->RX(RPi)
-
-Czujnik BME (temp, wilgoć ciśnienie):
-  !!  3.3V
-
+![MainScreen](https://github.com/maks3211/WeatherStationRPi/assets/92019474/97da8a5d-1c70-4981-9a4e-68c30eff7fe2)
