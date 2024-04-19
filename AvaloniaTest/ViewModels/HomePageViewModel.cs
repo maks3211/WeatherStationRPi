@@ -37,6 +37,10 @@ namespace AvaloniaTest.ViewModels
 
     public partial class HomePageViewModel : ViewModelBase
     {
+
+     
+
+
         private double _sliderValue;
         public double SliderValue
         {
@@ -72,17 +76,22 @@ namespace AvaloniaTest.ViewModels
         [ObservableProperty]
         public string _windDirection = "N";
         [ObservableProperty]
-        public int _windSpeed = 0;
+        public string _windSpeed = Units.GetInstance().CalculatWind(MainWindowViewModel.outDoorSens.temperature).ToString().Replace(',','.');
         [ObservableProperty]
         public int _windGust = 0;
+        [ObservableProperty]
+        public string _windUnit = Units.GetInstance().GetWindUnit();
 
-
-        private string[] _indoorpreasurecolorslist = { "#322c19", "#3d341a", "#534317", "#675114", "#795d12", "#8f6d0f", "#ffbc00" };
-
+        private string[] _yellowcolorslist = { "#322c19", "#3d341a", "#534317", "#675114", "#795d12", "#8f6d0f", "#ffbc00" };
+        private string[] _greencolorslist = {  "#2b2727", "#2d3029", "#2f372b", "#31402d", "#334a30","#355132", "#4dba50" };
 
         public ObservableCollection<string> Indoorpreasurecolors { get; } = new()
         {
             "#322c19", "#3d341a", "#534317", "#675114", "#795d12", "#8f6d0f", "#ffbc00"
+        };
+        public ObservableCollection<string> Outdoorpreasurecolors { get; } = new()
+        {
+            "#2b2727", "#2d3029", "#2f372b", "#31402d", "#334a30","#355132", "#4dba50"
         };
         //   [ObservableProperty]
         //  public string[] _indoorpreasurecolors = { "#322c19", "#3d341a", "#534317", "#675114", "#795d12", "#8f6d0f", "#ffbc00" };
@@ -91,8 +100,11 @@ namespace AvaloniaTest.ViewModels
 
 
         //INDOOR SENSORS 
+        //[ObservableProperty]
+        // public string _indoortemperature = MainWindowViewModel.outDoorSens.temperature.ToString() + "°C";
+
         [ObservableProperty]
-        public string _indoortemperature = MainWindowViewModel.outDoorSens.temperature.ToString() + "°C";
+        public string _indoortemperature = Units.GetInstance().CalculateTemp(MainWindowViewModel.outDoorSens.temperature).ToString().Replace(',','.') + Units.GetInstance().GetTempUnit();
 
         //TEMPERATURA
         //IKONA ZMIANY TEMP WZGLEDEM WCZORAJSZEJ
@@ -173,6 +185,8 @@ namespace AvaloniaTest.ViewModels
 
         public HomePageViewModel()
         {
+            //Units.GetInstance().ChangeWindUnit("km");
+
           //  Console.WriteLine("NOWY HomePageViewModel" + jest);
           //przypisanie wartosci poczatkowej ikony pogody
             _iconname = new Bitmap(AssetLoader.Open(new Uri("avares://AvaloniaTest/Assets/Images/icons8-sun-144.png")));
@@ -252,7 +266,8 @@ namespace AvaloniaTest.ViewModels
         private void OutDoorTemp_DataUpdated(object sender, double e)
         {
             Console.WriteLine("tUpdate temperatury");
-            Indoortemperature = e.ToString().Replace(',', '.') + "°C";          
+            //Indoortemperature = e.ToString().Replace(',', '.') + "°C";          
+            Indoortemperature = Units.GetInstance().CalculateTemp(e).ToString().Replace(',','.') + Units.GetInstance().GetTempUnit();
         }
         private void OutDoorHum_DataUpdated(object sender, double e)
         {
@@ -269,7 +284,7 @@ namespace AvaloniaTest.ViewModels
         }
         private void WindSpeed_DataUpdated(object sender, int e)
         {
-            WindSpeed = e;
+            WindSpeed = Units.GetInstance().CalculatWind(e).ToString().Replace(',', '.'); 
         }
         private void WindGust_DataUpdated(object sender, int e)
         {
@@ -278,8 +293,9 @@ namespace AvaloniaTest.ViewModels
 
         private void IndoorPres_DataUpdated(object sender, int e)
         {
-            Indoorpreasure = e.ToString() + "hPa";
-            ChangeIndoorPreasureBar(e);
+            Indoorpreasure = e.ToString();
+            ChangeVerticalBarColor(e, 1054, 960, _yellowcolorslist, Indoorpreasurecolors);
+            ChangeVerticalBarColor(e,1054,960, _greencolorslist, Outdoorpreasurecolors);
         }
 
         public void ChangeIcon()
@@ -334,6 +350,85 @@ namespace AvaloniaTest.ViewModels
             }
         }
 
+
+        public void ChangeVerticalBarColor(double value, double max, double min, string[] colors, ObservableCollection<string> axamlColors)
+        {
+            int tmp = 0;
+            int range = (int)((max - min) / 7);
+            if (value <= min + range)   //956
+            {
+                for (int i = 0; i < 6; i++)
+                {
+                    axamlColors[i] = colors[i];
+                }
+            }
+            else if (value > min && value <= min + 2*range)
+            {
+                for (int i = 0; i < 5; i++)
+                {
+                    // tmp = i + 1;
+                    axamlColors[i] = colors[i];
+                }
+                axamlColors[5] = colors[6];
+                axamlColors[6] = colors[6];
+            }
+            else if (value > min + 2*range && value <= min + 3*range)
+            {
+                for (int i = 0; i < 4; i++)
+                {
+                    axamlColors[i] = colors[i + 1];
+                }
+                axamlColors[4] = colors[6];
+                axamlColors[5] = colors[6];
+                axamlColors[6] = colors[6];
+            }
+            else if (value > min + 3 * range && value <= min + 4 * range)
+            {
+                for (int i = 0; i < 3; i++)
+                {
+                    axamlColors[i] = colors[i + 2];
+                }
+                axamlColors[3] = colors[6];
+                axamlColors[4] = colors[6];
+                axamlColors[5] = colors[6];
+                axamlColors[6] = colors[6];
+            }
+            else if (value > min + 4 * range && value <= min + 5 * range)
+            {
+                for (int i = 0; i < 2; i++)
+                {
+                    axamlColors[i] = colors[i + 3];
+                }
+                axamlColors[2] = colors[6];
+                axamlColors[3] = colors[6];
+                axamlColors[4] = colors[6];
+                axamlColors[5] = colors[6];
+                axamlColors[6] = colors[6];
+            }
+            else if (value > min + 5 * range && value <= min + 6 * range)  
+            {
+                axamlColors[0] = colors[4];
+                axamlColors[1] = colors[6];
+                axamlColors[2] = colors[6];
+                axamlColors[3] = colors[6];
+                axamlColors[4] = colors[6];
+                axamlColors[5] = colors[6];
+                axamlColors[6] = colors[6];
+            }
+            else
+            {
+                axamlColors[0] = colors[6];
+                axamlColors[1] = colors[6];
+                axamlColors[2] = colors[6];
+                axamlColors[3] = colors[6];
+                axamlColors[4] = colors[6];
+                axamlColors[5] = colors[6];
+                axamlColors[6] = colors[6];
+            }
+
+
+        }
+
         public void ChangeIndoorPreasureBar(double preasure)
         {
             int tmp;
@@ -341,7 +436,7 @@ namespace AvaloniaTest.ViewModels
             { 
                 for (int i = 0; i < 6; i++)
                 {
-                    Indoorpreasurecolors[i] = _indoorpreasurecolorslist[i];
+                    Indoorpreasurecolors[i] = _yellowcolorslist[i];
                 }
             }
             else if (preasure > 974 && preasure <= 988)
@@ -349,63 +444,63 @@ namespace AvaloniaTest.ViewModels
                 for (int i = 0; i < 5; i++)
                 {
                    // tmp = i + 1;
-                    Indoorpreasurecolors[i] = _indoorpreasurecolorslist[i];
+                    Indoorpreasurecolors[i] = _yellowcolorslist[i];
                 }
-                Indoorpreasurecolors[5] = _indoorpreasurecolorslist[6];
-                Indoorpreasurecolors[6] = _indoorpreasurecolorslist[6];
+                Indoorpreasurecolors[5] = _yellowcolorslist[6];
+                Indoorpreasurecolors[6] = _yellowcolorslist[6];
             }
             else if (preasure > 988 && preasure <= 1002)
             {
                 for (int i = 0; i < 4; i++)
                 {               
-                    Indoorpreasurecolors[i] = _indoorpreasurecolorslist[i+1];
+                    Indoorpreasurecolors[i] = _yellowcolorslist[i+1];
                 }
-                Indoorpreasurecolors[4] = _indoorpreasurecolorslist[6];
-                Indoorpreasurecolors[5] = _indoorpreasurecolorslist[6];
-                Indoorpreasurecolors[6] = _indoorpreasurecolorslist[6];
+                Indoorpreasurecolors[4] = _yellowcolorslist[6];
+                Indoorpreasurecolors[5] = _yellowcolorslist[6];
+                Indoorpreasurecolors[6] = _yellowcolorslist[6];
             }
             else if (preasure > 1002 && preasure <= 1016)
             {
                 for (int i = 0; i < 3; i++)
                 {
-                    Indoorpreasurecolors[i] = _indoorpreasurecolorslist[i + 2];
+                    Indoorpreasurecolors[i] = _yellowcolorslist[i + 2];
                 }
-                Indoorpreasurecolors[3] = _indoorpreasurecolorslist[6];
-                Indoorpreasurecolors[4] = _indoorpreasurecolorslist[6];
-                Indoorpreasurecolors[5] = _indoorpreasurecolorslist[6];
-                Indoorpreasurecolors[6] = _indoorpreasurecolorslist[6];
+                Indoorpreasurecolors[3] = _yellowcolorslist[6];
+                Indoorpreasurecolors[4] = _yellowcolorslist[6];
+                Indoorpreasurecolors[5] = _yellowcolorslist[6];
+                Indoorpreasurecolors[6] = _yellowcolorslist[6];
             }
             else if (preasure > 1016 && preasure <= 1030)
             {
                 for (int i = 0; i < 2; i++)
                 {
-                    Indoorpreasurecolors[i] = _indoorpreasurecolorslist[i + 3];
+                    Indoorpreasurecolors[i] = _yellowcolorslist[i + 3];
                 }
-                Indoorpreasurecolors[2] = _indoorpreasurecolorslist[6];
-                Indoorpreasurecolors[3] = _indoorpreasurecolorslist[6];
-                Indoorpreasurecolors[4] = _indoorpreasurecolorslist[6];
-                Indoorpreasurecolors[5] = _indoorpreasurecolorslist[6];
-                Indoorpreasurecolors[6] = _indoorpreasurecolorslist[6];
+                Indoorpreasurecolors[2] = _yellowcolorslist[6];
+                Indoorpreasurecolors[3] = _yellowcolorslist[6];
+                Indoorpreasurecolors[4] = _yellowcolorslist[6];
+                Indoorpreasurecolors[5] = _yellowcolorslist[6];
+                Indoorpreasurecolors[6] = _yellowcolorslist[6];
             }
             else if (preasure > 1030 && preasure <= 1044)
             {
-                Indoorpreasurecolors[0] = _indoorpreasurecolorslist[4];
-                Indoorpreasurecolors[1] = _indoorpreasurecolorslist[6];
-                Indoorpreasurecolors[2] = _indoorpreasurecolorslist[6];
-                Indoorpreasurecolors[3] = _indoorpreasurecolorslist[6];
-                Indoorpreasurecolors[4] = _indoorpreasurecolorslist[6];
-                Indoorpreasurecolors[5] = _indoorpreasurecolorslist[6];
-                Indoorpreasurecolors[6] = _indoorpreasurecolorslist[6];
+                Indoorpreasurecolors[0] = _yellowcolorslist[4];
+                Indoorpreasurecolors[1] = _yellowcolorslist[6];
+                Indoorpreasurecolors[2] = _yellowcolorslist[6];
+                Indoorpreasurecolors[3] = _yellowcolorslist[6];
+                Indoorpreasurecolors[4] = _yellowcolorslist[6];
+                Indoorpreasurecolors[5] = _yellowcolorslist[6];
+                Indoorpreasurecolors[6] = _yellowcolorslist[6];
             }
             else 
             {
-                Indoorpreasurecolors[0] = _indoorpreasurecolorslist[6];
-                Indoorpreasurecolors[1] = _indoorpreasurecolorslist[6];
-                Indoorpreasurecolors[2] = _indoorpreasurecolorslist[6];
-                Indoorpreasurecolors[3] = _indoorpreasurecolorslist[6];
-                Indoorpreasurecolors[4] = _indoorpreasurecolorslist[6];
-                Indoorpreasurecolors[5] = _indoorpreasurecolorslist[6];
-                Indoorpreasurecolors[6] = _indoorpreasurecolorslist[6];
+                Indoorpreasurecolors[0] = _yellowcolorslist[6];
+                Indoorpreasurecolors[1] = _yellowcolorslist[6];
+                Indoorpreasurecolors[2] = _yellowcolorslist[6];
+                Indoorpreasurecolors[3] = _yellowcolorslist[6];
+                Indoorpreasurecolors[4] = _yellowcolorslist[6];
+                Indoorpreasurecolors[5] = _yellowcolorslist[6];
+                Indoorpreasurecolors[6] = _yellowcolorslist[6];
             }
         }
 

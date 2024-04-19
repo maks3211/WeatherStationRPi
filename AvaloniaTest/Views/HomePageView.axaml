@@ -11,6 +11,9 @@
   <Panel>
     
     <Carousel Name="SlideMenu">
+      <Carousel.GestureRecognizers>
+        <ScrollGestureRecognizer CanHorizontallyScroll="True" CanVerticallyScroll="True"/>
+      </Carousel.GestureRecognizers>
       <Canvas
         HorizontalAlignment="Center"
         Width="1024"
@@ -177,16 +180,18 @@
               <TextBlock Canvas.Top="143" Canvas.Left="145" FontWeight="DemiBold">S</TextBlock>
               <TextBlock Canvas.Top="91.5" Canvas.Left="93.5" FontWeight="DemiBold">W</TextBlock>
               
-              <StackPanel Orientation="Horizontal" Canvas.Left="5" Canvas.Top="5">
-                <TextBlock Text="{Binding WindSpeed}" FontWeight="DemiBold" FontSize="35" Margin="0,0,2,0"></TextBlock>
-                <TextBlock VerticalAlignment="Center" FontSize="18">m/s</TextBlock>
+              <StackPanel Orientation="Vertical" Canvas.Left="2" Canvas.Top="2">
+                <TextBlock Text="{Binding WindSpeed}" FontSize="32" FontWeight="DemiBold"/>
+                <TextBlock Text="{Binding WindUnit}" FontSize="18" Margin="5,-3,0,0"/>
               </StackPanel>
+            
               
-              <Image Source="avares://AvaloniaTest/Assets/Images/windgauge.png" Canvas.Top="60" Canvas.Left="5" Width="55" Height="55" ></Image>
               <TextBlock Canvas.Left="5" Canvas.Top="140" FontSize="15">Porywy</TextBlock>
               <StackPanel Orientation="Horizontal" Canvas.Left="5" Canvas.Top="155">
-                <TextBlock Text="{Binding WindGust}" Margin="0,0,2,0"  FontSize="25"></TextBlock>
-                <TextBlock VerticalAlignment="Center" FontSize="14">m/s</TextBlock>
+                <TextBlock>
+                  <Run Text="{Binding WindGust}" FontSize="25" FontWeight="DemiBold"/>
+                  <Run Text="{Binding WindUnit}" FontSize="14"/>
+                </TextBlock>
               </StackPanel>
 
               <Ellipse Width="55" Height="55" Fill="Transparent" Stroke="{DynamicResource FontBlue}" StrokeThickness="2"  StrokeDashArray="" Canvas.Left="122.5" Canvas.Top="72.5" />
@@ -316,15 +321,16 @@
             </StackPanel>
             <Rectangle Height="2" Width="243.5" Fill="{DynamicResource BorderColor}" Margin="0,10,0,5"></Rectangle>
 
-            <StackPanel Orientation="Horizontal" Spacing="20">
-              <StackPanel>
+            <StackPanel Orientation="Horizontal" Spacing="0">
+              
+              <StackPanel  Width="121.75">
                 <Rectangle
                   HorizontalAlignment="Left"
                   RadiusX="7"
                   RadiusY="7"
                   Height="15" Width="45"
                   Fill="{Binding Indoorpreasurecolors[0]}"
-                  Margin="15,10,0,0"
+                  Margin="10,10,0,0"
                 ></Rectangle>
                 <Rectangle
     HorizontalAlignment="Left"
@@ -332,7 +338,7 @@
     RadiusY="7"
     Height="15" Width="45"
      Fill="{Binding Indoorpreasurecolors[1]}"
-    Margin="15,10,0,0"
+    Margin="10,10,0,0"
                 ></Rectangle>
                 <Rectangle
     HorizontalAlignment="Left"
@@ -340,7 +346,7 @@
     RadiusY="7"
     Height="15" Width="45"
      Fill="{Binding Indoorpreasurecolors[2]}"
-    Margin="15,10,0,0"
+    Margin="10,10,0,0"
                 ></Rectangle>
                 <Rectangle
     HorizontalAlignment="Left"
@@ -348,7 +354,7 @@
     RadiusY="7"
     Height="15" Width="45"
       Fill="{Binding Indoorpreasurecolors[3]}"
-    Margin="15,10,0,0"
+    Margin="10,10,0,0"
                 ></Rectangle>
                 <Rectangle
     HorizontalAlignment="Left"
@@ -356,7 +362,7 @@
     RadiusY="7"
     Height="15" Width="45"
       Fill="{Binding Indoorpreasurecolors[4]}"
-    Margin="15,10,0,0"
+    Margin="10,10,0,0"
                 ></Rectangle>
                 <Rectangle
     HorizontalAlignment="Left"
@@ -364,7 +370,7 @@
     RadiusY="7"
     Height="15" Width="45"
       Fill="{Binding Indoorpreasurecolors[5]}"
-    Margin="15,10,0,0"
+    Margin="10,10,0,0"
                 ></Rectangle>
                 <Rectangle
     HorizontalAlignment="Left"
@@ -372,22 +378,79 @@
     RadiusY="7"
     Height="15" Width="45"
       Fill="{Binding Indoorpreasurecolors[6]}"
-    Margin="15,10,0,0"
+    Margin="10,10,0,0"
                 ></Rectangle>
-              </StackPanel>
-              <TextBlock Text="{Binding Indoorpreasure}">1000 hPa</TextBlock>
-            </StackPanel>
-           
-
-          </StackPanel>
-        </Border>
+                <TextBlock Text="{Binding Indoorpreasure}" Margin="68,-169,0,0" FontSize="20">1000</TextBlock>
+                <Image Source="avares://AvaloniaTest/Assets/Images/indoor.png" Margin="15,-160,0,10" Width="45" Height="45" ></Image>
         
-
-
+              </StackPanel>
+              <Line StartPoint="0,1" EndPoint="0,130" Margin="0,50,0,0" Stroke="{DynamicResource LightBorderColor}" StrokeThickness="2" StrokeDashArray="3"/>
+              
+              <StackPanel  Width="121.75">
+                <Rectangle
+                  HorizontalAlignment="Right"
+                  RadiusX="7"
+                  RadiusY="7"
+                  Height="15" Width="45"
+                  Fill="{Binding Outdoorpreasurecolors[0]}"
+                  Margin="0,10,10,0"
+                ></Rectangle>
+                <Rectangle
+    HorizontalAlignment="Right"
+    RadiusX="7"
+    RadiusY="7"
+    Height="15" Width="45"
+     Fill="{Binding Outdoorpreasurecolors[1]}"
+    Margin="0,10,10,0"
+                ></Rectangle>
+                <Rectangle
+    HorizontalAlignment="Right"
+    RadiusX="7"
+    RadiusY="7"
+    Height="15" Width="45"
+     Fill="{Binding Outdoorpreasurecolors[2]}"
+    Margin="0,10,10,0"
+                ></Rectangle>
+                <Rectangle
+    HorizontalAlignment="Right"
+    RadiusX="7"
+    RadiusY="7"
+    Height="15" Width="45"
+      Fill="{Binding Outdoorpreasurecolors[3]}"
+    Margin="0,10,10,0"
+                ></Rectangle>
+                <Rectangle
+    HorizontalAlignment="Right"
+    RadiusX="7"
+    RadiusY="7"
+    Height="15" Width="45"
+      Fill="{Binding Outdoorpreasurecolors[4]}"
+    Margin="0,10,10,0"
+                ></Rectangle>
+                <Rectangle
+    HorizontalAlignment="Right"
+    RadiusX="7"
+    RadiusY="7"
+    Height="15" Width="45"
+      Fill="{Binding Outdoorpreasurecolors[5]}"
+    Margin="0,10,10,0"
+                ></Rectangle>
+                <Rectangle
+    HorizontalAlignment="Right"
+    RadiusX="7"
+    RadiusY="7"
+    Height="15" Width="45"
+      Fill="{Binding Outdoorpreasurecolors[6]}"
+    Margin="0,10,10,0"
+                ></Rectangle>
+                <TextBlock Text="{Binding Indoorpreasure}" Margin="5,-169,0,0" FontSize="20">1000</TextBlock>
+                <Image Source="avares://AvaloniaTest/Assets/Images/outdoor.png" Margin="0,-110,45,80" Width="45" Height="45" ></Image>
+                <TextBlock Margin="-15,-165,0,0" FontSize="15">hPa</TextBlock>
+              </StackPanel>
+            </StackPanel>
+          </StackPanel>
+        </Border>     
       </Canvas>
-      
-      
-      
       <Canvas
         HorizontalAlignment="Center"
         Width="1024"

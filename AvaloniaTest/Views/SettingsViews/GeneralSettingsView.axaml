@@ -3,6 +3,60 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-               x:Class="AvaloniaTest.Views.GeneralSettingsView">
-  <TextBlock>Ustawienia ogolne</TextBlock>
+             xmlns:vm="using:AvaloniaTest.ViewModels"
+             x:DataType="vm:GeneralSettingsViewModel"
+             x:Class="AvaloniaTest.Views.GeneralSettingsView">
+  <Border BorderThickness="0,5,0,5">
+    <ScrollViewer>
+ 
+      <StackPanel>
+        <StackPanel>
+          <TextBlock FontWeight="DemiBold" FontSize="20" Margin="20,10,0,0">JEDNOSTKI</TextBlock>
+          <Line StartPoint="0,0" EndPoint="800,0" Margin="0,15,0,15" Stroke="{DynamicResource LightBorderColor}" StrokeThickness="2" StrokeDashArray="3"/>
+          <StackPanel Orientation="Horizontal" Spacing="10">
+            <Expander Width="190" Margin="10,0,0,0" VerticalAlignment="Top" >
+              <Expander.Header >
+                <TextBlock HorizontalAlignment="Center">TEMPERATURA</TextBlock>
+              </Expander.Header>
+
+              <StackPanel>
+                <RadioButton Content="°C"  GroupName="TempGroup" IsChecked="{Binding CelsiusSelected}"></RadioButton>
+                <RadioButton Content="°F" GroupName="TempGroup"  IsChecked="{Binding FahrenheitSelected}"></RadioButton>
+              </StackPanel>
+            </Expander>
+            <Expander Width="210" Margin="10,0,0,0" VerticalAlignment="Top"   >
+              <Expander.Header >
+                <TextBlock HorizontalAlignment="Center">PREDKOSC WIATRU</TextBlock>
+              </Expander.Header>
+              <StackPanel>
+                <RadioButton Content="M/S"        GroupName="WindGroup"  IsChecked="{Binding MSelected}"></RadioButton>
+                <RadioButton Content="KM/H"       GroupName="WindGroup"  IsChecked="{Binding KmSelected}"></RadioButton>
+                <RadioButton Content="Wezly (kt)" GroupName="WindGroup"  IsChecked="{Binding KtSelected}"></RadioButton>
+              </StackPanel>
+            </Expander>
+            
+            <Expander Width="150" Margin="10,0,0,0" VerticalAlignment="Top"   >
+              <Expander.Header >
+                <TextBlock HorizontalAlignment="Center">OPADY</TextBlock>
+              </Expander.Header>
+              <StackPanel>
+                <RadioButton Content="mm"      ></RadioButton>
+                <RadioButton Content="litry"      ></RadioButton>
+              </StackPanel>
+            </Expander>
+          </StackPanel>
+        </StackPanel>
+        <Rectangle Margin="0,5,0,5" Width="1024" Height="2" Fill="{DynamicResource BorderColor}"></Rectangle>
+        <StackPanel>
+          <TextBlock>USTAWIENIE 2</TextBlock>
+          <TextBlock>USTAWIENIE 3</TextBlock>
+        </StackPanel>
+
+
+      </StackPanel>
+
+
+    </ScrollViewer>
+
+  </Border>
 </UserControl>

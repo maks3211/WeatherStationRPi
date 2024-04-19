@@ -23,22 +23,24 @@ using Avalonia.Styling;
 using Avalonia.Input;
 
 
+
 namespace AvaloniaTest.Views
 {
 
     public partial class HomePageView : UserControl
     {
 
-        private int rows = 5;
-        private int columns = 5;    
+    
+
+    
         public HomePageView()
         {
             InitializeComponent();
             //InitGrid();
-            slideMenuTest();
+            slideMenu();
         }
        
-        private void slideMenuTest()
+        private void slideMenu()
         {
             var compisitePageTransition = new CompositePageTransition();
             var pageSlide = new PageSlide
