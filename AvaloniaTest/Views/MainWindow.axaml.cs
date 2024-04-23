@@ -27,15 +27,7 @@ namespace AvaloniaTest.Views
             InitializeComponent();
            // this.DataContext = new MainWindowViewModel();
 
-            if (Resources.TryGetResource("ForegroundBrush",Avalonia.Styling.ThemeVariant.Light, out var kolorek))
-            {
-                Console.WriteLine("Jest w main");
-            }
-            else
-            {
-                Console.WriteLine("Nie ma w main");
-                // Zasób nie zosta³ znaleziony
-            }
+           
             //changeThemeButton.Content = "zmiana";
             //changeThemeButton.PointerPressed += changeThemeButton_OnPointerPressed;
             //  changeThemeButton.PointerReleased += changeThemeButton_OnPointerReleased;

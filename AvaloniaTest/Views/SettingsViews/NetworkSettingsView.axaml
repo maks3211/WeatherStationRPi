@@ -2,22 +2,44 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="1024" d:DesignHeight="470"
-             x:Class="AvaloniaTest.Views.NetworkSettingsView">
-  
-    <Border BorderThickness="0,5,0,5">
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="470"
+             x:Class="AvaloniaTest.Views.NetworkSettingsView"
+             xmlns:vm="using:AvaloniaTest.ViewModels"
+              x:DataType="vm:NetworkSettingsViewModel">
+              
+  <Border BorderThickness="0,5,0,5">
       <ScrollViewer>
         <StackPanel>
           <StackPanel>
-            <TextBlock>USTAWIENIA SIECI</TextBlock>
-            <TextBlock>WUSTAIWNIA SIECI</TextBlock>
+            <TextBlock FontWeight="DemiBold" FontSize="20" Margin="20,10,0,0">Dostepne sieci WI-FI</TextBlock>
+            <Line StartPoint="0,0" EndPoint="800,0" Margin="0,15,0,15" Stroke="{DynamicResource LightBorderColor}" StrokeThickness="2" StrokeDashArray="3"/>
+            <TextBlock Text="{Binding Connectedssid}" FontSize="17"></TextBlock>
+            <TextBlock Text="{Binding ToConnectssid}" FontSize="15"></TextBlock>
+            <StackPanel Orientation="Horizontal">
+            <TextBox Text="{Binding Passwordbox}" IsVisible="{Binding Passwordboxvis}" Watermark="Wprowadz haslo wi-fi" Width="500" HorizontalAlignment="Left" Margin="10,10,0,0"> </TextBox>
+             
+              <Button Command="{Binding ConnectButtonCommand}" IsVisible="{Binding Connectbuttonvis}" Width="100" Height="35" Margin="10,10,0,0" FontSize="20" HorizontalContentAlignment="Center">Połącz</Button>
+            </StackPanel>
+            <ListBox CornerRadius="10" Margin="5,10,5,10"
+                ItemsSource="{Binding Items}" SelectedItem="{Binding Selectedwifilist}" Background="{DynamicResource BackGroundDark}">
+              <ListBox.ItemTemplate>
+                <DataTemplate DataType="{x:Type vm:WifiListTemplate}">
+                  <StackPanel Orientation="Horizontal" Spacing="10" Height="50">
+                    <TextBlock Text="{Binding Label}" FontSize="17" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding Power}" FontSize="17" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <PathIcon Data="{StaticResource Lock}" IsVisible="{Binding NeedPassword}" ></PathIcon>
+                  </StackPanel>
+                </DataTemplate>
+              </ListBox.ItemTemplate>
+            </ListBox>
           </StackPanel>
           <Rectangle Margin="0,5,0,5" Width="1024" Height="2" Fill="{DynamicResource BorderColor}"></Rectangle>
           <StackPanel>
-            <TextBlock>USTAWIENIA SIECI</TextBlock>
+            <TextBlock>USTAWIENI SIECI</TextBlock>
             <TextBlock>WUSTAIWNIA SIECI</TextBlock>
+
           </StackPanel>
-          
+          <Button Command="{Binding DeleteButtonCommand}">usuwanie</Button>
 
         </StackPanel>
         

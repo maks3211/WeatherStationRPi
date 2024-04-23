@@ -46,7 +46,7 @@
             Background="{DynamicResource MainButton}">
           <PathIcon Data="{StaticResource DarkThemeRegular}"></PathIcon>
         </Button>
-        
+        <Button Name="wifiButton" Command="{Binding WifiOnClickCommand}">WIFI</Button>
 
         <!--DYNAMICZNIE DODAWNE PRZYCISKI-->
         <ListBox Grid.Row="1" Grid.Column="0" SelectedItem="{Binding SelectedListItem}" ItemsSource="{Binding Items}"

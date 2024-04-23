@@ -140,10 +140,10 @@ namespace AvaloniaTest.Models
 
                     Console.WriteLine(ex.Message);
                 }
-                Console.WriteLine("Temperature: " + temperature);
-                Console.WriteLine("Humidity: " + humidity);
-                Console.WriteLine("Pressure: " + pressure);
-                Console.WriteLine("cisnienie: " + preasure);
+               // Console.WriteLine("Temperature: " + temperature);
+               // Console.WriteLine("Humidity: " + humidity);
+               // Console.WriteLine("Pressure: " + pressure);
+               // Console.WriteLine("cisnienie: " + preasure);
 
                 IndoorTempUpdated?.Invoke(this, temperature); // Wywołanie zdarzenia, przekazujące aktualną wartość i
                 IndoorHumUpdated?.Invoke(this, humidity);

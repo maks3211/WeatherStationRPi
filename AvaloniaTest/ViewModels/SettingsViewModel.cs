@@ -15,23 +15,53 @@ namespace AvaloniaTest.ViewModels;
 public partial class SettingsViewModel : ViewModelBase
     {
 
+    public static event EventHandler<string> CurrentSettingsOpen;
+    public static string CurrentSettingsSub = "";
+
+
+
     [ObservableProperty]
     private ViewModelBase _currentsettingspage = new GeneralSettingsViewModel();
     [ObservableProperty]
     private SettingsListTemplate? _selectedSettings;
 
+
+
+
+
     public SettingsViewModel()
     {
-        Console.WriteLine("TYPE OF: ");
-        Console.WriteLine(typeof(GeneralSettingsViewModel));
-        Console.WriteLine("- ");
+        MainWindowViewModel.CurrentPageOpened += ViewModel_Activated;
+        CurrentSettingsSub = "AvaloniaTest.ViewModels.GeneralSettingsViewModel";
+        CurrentSettingsOpen?.Invoke(this, CurrentSettingsSub ?? "");
+
     }
+    private void ViewModel_Activated(object sender, string e)
+    {
+        if (MainWindowViewModel.CurrentPageSub == "AvaloniaTest.ViewModels.SettingsViewModel")
+        {
+           // Console.WriteLine("------------otwarto Settings---------------");
+        }
+        else
+        {
+            CurrentSettingsSub = "AvaloniaTest.ViewModels";
+            CurrentSettingsOpen?.Invoke(this, CurrentSettingsSub ?? "");
+            MainWindowViewModel.CurrentPageOpened -= ViewModel_Activated;
+        }
+
+    }
+
+
+
     partial void OnSelectedSettingsChanged(SettingsListTemplate? value)
     {
         if (value is null) return;
         var instance = Activator.CreateInstance(value.ModelType);
         if(instance is null) return ;
         Currentsettingspage = (ViewModelBase)instance;
+        CurrentSettingsSub = Currentsettingspage.ToString();
+        Console.WriteLine($"JAKA JEST STORNS: {CurrentSettingsSub}");
+        CurrentSettingsOpen?.Invoke(this, CurrentSettingsSub ?? "");
     }
 
     public ObservableCollection<SettingsListTemplate> Items { get; } = new()

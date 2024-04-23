@@ -13,5 +13,13 @@ namespace AvaloniaTest.Views
             InitializeComponent();
             Console.WriteLine("Ustawienia - siec");
         }
+
+        private void Binding(object? sender, Avalonia.Controls.TextChangedEventArgs e)
+        {
+        }
+
+        private void Binding(object? sender, Avalonia.Input.KeyEventArgs e)
+        {
+        }
     }
 }

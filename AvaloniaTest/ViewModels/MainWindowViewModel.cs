@@ -34,6 +34,9 @@ namespace AvaloniaTest.ViewModels
         public static string CurrentPageSub = "";
         public  static OutDoorSensor outDoorSens = new OutDoorSensor();
         public static string lastPage = "";
+
+        public static Network siec = new Network();
+
         public MainWindowViewModel()
         {
             
@@ -84,9 +87,33 @@ namespace AvaloniaTest.ViewModels
         };
 
 
+        public async Task StartWifiReading() {
+            Task t1 = siec.GetWifiList();      
+            await Task.WhenAll(t1);
+        }
+
+
+        [RelayCommand]
+        public void WifiOnClick()
+        {
+            Console.WriteLine("Wyswietlanie listy sieci");
+            foreach (var e in Network.wifiList)
+            {
+                Console.WriteLine($"NAZWA:   {e.Ssid}    SILA: {e.PowerLevel}");
+            }
+        }
+
+
         [RelayCommand]
         public void ChangeTheme()
         {
+            Console.WriteLine("POBIERANIE SIECI");
+            Network siec = new Network();
+            StartWifiReading();
+ 
+
+
+           // siec.ConnectToWifi();
             App app = (App)Application.Current;
             app.ChangeTheme();
        
