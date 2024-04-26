@@ -33,9 +33,11 @@ namespace AvaloniaTest.ViewModels
         public static event EventHandler<string> CurrentPageOpened; //Wykorzystanie to informawoania danej strony ze jest otwierana/zamykana
         public static string CurrentPageSub = "";
         public  static OutDoorSensor outDoorSens = new OutDoorSensor();
+        public static MQTTcommunication mqqt = new MQTTcommunication();
         public static string lastPage = "";
 
         public static Network siec = new Network();
+        
 
         public MainWindowViewModel()
         {
@@ -47,11 +49,20 @@ namespace AvaloniaTest.ViewModels
 
             // Ustaw pierwszy element jako domyślnie wybrany
             // SelectedListItem = Items.FirstOrDefault();
-            //outDoorSens.StartMake();
+          //  outDoorSens.StartMake();
 
             StartDataReading();
+
+
+            mqqt.Start_Server();
+            
         }
 
+
+        static async Task StartSERWER()
+        {
+            await mqqt.Start_Server();
+        }
 
 
         public async Task StartDataReading()
@@ -73,8 +84,8 @@ namespace AvaloniaTest.ViewModels
             if (istance == null) return;
             CurrentPage = (ViewModelBase)istance;
             CurrentPageSub = CurrentPage.ToString();
-            Console.WriteLine("TUTAJ JEST TA STREONA:" + CurrentPageSub);
-            Console.WriteLine("TUTAJ JEST TA STREONA druga:" + Items.FirstOrDefault().ModelType.Name.ToString());        
+           // Console.WriteLine("TUTAJ JEST TA STREONA:" + CurrentPageSub);
+          //  Console.WriteLine("TUTAJ JEST TA STREONA druga:" + Items.FirstOrDefault().ModelType.Name.ToString());        
             CurrentPageOpened?.Invoke(this, CurrentPageSub ?? "");
            
             
@@ -107,9 +118,9 @@ namespace AvaloniaTest.ViewModels
         [RelayCommand]
         public void ChangeTheme()
         {
-            Console.WriteLine("POBIERANIE SIECI");
-            Network siec = new Network();
-            StartWifiReading();
+           // Console.WriteLine("POBIERANIE SIECI");
+           // Network siec = new Network();
+          //  StartWifiReading();
  
 
 

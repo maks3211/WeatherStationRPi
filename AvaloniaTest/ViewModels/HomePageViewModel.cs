@@ -28,6 +28,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 
 using System.Windows.Input;
 using Avalonia.Platform;
+using System.Diagnostics.Contracts;
 
 //!!!!! - przekazywac wartosci z czujnikow jako string wraz z jednostka - mozliwosc amiany jednostki !!!!!
 
@@ -103,11 +104,25 @@ namespace AvaloniaTest.ViewModels
         //[ObservableProperty]
         // public string _indoortemperature = MainWindowViewModel.outDoorSens.temperature.ToString() + "°C";
 
-        [ObservableProperty]
-        public string _indoortemperature = Units.GetInstance().CalculateTemp(MainWindowViewModel.outDoorSens.temperature).ToString().Replace(',','.') + Units.GetInstance().GetTempUnit();
 
-        //TEMPERATURA
+
+        //OUTDOOR SENSORS
+        //TEMPERATURA OUTDOOR
+        [ObservableProperty]
+        public string _outdoortemperature = Units.GetInstance().CalculateTemp(MainWindowViewModel.mqqt.OutDoorTemp).ToString().Replace(',', '.') + Units.GetInstance().GetTempUnit();
+
+        [ObservableProperty]
+        public double _outdoorpreasure;
+
+
+
+
+
+        //TEMPERATURA INDOOR
         //IKONA ZMIANY TEMP WZGLEDEM WCZORAJSZEJ
+
+        [ObservableProperty]
+        public string _indoortemperature = Units.GetInstance().CalculateTemp(MainWindowViewModel.outDoorSens.temperature).ToString().Replace(',', '.') + Units.GetInstance().GetTempUnit();
         [ObservableProperty]
         public StreamGeometry _indoortemperaturechangeicon = (StreamGeometry)Application.Current.FindResource("ArrowUp");
         [ObservableProperty]
@@ -117,13 +132,13 @@ namespace AvaloniaTest.ViewModels
         [ObservableProperty]
         public string _indoorysterdaytemp = "-°C";
 
-        //WILGOTNOSC
+        //WILGOTNOSC INDOOR
         [ObservableProperty]
         public string _indoorhumidity = MainWindowViewModel.outDoorSens.humidity.ToString() + "%";
         [ObservableProperty]
         public double _indoorhumiditycircle = 60 - MainWindowViewModel.outDoorSens.humidity / 100 * 60;
 
-        //Cisnienie
+        //Cisnienie INDOOR
         [ObservableProperty]
         public string _indoorpreasure ="sdsd";
 
@@ -206,10 +221,11 @@ namespace AvaloniaTest.ViewModels
 
         private void ViewModel_Activated(object sender, string e)
         {
-            Console.WriteLine($"TOOOOOOOO{e}");  
+            //Console.WriteLine($"TOOOOOOOO{e}");  
             if (MainWindowViewModel.CurrentPageSub == "AvaloniaTest.ViewModels.HomePageViewModel")
             {
-                Console.WriteLine("------------WITAM HomePage---------------");
+                // Console.WriteLine("------------WITAM HomePage---------------");
+                Console.WriteLine("-------------------Dzienin dpbry HomePage----------------------");
                 timer.Start();
                 StartClock();
                 StartOutDoorReading();
@@ -220,7 +236,11 @@ namespace AvaloniaTest.ViewModels
                 Console.WriteLine("-------------------DO WIDZENIA HomePage----------------------");
                 //  sen.DataUpdated -= OutDoorSensor_DataUpdated;
                 //  sen.DataUpdatedTwo -= OutDoorSensor_DataUpdatedTwo;
-                MainWindowViewModel.outDoorSens.IndoorTempUpdated -= OutDoorTemp_DataUpdated;
+
+                //INDOOR SENSORS
+                MainWindowViewModel.mqqt.OutdoorTempUpdated -= OutDoorTemp_DataUpdated;
+                MainWindowViewModel.mqqt.OutdoorPresUpdated -= OutDoorPres_DataUpdated;
+
                 MainWindowViewModel.outDoorSens.IndoorHumUpdated -= OutDoorHum_DataUpdated;
                 MainWindowViewModel.outDoorSens.WindDirectionUpdated -= WindDirection_DataUpdated;
                 MainWindowViewModel.outDoorSens.WindSpeedUpdated -= WindSpeed_DataUpdated;
@@ -254,8 +274,13 @@ namespace AvaloniaTest.ViewModels
 
         private void StartOutDoorReading()
         {
+           
+           // MainWindowViewModel.outDoorSens.IndoorTempUpdated += OutDoorTemp_DataUpdated;
+           //OUTDOOR SENSORS
+            MainWindowViewModel.mqqt.OutdoorTempUpdated += OutDoorTemp_DataUpdated;
+            MainWindowViewModel.mqqt.OutdoorPresUpdated += OutDoorPres_DataUpdated;
+
             MainWindowViewModel.outDoorSens.IndoorHumUpdated += OutDoorHum_DataUpdated;
-            MainWindowViewModel.outDoorSens.IndoorTempUpdated += OutDoorTemp_DataUpdated;
             MainWindowViewModel.outDoorSens.WindDirectionUpdated += WindDirection_DataUpdated;
             MainWindowViewModel.outDoorSens.WindSpeedUpdated += WindSpeed_DataUpdated;
             MainWindowViewModel.outDoorSens.WindGustUpdated += WindGust_DataUpdated;
@@ -265,13 +290,24 @@ namespace AvaloniaTest.ViewModels
 
         private void OutDoorTemp_DataUpdated(object sender, double e)
         {
-            Console.WriteLine("tUpdate temperatury");
-            //Indoortemperature = e.ToString().Replace(',', '.') + "°C";          
-            Indoortemperature = Units.GetInstance().CalculateTemp(e).ToString().Replace(',','.') + Units.GetInstance().GetTempUnit();
+            // Console.WriteLine("tUpdate temperatury");
+            //Indoortemperature = e.ToString().Replace(',', '.') + "°C";
+            Console.WriteLine("TU SA TE TEMP:");
+            Console.WriteLine(e);
+            Outdoortemperature = Units.GetInstance().CalculateTemp(e).ToString().Replace(',','.') + Units.GetInstance().GetTempUnit();
+            Console.WriteLine(Outdoortemperature);
         }
+
+        private void OutDoorPres_DataUpdated(object sender, double e)
+        {
+            Outdoorpreasure = (int)e;
+            ChangeVerticalBarColor(e, 1054, 960, _greencolorslist, Outdoorpreasurecolors);
+        }
+
+
         private void OutDoorHum_DataUpdated(object sender, double e)
         {
-            Console.WriteLine("tUpdate wilgotnosci");
+           // Console.WriteLine("tUpdate wilgotnosci");
             
         Indoorhumiditycircle = 60 - e / 100 * 60; 
         Indoorhumidity = e.ToString()+ "%";
@@ -295,7 +331,7 @@ namespace AvaloniaTest.ViewModels
         {
             Indoorpreasure = e.ToString();
             ChangeVerticalBarColor(e, 1054, 960, _yellowcolorslist, Indoorpreasurecolors);
-            ChangeVerticalBarColor(e,1054,960, _greencolorslist, Outdoorpreasurecolors);
+          
         }
 
         public void ChangeIcon()

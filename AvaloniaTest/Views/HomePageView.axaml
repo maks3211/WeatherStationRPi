@@ -276,7 +276,7 @@
             <Rectangle Height="2" Width="243.5" Fill="{DynamicResource BorderColor}" Margin="0,10,0,0"></Rectangle>
             <StackPanel Orientation="Horizontal">
               <Image Source="avares://AvaloniaTest/Assets/Images/temperatureOut.png" Width="50" Height="50" Margin="-6,10,0,0" ></Image>
-              <TextBlock Text="{Binding Indoortemperature}" FontWeight="DemiBold" FontSize="35" VerticalAlignment="Center" Margin="15,10,0,0">C</TextBlock>
+              <TextBlock Text="{Binding Outdoortemperature}" FontWeight="DemiBold" FontSize="35" VerticalAlignment="Center" Margin="15,10,0,0">C</TextBlock>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="20" >
@@ -443,7 +443,7 @@
       Fill="{Binding Outdoorpreasurecolors[6]}"
     Margin="0,10,10,0"
                 ></Rectangle>
-                <TextBlock Text="{Binding Indoorpreasure}" Margin="5,-169,0,0" FontSize="20">1000</TextBlock>
+                <TextBlock Text="{Binding Outdoorpreasure}" Margin="5,-169,0,0" FontSize="20">1000</TextBlock>
                 <Image Source="avares://AvaloniaTest/Assets/Images/outdoor.png" Margin="0,-110,45,80" Width="45" Height="45" ></Image>
                 <TextBlock Margin="-15,-165,0,0" FontSize="15">hPa</TextBlock>
               </StackPanel>

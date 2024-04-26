@@ -67,7 +67,7 @@ namespace AvaloniaTest.Models
 
         public async Task RunReadData()
         {
-           
+            MainWindowViewModel.mqqt.OutdoorTempUpdated += OutDoorTemp_DataUpdated;
             Console.WriteLine("TUTAJ");
             string portName = "/dev/ttyS0";
             int baudRate = 9600;
@@ -82,7 +82,8 @@ namespace AvaloniaTest.Models
             }
 
             while (isFirst)
-            {
+            {               
+               
                 try
                 {
                     if (Arduino.BytesToRead > 0)
@@ -116,7 +117,7 @@ namespace AvaloniaTest.Models
                             // Nie udało się podzielić ciągu na wystarczającą ilość części
                             Console.WriteLine("Invalid data format.");
                         }
-                        Console.WriteLine(secondLine);
+                        //Console.WriteLine(secondLine);
                        // string test = secondLine[0] + secondLine[1];
                     }
                 }
@@ -138,14 +139,20 @@ namespace AvaloniaTest.Models
 
                     preasure = new Random().Next(960, 1060);
 
-                    Console.WriteLine(ex.Message);
-                }
-               // Console.WriteLine("Temperature: " + temperature);
-               // Console.WriteLine("Humidity: " + humidity);
-               // Console.WriteLine("Pressure: " + pressure);
-               // Console.WriteLine("cisnienie: " + preasure);
 
-                IndoorTempUpdated?.Invoke(this, temperature); // Wywołanie zdarzenia, przekazujące aktualną wartość i
+                }
+
+                // Console.WriteLine("Humidity: " + humidity);
+                // Console.WriteLine("Pressure: " + pressure);
+                // Console.WriteLine("cisnienie: " + preasure);
+
+
+                // Console.WriteLine($"PRZEROBIONA TEMPAERTURA {a}. ");
+                // double moja = Convert.ToDouble(a);
+                // Console.WriteLine($"PRZEROBIONA TEMPAERTURA {moja} ");
+  
+
+                //IndoorTempUpdated?.Invoke(this, te); // Wywołanie zdarzenia, przekazujące aktualną wartość i
                 IndoorHumUpdated?.Invoke(this, humidity);
                 IndoorPresUpdated?.Invoke(this, pressure);
                 IndoorAltiUpdated?.Invoke(this, altitude);
@@ -158,6 +165,13 @@ namespace AvaloniaTest.Models
         }
     }
 
+
+        private void OutDoorTemp_DataUpdated(object sender, double e)
+        {
+            IndoorTempUpdated?.Invoke(this, e);
+            Console.WriteLine("z sensora bezposrednio Update temperatury");
+        }
+
         public async Task RunReadDataTwo()
         {
                  
@@ -165,7 +179,7 @@ namespace AvaloniaTest.Models
             double j = 0;
             while (isFirst)
             {
-               Console.WriteLine("j" + j);
+              // Console.WriteLine("j" + j);
                  j = 20.0 + rnd.NextDouble();
                   double z = Math.Round(j, 1);
                 DataUpdatedTwo?.Invoke(this, z); // Wywołanie zdarzenia, przekazujące aktualną wartość i
