@@ -35,7 +35,7 @@ HARDWARE:
     - [X] Units
     - [ ] Internet Connection
     - [ ] Appearance
-- [ ] Wirless ESP32 - RPi communication
+- [X] Wirless ESP32 - RPi communication
 - [ ] Data base
 - [ ] Plots drawing
 
