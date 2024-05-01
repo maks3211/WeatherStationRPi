@@ -31,7 +31,7 @@
           <SolidColorBrush x:Key='LightBorderColor'>#01234D</SolidColorBrush>
           <SolidColorBrush x:Key='BackGroundDark'>#26437d</SolidColorBrush>
 
-          
+          <SolidColorBrush x:Key='GreenBorder'>#48A106</SolidColorBrush>
           <!-- Czcionki -->
           <SolidColorBrush x:Key='FontBlue'>#081C34</SolidColorBrush>
 
@@ -49,6 +49,8 @@
 
 
           <SolidColorBrush x:Key='BackGroundDark'>#0C0E1E</SolidColorBrush>
+
+          <SolidColorBrush x:Key='GreenBorder'>#63DB09</SolidColorBrush>
 
           <SolidColorBrush x:Key='MainButton'>#1c2755</SolidColorBrush>
           <SolidColorBrush x:Key='MainButtonClicked'>#15145c</SolidColorBrush>

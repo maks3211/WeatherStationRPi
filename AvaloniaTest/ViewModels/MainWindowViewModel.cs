@@ -104,15 +104,6 @@ namespace AvaloniaTest.ViewModels
         }
 
 
-        [RelayCommand]
-        public void WifiOnClick()
-        {
-            Console.WriteLine("Wyswietlanie listy sieci");
-            foreach (var e in Network.wifiList)
-            {
-                Console.WriteLine($"NAZWA:   {e.Ssid}    SILA: {e.PowerLevel}");
-            }
-        }
 
 
         [RelayCommand]

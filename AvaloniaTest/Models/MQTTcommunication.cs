@@ -33,10 +33,10 @@ namespace AvaloniaTest.Models
         public event EventHandler<double> OutdoorCOUpdated;
         public event EventHandler<double> OutdoorNH3Updated;
 
-        public double OutDoorTemp = -99.0;
-        public double OutDoorPres = -99.0;
-        public double OutDoorAlti = -99.0;
-        public double OutDoorHumi = -99.0;
+        public double OutDoorTemp = -999.0;
+        public double OutDoorPres = -999.0;
+        public double OutDoorAlti = -999.0;
+        public double OutDoorHumi = -999.0;
        
         public double OutDoorLumi = -99.0;
         public double OutDoorNO2 = -99.0;
@@ -161,7 +161,7 @@ namespace AvaloniaTest.Models
                         OutdoorTempUpdated?.Invoke(this, OutDoorTemp);
                         break;
                     case "outdoorpreasure":
-                        //   Console.WriteLine($"+ Cisnienie = {Encoding.UTF8.GetString(e.ApplicationMessage.Payload)}");
+                           Console.WriteLine($"+ Cisnienie = {Encoding.UTF8.GetString(e.ApplicationMessage.Payload)}");
                         OutDoorPres = ConvertToDouble(e.ApplicationMessage.PayloadSegment);
                         OutdoorPresUpdated?.Invoke(this, OutDoorPres);
                         break;

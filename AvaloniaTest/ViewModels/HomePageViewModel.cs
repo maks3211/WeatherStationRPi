@@ -109,13 +109,17 @@ namespace AvaloniaTest.ViewModels
         //OUTDOOR SENSORS
         //TEMPERATURA OUTDOOR
         [ObservableProperty]
-        public string _outdoortemperature = Units.GetInstance().CalculateTemp(MainWindowViewModel.mqqt.OutDoorTemp).ToString().Replace(',', '.') + Units.GetInstance().GetTempUnit();
+        public string _outdoortemperature = Units.GetInstance().CalculateTemp(MainWindowViewModel.mqqt.OutDoorTemp).ToString().Replace(',', '.').Replace("-999", "-") + Units.GetInstance().GetTempUnit();
 
         [ObservableProperty]
         public double _outdoorpreasure;
 
 
-
+        //WILGOTNOSC OUTDOOR
+        [ObservableProperty]
+        public string _outdoorhumidity = MainWindowViewModel.outDoorSens.humidity.ToString();
+        [ObservableProperty]
+        public double _outdoorhumiditycircle = 60 - MainWindowViewModel.outDoorSens.humidity / 100 * 60;
 
 
         //TEMPERATURA INDOOR
@@ -134,9 +138,9 @@ namespace AvaloniaTest.ViewModels
 
         //WILGOTNOSC INDOOR
         [ObservableProperty]
-        public string _indoorhumidity = MainWindowViewModel.outDoorSens.humidity.ToString() + "%";
+        public string _indoorhumidity = MainWindowViewModel.outDoorSens.humidity.ToString();
         [ObservableProperty]
-        public double _indoorhumiditycircle = 60 - MainWindowViewModel.outDoorSens.humidity / 100 * 60;
+        public double _indoorhumiditycircle = 54 - MainWindowViewModel.outDoorSens.humidity / 100 * 54;
 
         //Cisnienie INDOOR
         [ObservableProperty]
@@ -240,8 +244,10 @@ namespace AvaloniaTest.ViewModels
                 //INDOOR SENSORS
                 MainWindowViewModel.mqqt.OutdoorTempUpdated -= OutDoorTemp_DataUpdated;
                 MainWindowViewModel.mqqt.OutdoorPresUpdated -= OutDoorPres_DataUpdated;
+                MainWindowViewModel.mqqt.OutdoorHumiUpdated -= OutDoorHum_DataUpdated;
 
-                MainWindowViewModel.outDoorSens.IndoorHumUpdated -= OutDoorHum_DataUpdated;
+
+                MainWindowViewModel.outDoorSens.IndoorHumUpdated -= InDoorHum_DataUpdated;
                 MainWindowViewModel.outDoorSens.WindDirectionUpdated -= WindDirection_DataUpdated;
                 MainWindowViewModel.outDoorSens.WindSpeedUpdated -= WindSpeed_DataUpdated;
                 MainWindowViewModel.outDoorSens.WindGustUpdated -= WindGust_DataUpdated;
@@ -279,8 +285,10 @@ namespace AvaloniaTest.ViewModels
            //OUTDOOR SENSORS
             MainWindowViewModel.mqqt.OutdoorTempUpdated += OutDoorTemp_DataUpdated;
             MainWindowViewModel.mqqt.OutdoorPresUpdated += OutDoorPres_DataUpdated;
+            MainWindowViewModel.mqqt.OutdoorHumiUpdated += OutDoorHum_DataUpdated;
 
-            MainWindowViewModel.outDoorSens.IndoorHumUpdated += OutDoorHum_DataUpdated;
+
+            MainWindowViewModel.outDoorSens.IndoorHumUpdated += InDoorHum_DataUpdated;
             MainWindowViewModel.outDoorSens.WindDirectionUpdated += WindDirection_DataUpdated;
             MainWindowViewModel.outDoorSens.WindSpeedUpdated += WindSpeed_DataUpdated;
             MainWindowViewModel.outDoorSens.WindGustUpdated += WindGust_DataUpdated;
@@ -300,6 +308,7 @@ namespace AvaloniaTest.ViewModels
 
         private void OutDoorPres_DataUpdated(object sender, double e)
         {
+           
             Outdoorpreasure = (int)e;
             ChangeVerticalBarColor(e, 1054, 960, _greencolorslist, Outdoorpreasurecolors);
         }
@@ -309,10 +318,18 @@ namespace AvaloniaTest.ViewModels
         {
            // Console.WriteLine("tUpdate wilgotnosci");
             
-        Indoorhumiditycircle = 60 - e / 100 * 60; 
-        Indoorhumidity = e.ToString()+ "%";
+        Outdoorhumiditycircle = 60 - e / 100 * 60; 
+        Outdoorhumidity = e.ToString();
         }
 
+
+        private void InDoorHum_DataUpdated(object sender, double e)
+        {
+            // Console.WriteLine("tUpdate wilgotnosci");
+
+            Indoorhumiditycircle = 54 - e / 100 * 54;
+            Indoorhumidity = e.ToString();
+        }
         private void WindDirection_DataUpdated(object sender, double e)
         {
             Angle = e;
