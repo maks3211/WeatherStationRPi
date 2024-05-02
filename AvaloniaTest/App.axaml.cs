@@ -11,6 +11,7 @@ using AvaloniaTest.Views;
 using System;
 using System.Globalization;
 
+
 namespace AvaloniaTest
 {
     public partial class App : Application

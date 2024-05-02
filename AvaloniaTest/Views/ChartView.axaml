@@ -1,0 +1,31 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+			 
+             xmlns:lvc="using:LiveChartsCore.SkiaSharpView.Avalonia"
+             xmlns:vms="using:ViewModelsSamples.Lines.Basic">
+			 xmlns:ScottPlot="clr-namespace:ScottPlot.Avalonia;assembly=ScottPlot.Avalonia"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 
+             mc:Ignorable="d" d:DesignWidth="1024" d:DesignHeight="470"
+             Width="1024"
+             Height="470"
+			 x:Class="AvaloniaTest.Views.ChartView"
+			 xmlns:vm="using:AvaloniaTest.ViewModels"
+             x:DataType="vm:ChartViewModel"
+>
+	Welcome to Avalonia!
+
+
+<UserControl.DataContext>
+	<vms:ViewModel/>
+</UserControl.DataContext>
+<lvc:CartesianChart
+	Series="{Binding Series}"
+	Title="{Binding Title}">
+</lvc:CartesianChart>
+
+	<!--<ScottPlot:AvaPlot Name="AvaPlot1"/>-->
+
+
+</UserControl>

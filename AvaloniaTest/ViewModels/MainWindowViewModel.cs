@@ -95,6 +95,7 @@ namespace AvaloniaTest.ViewModels
         { 
             new ListItemTemplate(typeof(HomePageViewModel),"HomeRegular", "Strona Główna"),
             new ListItemTemplate(typeof(SettingsViewModel),"SettingsRegular","Ustawienia"),
+            new ListItemTemplate(typeof(ChartViewModel),"ChartRegular","Wykresy"),
         };
 
 
