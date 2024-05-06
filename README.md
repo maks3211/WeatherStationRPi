@@ -1,17 +1,18 @@
-## Weather Station
-<br>RPI Weather Station with wirless sensors.
+<h1 align="center" style="font-weight: bold;">RPI Weather Station with wirless sensors</h1>
 
-<br>SOFTWARE:
-<br>Main program - C# + AvaloniaUI
-<br>Arduino - C/C++
-HARDWARE:
-<br>The project uses Raspberry Pi 4 as the main unit with touch screen and indoor sensors. 
-<br>Additionally, RPi connects to ESP32 via Wi-Fi.
 
-<br>HARDWARE
+
+<h2 id="software">💻Software</h2>
+
+- Main program - C# + AvaloniaUI
+- Arduino - C/C++
+<h2 id="hardware">⚙️Hardware</h2>
+
+The project uses Raspberry Pi 4 as the main unit with touch screen and indoor sensors.
+Additionally, RPi connects to ESP32 via Wi-Fi.
 <br>Indoor sensors: AHT20 + BMP280 + DF Robot CO:   
 -Pressure
-<br>-Temperature
+<br> -Temperature
 <br>-Humidity
 <br>-CO
 
@@ -24,8 +25,7 @@ HARDWARE:
 <br>-NO2
 <br>-DIY rain sensor
 <br>-DIY wind sensor
-
-## Roadmap
+<h2 id="roadmap">🎯Roadmap</h2>
 
 - [x] Run on RPI
 - [X] Connect anlog sensors
@@ -38,6 +38,20 @@ HARDWARE:
 - [X] Wirless ESP32 - RPi communication
 - [ ] Data base
 - [ ] Plots drawing
+
+<h2 id="colab">🤝 Collaborators</h2>
+<table>
+<tr>
+
+<td align="center">
+<a href="https://github.com/koob7">
+<sub>
+<b>Konrad Kobielus</b>
+</sub>
+</a>
+</td>
+</tr>
+</table>
 
 MainScreen preview:
 ![MainScreen](https://github.com/maks3211/WeatherStationRPi/assets/92019474/97da8a5d-1c70-4981-9a4e-68c30eff7fe2)
