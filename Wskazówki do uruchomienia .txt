@@ -7,3 +7,11 @@ Uruchamianie programu na RPi: Na windowsie uruchomić cmd tam gdzie jest plik .s
 Połączenie Arduino do RPi: GND->GND RX(Arduino) -> TX(RPi) TX(Arduino)->RX(RPi)
 
 Czujnik BME (temp, wilgoć ciśnienie): !! 3.3V
+
+Baza danych
+https://www.freesqldatabase.com/hosting/
+Host: sql11.freesqldatabase.com
+Database name: sql11704729
+Database user: sql11704729
+Database password: 89jVjCtqzd
+Port number: 3306
