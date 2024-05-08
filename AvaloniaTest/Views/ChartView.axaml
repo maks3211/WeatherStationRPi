@@ -26,7 +26,7 @@
 				<Button Command="{Binding LuminanceHandlerCommand}"
                         HorizontalContentAlignment="Center">Luminacja</Button>
 				<Button Command="{Binding outerTempHandlerCommand}"
-                        HorizontalContentAlignment="Center">Temperatur¹</Button>
+                        HorizontalContentAlignment="Center">Temperatura</Button>
 				<Button Command="{Binding preasureHandlerCommand}"
                         HorizontalContentAlignment="Center">Cisnienie atmosferyczne</Button>
 				<Button Command="{Binding humidityHandlerCommand}"
