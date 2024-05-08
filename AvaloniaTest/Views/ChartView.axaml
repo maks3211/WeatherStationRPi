@@ -42,7 +42,7 @@
                 Grid.Column="1"
                 Width="700"
                 Height="470"
-                Background="Red"
+
                 Series="{Binding Series}"
                 Title="{Binding Title}"
                 HorizontalAlignment="Right"
