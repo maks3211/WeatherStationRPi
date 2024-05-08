@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Diagnostics.Tracing;
+using MySql.Data.MySqlClient;
 //using System.Device.Gpio;
 
 
@@ -27,7 +28,7 @@ namespace AvaloniaTest.Models
         public event EventHandler<double> DataUpdatedTwo;
         public event EventHandler<double> IndoorTempUpdated;
         public event EventHandler<double> IndoorHumUpdated;
-        public event EventHandler<double> IndoorPresUpdated;
+        
         public event EventHandler<int> IndoorAltiUpdated;
         public event EventHandler<double> IndoorLumiUpdated;
         public event EventHandler<double> IndoorCOUpdated;
@@ -64,6 +65,47 @@ namespace AvaloniaTest.Models
         //        return instance;
         //    }
         //}
+
+        DateTime currentDateTime;
+        MySqlConnection con;
+        MySqlCommand cmd;
+        public InDoorSensor()
+        {
+            try
+            {
+                string connString = "server=sql11.freesqldatabase.com ; uid=sql11704729 ; pwd=89jVjCtqzd ; database=sql11704729";
+                con = new MySqlConnection();
+                con.ConnectionString = connString;
+                con.Open();
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error connecting to the database: " + ex.Message);
+            }
+        }
+        ~InDoorSensor()
+        {
+            try { con.Close(); }
+            catch (MySqlException ex) { Console.WriteLine(ex.Message); }
+        }
+
+        private void InsertDataIntoTable(string tableName, DateTime date, double value)
+        {
+            try
+            {
+                string insertQuery = $"INSERT INTO {tableName} (date, {tableName}) VALUES (@date, @value)";
+                cmd = new MySqlCommand(insertQuery, con);
+                cmd.Parameters.AddWithValue("@date", date);
+                cmd.Parameters.AddWithValue("@value", value);
+                cmd.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error while inserting data into the database: " + ex.Message);
+            }
+        }
+
 
         public void StopEvery()
         { 
@@ -161,7 +203,7 @@ namespace AvaloniaTest.Models
 
                 IndoorTempUpdated?.Invoke(this, temperature); // Wywołanie zdarzenia, przekazujące aktualną wartość i
                 IndoorHumUpdated?.Invoke(this, humidity);
-                IndoorPresUpdated?.Invoke(this, pressure);
+                
                 IndoorAltiUpdated?.Invoke(this, altitude);
                 IndoorPreasureUpdated?.Invoke(this, preasure);
                 IndoorLumiUpdated?.Invoke(this, luminance);
@@ -171,7 +213,16 @@ namespace AvaloniaTest.Models
                 WindDirectionUpdated?.Invoke(this, windDirection);
                 WindSpeedUpdated?.Invoke(this, windSpeed);
                 WindGustUpdated?.Invoke(this, windGust);
-              
+
+                currentDateTime = DateTime.Now;
+                InsertDataIntoTable("innerTemperature", currentDateTime, temperature);
+                InsertDataIntoTable("innerHumidity", currentDateTime, humidity);
+                InsertDataIntoTable("innerAltitude", currentDateTime, altitude);
+                InsertDataIntoTable("innerPreasure", currentDateTime, preasure);
+                InsertDataIntoTable("innerLuminance", currentDateTime, luminance);
+                InsertDataIntoTable("innerCo", currentDateTime, co);
+
+
                 await Task.Delay(TimeSpan.FromSeconds(5));   
         }
     }

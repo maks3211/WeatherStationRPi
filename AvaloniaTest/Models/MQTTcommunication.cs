@@ -13,6 +13,10 @@ using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using Avalonia.Controls.Converters;
+using Avalonia.Markup.Xaml.MarkupExtensions;
+using MySql.Data.MySqlClient;
+using Google.Protobuf.WellKnownTypes;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 
 
@@ -42,6 +46,47 @@ namespace AvaloniaTest.Models
         public double OutDoorNO2 = -99.0;
         public double OutDoorCO = -99.0;
         public double OutDoorNH3 = -99.0;
+
+
+        DateTime currentDateTime;
+        MySqlConnection con;
+        MySqlCommand cmd;
+        public MQTTcommunication()
+        {
+            try
+            {
+                string connString = "server=sql11.freesqldatabase.com ; uid=sql11704729 ; pwd=89jVjCtqzd ; database=sql11704729";
+                con = new MySqlConnection();
+                con.ConnectionString = connString;
+                con.Open();
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error connecting to the database: " + ex.Message);
+            }
+        }
+        ~MQTTcommunication()
+        {
+            try { con.Close(); }
+            catch (MySqlException ex) { Console.WriteLine(ex.Message); }
+        }
+
+        private void InsertDataIntoTable(string tableName, DateTime date, double value)
+        {
+            try
+            {
+                string insertQuery = $"INSERT INTO {tableName} (date, {tableName}) VALUES (@date, @value)";
+                cmd = new MySqlCommand(insertQuery, con);
+                cmd.Parameters.AddWithValue("@date", date);
+                cmd.Parameters.AddWithValue("@value", value);
+                cmd.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error while inserting data into the database: " + ex.Message);
+            }
+        }
         //public static
         public async Task Start_Server()
         {
@@ -98,6 +143,8 @@ namespace AvaloniaTest.Models
             var oNo = await mqttClient.SubscribeAsync("outdoorno2");
             var oNh = await mqttClient.SubscribeAsync("outdoornh3");
             var oCo = await mqttClient.SubscribeAsync("outdoorco");
+
+
             //WYSYLANIE WIADOMOSCI - NIE TESTOWANE
             //  var message = new MqttApplicationMessageBuilder()
             //  .WithTopic("test")
@@ -147,11 +194,13 @@ namespace AvaloniaTest.Models
 
             mqttClient.ApplicationMessageReceivedAsync += e =>
             {
-               // Console.WriteLine("Received application message.");
-               // Console.WriteLine($"+ Topic = {e.ApplicationMessage.Topic}");
+                // Console.WriteLine("Received application message.");
+                // Console.WriteLine($"+ Topic = {e.ApplicationMessage.Topic}");
                 //Console.WriteLine($"+ Payload = {Encoding.UTF8.GetString(e.ApplicationMessage.Payload)}");
-               // Console.WriteLine($"+ QoS = {e.ApplicationMessage.QualityOfServiceLevel}");
-               // Console.WriteLine($"+ Retain = {e.ApplicationMessage.Retain}");
+                // Console.WriteLine($"+ QoS = {e.ApplicationMessage.QualityOfServiceLevel}");
+                // Console.WriteLine($"+ Retain = {e.ApplicationMessage.Retain}");
+
+                currentDateTime = DateTime.Now;
                 switch (e.ApplicationMessage.Topic)
                 {
                     case "outdoortemperature":
@@ -159,11 +208,13 @@ namespace AvaloniaTest.Models
                         // OutDoorTEMPERATURE = Encoding.UTF8.GetString(e.ApplicationMessage.PayloadSegment);
                         OutDoorTemp = ConvertToDouble(e.ApplicationMessage.PayloadSegment);
                         OutdoorTempUpdated?.Invoke(this, OutDoorTemp);
+                        InsertDataIntoTable("outerTemperature", currentDateTime, OutDoorTemp);
                         break;
                     case "outdoorpreasure":
                            Console.WriteLine($"+ Cisnienie = {Encoding.UTF8.GetString(e.ApplicationMessage.Payload)}");
                         OutDoorPres = ConvertToDouble(e.ApplicationMessage.PayloadSegment);
                         OutdoorPresUpdated?.Invoke(this, OutDoorPres);
+                        InsertDataIntoTable("outerPreasure", currentDateTime, OutDoorPres);
                         break;
                     case "outdooraltitude":
                         string result = Encoding.UTF8.GetString(e.ApplicationMessage.Payload);
@@ -177,31 +228,37 @@ namespace AvaloniaTest.Models
                         }
                          OutDoorAlti = int.Parse(result);
                          OutdoorAltiUpdated?.Invoke(this, OutDoorAlti);
+                        InsertDataIntoTable("outerAltitude", currentDateTime, OutDoorAlti);
                         break;
                     case "outdoornhumidity":
                         // Console.WriteLine($"+ Wilgotnosc = {Encoding.UTF8.GetString(e.ApplicationMessage.Payload)}");
                         OutDoorHumi= ConvertToDouble(e.ApplicationMessage.PayloadSegment);
                         OutdoorHumiUpdated?.Invoke(this, OutDoorHumi);
+                        InsertDataIntoTable("outerHumidity", currentDateTime, OutDoorHumi);
                         break;
                     case "outdooriluminance":
                         OutDoorLumi = ConvertToDouble(e.ApplicationMessage.PayloadSegment);
                         OutdoorLumiUpdated?.Invoke(this, OutDoorLumi);
                         //Console.WriteLine($"+ Swiatlo = {Encoding.UTF8.GetString(e.ApplicationMessage.Payload)}");
+                        InsertDataIntoTable("outerLuminance", currentDateTime, OutDoorLumi);
                         break;
                     case "outdoorno2":
                         OutDoorNO2 = ConvertToDouble(e.ApplicationMessage.PayloadSegment);
                         OutdoorNO2Updated?.Invoke(this, OutDoorNO2);
                         // Console.WriteLine($"+ NO2 = {Encoding.UTF8.GetString(e.ApplicationMessage.Payload)}");
+                        InsertDataIntoTable("outerNo2", currentDateTime, OutDoorNO2);
                         break;
                     case "outdoorco":
                         OutDoorCO = ConvertToDouble(e.ApplicationMessage.PayloadSegment);
                         OutdoorCOUpdated?.Invoke(this, OutDoorCO);
                         // Console.WriteLine($"+ CO = {Encoding.UTF8.GetString(e.ApplicationMessage.Payload)}");
+                        InsertDataIntoTable("outerCo", currentDateTime, OutDoorCO);
                         break;
                     case "outdoornh3":
                         OutDoorNH3 = ConvertToDouble(e.ApplicationMessage.PayloadSegment);
                         OutdoorNH3Updated?.Invoke(this, OutDoorNH3);
                         // Console.WriteLine($"+ NH3 = {Encoding.UTF8.GetString(e.ApplicationMessage.Payload)}");
+                        InsertDataIntoTable("outerNh3", currentDateTime, OutDoorNH3);
                         break;
                 }
 
