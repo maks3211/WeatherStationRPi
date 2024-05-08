@@ -10,6 +10,8 @@ Czujnik BME (temp, wilgoć ciśnienie): !! 3.3V
 
 Baza danych
 https://www.freesqldatabase.com/hosting/
+Email: kobielus63@gmail.com
+Hasło: FajneHaslo123
 Host: sql11.freesqldatabase.com
 Database name: sql11704729
 Database user: sql11704729
