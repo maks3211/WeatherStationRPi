@@ -67,7 +67,8 @@
             </DataTemplate>
           </ListBox.ItemTemplate>
         </ListBox>
-        <Button Margin="530,0,0,0" Height="40"  Click="ButtonOnClick" HorizontalContentAlignment="Center" Background="{DynamicResource MainButton}" VerticalContentAlignment="Center">ZAMKNIJ</Button>
+        <Button Margin="550,-50,0,0" Height="40"  Click="ButtonOnClick" HorizontalContentAlignment="Center" Background="{DynamicResource MainButton}" VerticalContentAlignment="Center">ZAMKNIJ</Button>
+        <Button Margin="650,-50,0,0" Height="40"  Command="{Binding NazwaFunkcjiCommand}" HorizontalContentAlignment="Center" Background="{DynamicResource MainButton}" VerticalContentAlignment="Center">guzik</Button>
       </WrapPanel>
       
     </Border>

@@ -26,7 +26,7 @@ namespace AvaloniaTest.Models
 
         public event EventHandler<double> OutdoorTempUpdated;
         public event EventHandler<double> OutdoorPresUpdated;
-        public event EventHandler<double> OutdoorAltiUpdated;
+        public event EventHandler<int> OutdoorAltiUpdated;
         public event EventHandler<double> OutdoorHumiUpdated;
         public event EventHandler<double> OutdoorLumiUpdated;
         public event EventHandler<double> OutdoorNO2Updated;
@@ -35,7 +35,7 @@ namespace AvaloniaTest.Models
 
         public double OutDoorTemp = -999.0;
         public double OutDoorPres = -999.0;
-        public double OutDoorAlti = -999.0;
+        public int    OutDoorAlti = -999;
         public double OutDoorHumi = -999.0;
        
         public double OutDoorLumi = -99.0;
@@ -166,9 +166,17 @@ namespace AvaloniaTest.Models
                         OutdoorPresUpdated?.Invoke(this, OutDoorPres);
                         break;
                     case "outdooraltitude":
-                        // Console.WriteLine($"+ Wysokosc = {Encoding.UTF8.GetString(e.ApplicationMessage.Payload)}");
-                        OutDoorAlti = ConvertToDouble(e.ApplicationMessage.PayloadSegment);
-                        OutdoorAltiUpdated?.Invoke(this, OutDoorAlti);
+                        string result = Encoding.UTF8.GetString(e.ApplicationMessage.Payload);
+                         Console.WriteLine($"+ Wysokosc = {Encoding.UTF8.GetString(e.ApplicationMessage.Payload)}");
+                        // OutDoorAlti = ConvertToInt(e.ApplicationMessage.PayloadSegment);
+
+                        if (result.Contains(".") || result.Contains(","))
+                        {
+                            string[] parts = result.Split('.', ',');
+                            result = parts[0];      
+                        }
+                         OutDoorAlti = int.Parse(result);
+                         OutdoorAltiUpdated?.Invoke(this, OutDoorAlti);
                         break;
                     case "outdoornhumidity":
                         // Console.WriteLine($"+ Wilgotnosc = {Encoding.UTF8.GetString(e.ApplicationMessage.Payload)}");
@@ -217,16 +225,18 @@ namespace AvaloniaTest.Models
 
         private double ConvertToDouble(ArraySegment<byte> value)
         {
-
-            //DLA WINDOWSA zwracać "a" a nie i 
             string i = Encoding.UTF8.GetString(value);
-           // Console.WriteLine($"Wartosc stringa: {i}");
-            string a = i.Replace(".",",");
-
-            //Console.WriteLine($"Wartosc stringa po replace: {i}");
-            //Console.WriteLine($"Wartosc double po replace: {double.Parse(i)}");
-            return double.Parse(i);
-          
+            double result = -99.99;
+            try
+            {
+                result = double.Parse(i);
+            }
+            catch (FormatException)
+            {
+                string a = i.Replace(".", ",");
+                result = double.Parse(a);
+            }
+            return result;    
         }
     }
 

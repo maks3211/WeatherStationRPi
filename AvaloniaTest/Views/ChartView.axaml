@@ -7,14 +7,17 @@
              mc:Ignorable="d" d:DesignWidth="1024" d:DesignHeight="470"
 						 x:Class="AvaloniaTest.Views.ChartView"
 						 x:DataType="viewModels:ChartViewModel">
-
-<lvc:CartesianChart
+  <StackPanel>
+    <Button Command="{Binding CharButtCommand}">guzik</Button>
+    <lvc:CartesianChart
   Width="500"
   Height="500"
   Background="red"
 	Series="{Binding Series}"
 	Title="{Binding Title}">
-</lvc:CartesianChart>
+    </lvc:CartesianChart>
+  </StackPanel>
+
 
 	<!--<ScottPlot:AvaPlot Name="AvaPlot1"/>-->
 

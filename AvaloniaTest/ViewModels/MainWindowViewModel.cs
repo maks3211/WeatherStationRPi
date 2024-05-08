@@ -32,7 +32,7 @@ namespace AvaloniaTest.ViewModels
         
         public static event EventHandler<string> CurrentPageOpened; //Wykorzystanie to informawoania danej strony ze jest otwierana/zamykana
         public static string CurrentPageSub = "";
-        public  static OutDoorSensor outDoorSens = new OutDoorSensor();
+        public  static InDoorSensor inDoorSens = new InDoorSensor();
         public static MQTTcommunication mqqt = new MQTTcommunication();
         public static string lastPage = "";
 
@@ -67,7 +67,7 @@ namespace AvaloniaTest.ViewModels
 
         public async Task StartDataReading()
         {            
-            Task task1 = outDoorSens.RunReadData();
+            Task task1 = inDoorSens.RunReadData();
             await Task.WhenAll(task1);
         }
 
@@ -106,6 +106,12 @@ namespace AvaloniaTest.ViewModels
 
 
 
+
+        [RelayCommand]
+        public void NazwaFunkcji()
+        {
+            Console.WriteLine("asdasd");
+        }
 
         [RelayCommand]
         public void ChangeTheme()

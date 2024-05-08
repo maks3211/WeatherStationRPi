@@ -77,7 +77,7 @@ namespace AvaloniaTest.ViewModels
         [ObservableProperty]
         public string _windDirection = "N";
         [ObservableProperty]
-        public string _windSpeed = Units.GetInstance().CalculatWind(MainWindowViewModel.outDoorSens.temperature).ToString().Replace(',','.');
+        public string _windSpeed = Units.GetInstance().CalculatWind(MainWindowViewModel.inDoorSens.temperature).ToString().Replace(',','.');
         [ObservableProperty]
         public int _windGust = 0;
         [ObservableProperty]
@@ -94,39 +94,46 @@ namespace AvaloniaTest.ViewModels
         {
             "#2b2727", "#2d3029", "#2f372b", "#31402d", "#334a30","#355132", "#4dba50"
         };
-        //   [ObservableProperty]
-        //  public string[] _indoorpreasurecolors = { "#322c19", "#3d341a", "#534317", "#675114", "#795d12", "#8f6d0f", "#ffbc00" };
-        //public string[] _indoorpreasurecolors = { "#212e3f","#333841", "#3d4141", "#FFBC00" };
-
-
-
-        //INDOOR SENSORS 
-        //[ObservableProperty]
-        // public string _indoortemperature = MainWindowViewModel.outDoorSens.temperature.ToString() + "°C";
-
-
+        public ObservableCollection<string> Outdooriluminancecolors { get; } = new()
+        {
+             "#322c19", "#3d341a", "#534317", "#675114", "#795d12", "#8f6d0f", "#ffbc00"
+        };
+        public ObservableCollection<string> Indooriluminancecolors { get; } = new()
+        {
+            "#2b2727", "#2d3029", "#2f372b", "#31402d", "#334a30","#355132", "#4dba50"
+        };
+ 
 
         //OUTDOOR SENSORS
         //TEMPERATURA OUTDOOR
         [ObservableProperty]
         public string _outdoortemperature = Units.GetInstance().CalculateTemp(MainWindowViewModel.mqqt.OutDoorTemp).ToString().Replace(',', '.').Replace("-999", "-") + Units.GetInstance().GetTempUnit();
 
+
+        //CISNIENIE OUTDOOR
         [ObservableProperty]
         public double _outdoorpreasure;
 
 
         //WILGOTNOSC OUTDOOR
         [ObservableProperty]
-        public string _outdoorhumidity = MainWindowViewModel.outDoorSens.humidity.ToString();
+        public string _outdoorhumidity = MainWindowViewModel.inDoorSens.humidity.ToString();
         [ObservableProperty]
-        public double _outdoorhumiditycircle = 60 - MainWindowViewModel.outDoorSens.humidity / 100 * 60;
+        public double _outdoorhumiditycircle = 60 - MainWindowViewModel.inDoorSens.humidity / 100 * 60;
 
+        //JASNOSC OUTDOOR
+        [ObservableProperty]
+        public int _outdoorluminance;
+
+        //WYSOKOSC OUTDOOR
+        [ObservableProperty]
+        public int _outdooraltitude;
 
         //TEMPERATURA INDOOR
         //IKONA ZMIANY TEMP WZGLEDEM WCZORAJSZEJ
 
         [ObservableProperty]
-        public string _indoortemperature = Units.GetInstance().CalculateTemp(MainWindowViewModel.outDoorSens.temperature).ToString().Replace(',', '.') + Units.GetInstance().GetTempUnit();
+        public string _indoortemperature = Units.GetInstance().CalculateTemp(MainWindowViewModel.inDoorSens.temperature).ToString().Replace(',', '.') + Units.GetInstance().GetTempUnit();
         [ObservableProperty]
         public StreamGeometry _indoortemperaturechangeicon = (StreamGeometry)Application.Current.FindResource("ArrowUp");
         [ObservableProperty]
@@ -138,13 +145,22 @@ namespace AvaloniaTest.ViewModels
 
         //WILGOTNOSC INDOOR
         [ObservableProperty]
-        public string _indoorhumidity = MainWindowViewModel.outDoorSens.humidity.ToString();
+        public string _indoorhumidity = MainWindowViewModel.inDoorSens.humidity.ToString();
         [ObservableProperty]
-        public double _indoorhumiditycircle = 54 - MainWindowViewModel.outDoorSens.humidity / 100 * 54;
+        public double _indoorhumiditycircle = 54 - MainWindowViewModel.inDoorSens.humidity / 100 * 54;
 
         //Cisnienie INDOOR
         [ObservableProperty]
         public string _indoorpreasure ="sdsd";
+
+        //JASNOSC INDOOR
+        [ObservableProperty]
+        public int _indoorluminance;
+
+        //WYSOKOSC INDOOR 
+        [ObservableProperty]
+        public int _indooraltitude;
+
 
         //GODZINA
         private DispatcherTimer timer;
@@ -184,8 +200,7 @@ namespace AvaloniaTest.ViewModels
         {
             App app = (App)Application.Current;
             app.ChangeTheme();
-            
-        
+                
         }
 
       //TESTOWY PRZYCISK 
@@ -245,13 +260,17 @@ namespace AvaloniaTest.ViewModels
                 MainWindowViewModel.mqqt.OutdoorTempUpdated -= OutDoorTemp_DataUpdated;
                 MainWindowViewModel.mqqt.OutdoorPresUpdated -= OutDoorPres_DataUpdated;
                 MainWindowViewModel.mqqt.OutdoorHumiUpdated -= OutDoorHum_DataUpdated;
+                MainWindowViewModel.mqqt.OutdoorLumiUpdated -= OutDoorLumi_DataUpdated;
 
+                MainWindowViewModel.inDoorSens.IndoorTempUpdated += InDoorTemp_DataUpdated;
+                MainWindowViewModel.inDoorSens.IndoorHumUpdated -= InDoorHum_DataUpdated;
+                MainWindowViewModel.inDoorSens.WindDirectionUpdated -= WindDirection_DataUpdated;
+                MainWindowViewModel.inDoorSens.WindSpeedUpdated -= WindSpeed_DataUpdated;
+                MainWindowViewModel.inDoorSens.WindGustUpdated -= WindGust_DataUpdated;
+                MainWindowViewModel.inDoorSens.IndoorPreasureUpdated -= IndoorPres_DataUpdated;
+                MainWindowViewModel.inDoorSens.IndoorLumiUpdated -= InDoorLumi_DataUpdated;
+                MainWindowViewModel.inDoorSens.IndoorAltiUpdated -= InDoorAlti_DataUpdated;
 
-                MainWindowViewModel.outDoorSens.IndoorHumUpdated -= InDoorHum_DataUpdated;
-                MainWindowViewModel.outDoorSens.WindDirectionUpdated -= WindDirection_DataUpdated;
-                MainWindowViewModel.outDoorSens.WindSpeedUpdated -= WindSpeed_DataUpdated;
-                MainWindowViewModel.outDoorSens.WindGustUpdated -= WindGust_DataUpdated;
-                MainWindowViewModel.outDoorSens.IndoorPreasureUpdated -= IndoorPres_DataUpdated;
                 MainWindowViewModel.CurrentPageOpened -= ViewModel_Activated;
                 timer.Stop();
                 StopClock();
@@ -286,13 +305,18 @@ namespace AvaloniaTest.ViewModels
             MainWindowViewModel.mqqt.OutdoorTempUpdated += OutDoorTemp_DataUpdated;
             MainWindowViewModel.mqqt.OutdoorPresUpdated += OutDoorPres_DataUpdated;
             MainWindowViewModel.mqqt.OutdoorHumiUpdated += OutDoorHum_DataUpdated;
+            MainWindowViewModel.mqqt.OutdoorLumiUpdated += OutDoorLumi_DataUpdated;
+            MainWindowViewModel.mqqt.OutdoorAltiUpdated += OutDoorAlti_DataUpdated;
 
 
-            MainWindowViewModel.outDoorSens.IndoorHumUpdated += InDoorHum_DataUpdated;
-            MainWindowViewModel.outDoorSens.WindDirectionUpdated += WindDirection_DataUpdated;
-            MainWindowViewModel.outDoorSens.WindSpeedUpdated += WindSpeed_DataUpdated;
-            MainWindowViewModel.outDoorSens.WindGustUpdated += WindGust_DataUpdated;
-            MainWindowViewModel.outDoorSens.IndoorPreasureUpdated += IndoorPres_DataUpdated;
+            MainWindowViewModel.inDoorSens.IndoorTempUpdated += InDoorTemp_DataUpdated;
+            MainWindowViewModel.inDoorSens.IndoorHumUpdated += InDoorHum_DataUpdated;
+            MainWindowViewModel.inDoorSens.WindDirectionUpdated += WindDirection_DataUpdated;
+            MainWindowViewModel.inDoorSens.WindSpeedUpdated += WindSpeed_DataUpdated;
+            MainWindowViewModel.inDoorSens.WindGustUpdated += WindGust_DataUpdated;
+            MainWindowViewModel.inDoorSens.IndoorPreasureUpdated += IndoorPres_DataUpdated;
+            MainWindowViewModel.inDoorSens.IndoorLumiUpdated += InDoorLumi_DataUpdated;
+            MainWindowViewModel.inDoorSens.IndoorAltiUpdated += InDoorAlti_DataUpdated;
         }
 
 
@@ -322,6 +346,35 @@ namespace AvaloniaTest.ViewModels
         Outdoorhumidity = e.ToString();
         }
 
+
+        private void OutDoorLumi_DataUpdated(object sender, double e)
+        {
+      
+            Outdoorluminance = (int)e;
+            ChangeVerticalBarColor(e, 2000, 0, _yellowcolorslist, Outdooriluminancecolors);
+        }
+
+
+        private void OutDoorAlti_DataUpdated(object sender, int e)
+        {
+            Outdooraltitude = e;
+        }
+
+        private void InDoorTemp_DataUpdated(object sender, double e)
+        {
+            Indoortemperature = Units.GetInstance().CalculateTemp(e).ToString().Replace(',', '.') + Units.GetInstance().GetTempUnit();
+        }
+
+        private void InDoorLumi_DataUpdated(object sender, double e)
+        {
+            Indoorluminance = (int)e;
+            ChangeVerticalBarColor(e, 2000, 0, _yellowcolorslist, Indooriluminancecolors);
+        }
+
+        private void InDoorAlti_DataUpdated(object sender, int e)
+        {
+            Indooraltitude = e;
+        }
 
         private void InDoorHum_DataUpdated(object sender, double e)
         {

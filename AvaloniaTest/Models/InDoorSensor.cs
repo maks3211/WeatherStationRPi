@@ -15,10 +15,12 @@ using System.Diagnostics.Tracing;
 //using System.Device.Gpio;
 
 
+//DODAC ODCZYTYWANIE Z ARDUINO JASNOSCI ORAZ CO!!!!!!!!!!
+
 
 namespace AvaloniaTest.Models
 {
-    public class OutDoorSensor
+    public class InDoorSensor
     {
        
         public event EventHandler<double> DataUpdated;
@@ -26,22 +28,25 @@ namespace AvaloniaTest.Models
         public event EventHandler<double> IndoorTempUpdated;
         public event EventHandler<double> IndoorHumUpdated;
         public event EventHandler<double> IndoorPresUpdated;
-        public event EventHandler<double> IndoorAltiUpdated;
-
+        public event EventHandler<int> IndoorAltiUpdated;
+        public event EventHandler<double> IndoorLumiUpdated;
+        public event EventHandler<double> IndoorCOUpdated;
         public event EventHandler<int> IndoorPreasureUpdated;
 
         public event EventHandler<double> WindDirectionUpdated;
         public event EventHandler<int> WindSpeedUpdated;
         public event EventHandler<int> WindGustUpdated;
 
-        private static OutDoorSensor instance;
+        private static InDoorSensor instance;
         private bool isFirst = true;
         private bool isSecond = true;
 
         public double temperature = 0.1;
         public double humidity = 0.0;
         public double pressure = 0.0;
-        public double altitude = 0.0;
+        public int altitude = 0;
+        public double luminance = 0.0;
+        public double co = 0.0;
 
         public double windDirection = 0.0;
         public int windSpeed = 0;
@@ -67,7 +72,7 @@ namespace AvaloniaTest.Models
 
         public async Task RunReadData()
         {
-            MainWindowViewModel.mqqt.OutdoorTempUpdated += OutDoorTemp_DataUpdated;
+           // MainWindowViewModel.mqqt.OutdoorTempUpdated += OutDoorTemp_DataUpdated;
             Console.WriteLine("TUTAJ");
             string portName = "/dev/ttyS0";
             int baudRate = 9600;
@@ -103,7 +108,7 @@ namespace AvaloniaTest.Models
                                     if (double.TryParse(parts[2].Replace("-hPa",""), out pressure))
                                     {
                                         // Odczytanie i konwersja wysokości
-                                        if (double.TryParse(parts[3].Replace("-m",""), out altitude))
+                                        if (int.TryParse(parts[3].Replace("-m",""), out altitude))
                                         {
                                             // Wszystkie wartości zostały pomyślnie odczytane i przypisane do zmiennych
                                           
@@ -138,7 +143,9 @@ namespace AvaloniaTest.Models
                     }
 
                     preasure = new Random().Next(960, 1060);
-
+                    altitude = new Random().Next(200,500);
+                    luminance = altitude + 5;
+                    co = new Random().Next(1,20);
 
                 }
 
@@ -152,15 +159,19 @@ namespace AvaloniaTest.Models
                 // Console.WriteLine($"PRZEROBIONA TEMPAERTURA {moja} ");
   
 
-                //IndoorTempUpdated?.Invoke(this, te); // Wywołanie zdarzenia, przekazujące aktualną wartość i
+                IndoorTempUpdated?.Invoke(this, temperature); // Wywołanie zdarzenia, przekazujące aktualną wartość i
                 IndoorHumUpdated?.Invoke(this, humidity);
                 IndoorPresUpdated?.Invoke(this, pressure);
                 IndoorAltiUpdated?.Invoke(this, altitude);
+                IndoorPreasureUpdated?.Invoke(this, preasure);
+                IndoorLumiUpdated?.Invoke(this, luminance);
+                IndoorCOUpdated?.Invoke(this, co);
+
+
                 WindDirectionUpdated?.Invoke(this, windDirection);
                 WindSpeedUpdated?.Invoke(this, windSpeed);
                 WindGustUpdated?.Invoke(this, windGust);
-                IndoorPreasureUpdated?.Invoke(this, preasure);
-                //DataUpdatedTwo?.Invoke(this, humidity);
+              
                 await Task.Delay(TimeSpan.FromSeconds(5));   
         }
     }
