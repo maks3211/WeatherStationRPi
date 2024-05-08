@@ -23,6 +23,7 @@ using System.Collections.ObjectModel;
 using System.Xml.Linq;
 using LiveChartsCore.SkiaSharpView.Painting.Effects;
 using ScottPlot.Statistics;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 
 
@@ -140,7 +141,9 @@ namespace AvaloniaTest.ViewModels
                     Values = observableValues,
                     Fill = null,
                     LineSmoothness = 1,
-                    GeometrySize = 0
+                    Stroke = new SolidColorPaint(SKColors.Blue, 6),
+                    GeometrySize = 0,
+                    GeometryStroke = null
                 },
                 new LineSeries<DateTimePoint>
                 {
@@ -148,7 +151,9 @@ namespace AvaloniaTest.ViewModels
                     Values = observableValues2,
                     Fill = null,
                     LineSmoothness = 1,
-                    GeometrySize = 0
+                    Stroke = new SolidColorPaint(SKColors.CornflowerBlue, 6),
+                    GeometrySize = 0,
+                    GeometryStroke = null
                
                 }
             };
@@ -166,15 +171,11 @@ namespace AvaloniaTest.ViewModels
             }
 
         }
-        ~ChartViewModel()
-        {
-            try { con.Close(); }
-            catch (MySqlException ex) { Console.WriteLine(ex.Message); }
-        }
 
-        private void ReadDataFromTable(string location, string tableName,  string axisName)
+
+        private void ReadDataFromTable(string location, string tableName, string axisName)
         {
-            if (location == "inner")
+            if (location == "outer")
             {
                 observableValues.Clear();
                 observableValues2.Clear();
@@ -183,28 +184,45 @@ namespace AvaloniaTest.ViewModels
                 axis.NamePaint = new SolidColorPaint(SKColors.Black);
             }
             sensorName = location + tableName;
-
-            try
+            if (con.State != System.Data.ConnectionState.Open)
             {
-                string sql = $"SELECT * FROM {sensorName} ORDER BY date ASC";
-                cmd = new MySqlCommand(sql, con);
-                reader = cmd.ExecuteReader();
-                while (reader.Read())
+                try
                 {
-                    if (location=="inner")
-                        observableValues.Add(new DateTimePoint((DateTime)reader["date"], (double)reader[sensorName]));
-                    else
-                        observableValues2.Add(new DateTimePoint((DateTime)reader["date"], (double)reader[sensorName]));
+                    string connString = "server=sql11.freesqldatabase.com ; uid=sql11704729 ; pwd=89jVjCtqzd ; database=sql11704729";
+                    con = new MySqlConnection();
+                    con.ConnectionString = connString;
+                    con.Open();
                 }
-                reader.Close();
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error connecting to the database: " + ex.Message);
+                }
             }
-            catch (Exception ex)
+            else
             {
-                Console.WriteLine("Error while handling with database: " + ex.Message);
+                try
+                {
+                    string sql = $"SELECT * FROM {sensorName} ORDER BY date ASC";
+                    cmd = new MySqlCommand(sql, con);
+                    reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        if (location == "inner")
+                            observableValues.Add(new DateTimePoint((DateTime)reader["date"], (double)reader[sensorName]));
+                        else
+                            observableValues2.Add(new DateTimePoint((DateTime)reader["date"], (double)reader[sensorName]));
+                    }
+                    reader.Close();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error while handling with database: " + ex.Message);
+                }
+
             }
         }
-        
 
 
+
+        }
     }
-}

@@ -84,11 +84,7 @@ namespace AvaloniaTest.Models
                 Console.WriteLine("Error connecting to the database: " + ex.Message);
             }
         }
-        ~InDoorSensor()
-        {
-            try { con.Close(); }
-            catch (MySqlException ex) { Console.WriteLine(ex.Message); }
-        }
+
 
         private void InsertDataIntoTable(string tableName, DateTime date, double value)
         {

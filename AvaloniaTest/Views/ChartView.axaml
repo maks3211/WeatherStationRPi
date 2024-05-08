@@ -22,21 +22,21 @@
 
 			<UniformGrid Rows="8" Margin="50" HorizontalAlignment="Center">
 				<Button Command="{Binding AltitudeHandlerCommand}"
-                        HorizontalContentAlignment="Center">Wysokoœæ</Button>
+                        HorizontalContentAlignment="Center">Wysokosc</Button>
 				<Button Command="{Binding LuminanceHandlerCommand}"
                         HorizontalContentAlignment="Center">Luminacja</Button>
 				<Button Command="{Binding outerTempHandlerCommand}"
                         HorizontalContentAlignment="Center">Temperatura</Button>
 				<Button Command="{Binding preasureHandlerCommand}"
-                        HorizontalContentAlignment="Center">Ciœnienie atmosferyczne</Button>
+                        HorizontalContentAlignment="Center">Cisnienie atmosferyczne</Button>
 				<Button Command="{Binding humidityHandlerCommand}"
-                        HorizontalContentAlignment="Center">Wilgotnoœæ</Button>
+                        HorizontalContentAlignment="Center">Wilgotnosc</Button>
 				<Button Command="{Binding COHandlerCommand}"
-                        HorizontalContentAlignment="Center">Stê¿enie CO</Button>
+                        HorizontalContentAlignment="Center">Stezenie CO</Button>
 				<Button Command="{Binding NO2HandlerCommand}"
-                        HorizontalContentAlignment="Center">Stê¿enie NO2</Button>
+                        HorizontalContentAlignment="Center">Stezenie NO2</Button>
 				<Button Command="{Binding NH3HandlerCommand}"
-                        HorizontalContentAlignment="Center">Stê¿enie NH3</Button>
+                        HorizontalContentAlignment="Center">Stezenie NH3</Button>
 			</UniformGrid>
 			<lvc:CartesianChart
                 Grid.Column="1"
