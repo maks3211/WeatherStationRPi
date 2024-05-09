@@ -138,6 +138,10 @@ namespace AvaloniaTest.Models
                     }
 
                     preasure = new Random().Next(960, 1060);
+                    altitude = new Random().Next(200,500);
+                    luminance = altitude + 5;
+                    co = new Random().NextDouble() * 200;
+                    Console.WriteLine(co);
 
 
                 }
@@ -159,8 +163,16 @@ namespace AvaloniaTest.Models
                 WindDirectionUpdated?.Invoke(this, windDirection);
                 WindSpeedUpdated?.Invoke(this, windSpeed);
                 WindGustUpdated?.Invoke(this, windGust);
-                IndoorPreasureUpdated?.Invoke(this, preasure);
-                //DataUpdatedTwo?.Invoke(this, humidity);
+
+                currentDateTime = DateTime.Now;
+                InsertDataIntoTable("innerTemperature", currentDateTime, temperature);
+                InsertDataIntoTable("innerHumidity", currentDateTime, humidity);
+                InsertDataIntoTable("innerAltitude", currentDateTime, altitude);
+                InsertDataIntoTable("innerPreasure", currentDateTime, preasure);
+                InsertDataIntoTable("innerLuminance", currentDateTime, luminance);
+                InsertDataIntoTable("innerCo", currentDateTime, co);
+
+
                 await Task.Delay(TimeSpan.FromSeconds(5));   
         }
     }

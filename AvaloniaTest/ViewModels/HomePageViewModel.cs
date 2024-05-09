@@ -122,6 +122,25 @@ namespace AvaloniaTest.ViewModels
         public double _outdoorhumiditycircle = 60 - MainWindowViewModel.outDoorSens.humidity / 100 * 60;
 
 
+        //WYSOKOSC OUTDOOR
+        [ObservableProperty]
+        public int _outdooraltitude;
+
+
+        //CO OUTDOOR
+        [ObservableProperty]
+        public int _outdoorco;
+        [ObservableProperty]
+        public int _outdoorcocircle = 5;
+        [ObservableProperty]
+        public int _outdoornh3;
+        [ObservableProperty]
+        public int _outdoornh3circle = 5;
+        [ObservableProperty]
+        public int _outdoorno2;
+        [ObservableProperty]
+        public int _outdoorno2circle = 5;
+
         //TEMPERATURA INDOOR
         //IKONA ZMIANY TEMP WZGLEDEM WCZORAJSZEJ
 
@@ -145,6 +164,21 @@ namespace AvaloniaTest.ViewModels
         //Cisnienie INDOOR
         [ObservableProperty]
         public string _indoorpreasure ="sdsd";
+
+        //JASNOSC INDOOR
+        [ObservableProperty]
+        public int _indoorluminance;
+
+        //WYSOKOSC INDOOR 
+        [ObservableProperty]
+        public int _indooraltitude;
+
+        //CO INDOOR
+        [ObservableProperty]
+        public int _indoorco;
+        [ObservableProperty]
+        public int _indoorcocircle = 5;
+
 
         //GODZINA
         private DispatcherTimer timer;
@@ -245,13 +279,23 @@ namespace AvaloniaTest.ViewModels
                 MainWindowViewModel.mqqt.OutdoorTempUpdated -= OutDoorTemp_DataUpdated;
                 MainWindowViewModel.mqqt.OutdoorPresUpdated -= OutDoorPres_DataUpdated;
                 MainWindowViewModel.mqqt.OutdoorHumiUpdated -= OutDoorHum_DataUpdated;
+                MainWindowViewModel.mqqt.OutdoorLumiUpdated -= OutDoorLumi_DataUpdated;
+                MainWindowViewModel.mqqt.OutdoorAltiUpdated -= OutDoorAlti_DataUpdated;
+                MainWindowViewModel.mqqt.OutdoorCOUpdated   -= OutDoorCo_DataUpdated;
+                MainWindowViewModel.mqqt.OutdoorNH3Updated  -= OutDoornh3_DataUpdated;
+                MainWindowViewModel.mqqt.OutdoorNO2Updated  -= OutDoorno2_DataUpdated;
 
 
-                MainWindowViewModel.outDoorSens.IndoorHumUpdated -= InDoorHum_DataUpdated;
-                MainWindowViewModel.outDoorSens.WindDirectionUpdated -= WindDirection_DataUpdated;
-                MainWindowViewModel.outDoorSens.WindSpeedUpdated -= WindSpeed_DataUpdated;
-                MainWindowViewModel.outDoorSens.WindGustUpdated -= WindGust_DataUpdated;
-                MainWindowViewModel.outDoorSens.IndoorPreasureUpdated -= IndoorPres_DataUpdated;
+                MainWindowViewModel.inDoorSens.IndoorTempUpdated -= InDoorTemp_DataUpdated;
+                MainWindowViewModel.inDoorSens.IndoorHumUpdated -= InDoorHum_DataUpdated;
+                MainWindowViewModel.inDoorSens.IndoorPreasureUpdated -= IndoorPres_DataUpdated;
+                MainWindowViewModel.inDoorSens.IndoorLumiUpdated -= InDoorLumi_DataUpdated;
+                MainWindowViewModel.inDoorSens.IndoorAltiUpdated -= InDoorAlti_DataUpdated;
+                MainWindowViewModel.inDoorSens.IndoorCOUpdated -= InDoorCo_DataUpdated;
+
+                MainWindowViewModel.inDoorSens.WindDirectionUpdated -= WindDirection_DataUpdated;
+                MainWindowViewModel.inDoorSens.WindSpeedUpdated -= WindSpeed_DataUpdated;
+                MainWindowViewModel.inDoorSens.WindGustUpdated -= WindGust_DataUpdated;
                 MainWindowViewModel.CurrentPageOpened -= ViewModel_Activated;
                 timer.Stop();
                 StopClock();
@@ -286,13 +330,23 @@ namespace AvaloniaTest.ViewModels
             MainWindowViewModel.mqqt.OutdoorTempUpdated += OutDoorTemp_DataUpdated;
             MainWindowViewModel.mqqt.OutdoorPresUpdated += OutDoorPres_DataUpdated;
             MainWindowViewModel.mqqt.OutdoorHumiUpdated += OutDoorHum_DataUpdated;
+            MainWindowViewModel.mqqt.OutdoorLumiUpdated += OutDoorLumi_DataUpdated;
+            MainWindowViewModel.mqqt.OutdoorAltiUpdated += OutDoorAlti_DataUpdated;
+            MainWindowViewModel.mqqt.OutdoorCOUpdated += OutDoorCo_DataUpdated;
+            MainWindowViewModel.mqqt.OutdoorNH3Updated += OutDoornh3_DataUpdated;
+            MainWindowViewModel.mqqt.OutdoorNO2Updated += OutDoorno2_DataUpdated;
 
+            MainWindowViewModel.inDoorSens.IndoorTempUpdated += InDoorTemp_DataUpdated;
+            MainWindowViewModel.inDoorSens.IndoorHumUpdated += InDoorHum_DataUpdated;
+  
+            MainWindowViewModel.inDoorSens.IndoorPreasureUpdated += IndoorPres_DataUpdated;
+            MainWindowViewModel.inDoorSens.IndoorLumiUpdated += InDoorLumi_DataUpdated;
+            MainWindowViewModel.inDoorSens.IndoorAltiUpdated += InDoorAlti_DataUpdated;
+            MainWindowViewModel.inDoorSens.IndoorCOUpdated += InDoorCo_DataUpdated;
 
-            MainWindowViewModel.outDoorSens.IndoorHumUpdated += InDoorHum_DataUpdated;
-            MainWindowViewModel.outDoorSens.WindDirectionUpdated += WindDirection_DataUpdated;
-            MainWindowViewModel.outDoorSens.WindSpeedUpdated += WindSpeed_DataUpdated;
-            MainWindowViewModel.outDoorSens.WindGustUpdated += WindGust_DataUpdated;
-            MainWindowViewModel.outDoorSens.IndoorPreasureUpdated += IndoorPres_DataUpdated;
+            MainWindowViewModel.inDoorSens.WindDirectionUpdated += WindDirection_DataUpdated;
+            MainWindowViewModel.inDoorSens.WindSpeedUpdated += WindSpeed_DataUpdated;
+            MainWindowViewModel.inDoorSens.WindGustUpdated += WindGust_DataUpdated;
         }
 
 
@@ -323,12 +377,67 @@ namespace AvaloniaTest.ViewModels
         }
 
 
+        private void OutDoorLumi_DataUpdated(object sender, double e)
+        {
+      
+            Outdoorluminance = (int)e;
+            ChangeVerticalBarColor(e, 2000, 0, _yellowcolorslist, Outdooriluminancecolors);
+        }
+
+
+        private void OutDoorAlti_DataUpdated(object sender, int e)
+        {
+            Outdooraltitude = e;
+        }
+
+
+        private void OutDoorCo_DataUpdated(object sender, double e)
+        {
+          
+            Outdoorco = (int)e;
+            Outdoorcocircle = MoveCricle(5, 0,250,e);
+        }
+        private void OutDoornh3_DataUpdated(object sender, double e)
+        {
+
+            Outdoornh3 = (int)e;
+            Outdoornh3circle = MoveCricle(15, 0, 180, e);
+        }
+        private void OutDoorno2_DataUpdated(object sender, double e)
+        {
+
+            Outdoorno2 = (int)e;
+            Outdoorno2circle = MoveCricle(15, 0, 10, e);
+        }
+        private void InDoorTemp_DataUpdated(object sender, double e)
+        {
+            Indoortemperature = Units.GetInstance().CalculateTemp(e).ToString().Replace(',', '.') + Units.GetInstance().GetTempUnit();
+        }
+
+        private void InDoorLumi_DataUpdated(object sender, double e)
+        {
+            Indoorluminance = (int)e;
+            ChangeVerticalBarColor(e, 2000, 0, _yellowcolorslist, Indooriluminancecolors);
+        }
+
+        private void InDoorAlti_DataUpdated(object sender, int e)
+        {
+            Indooraltitude = e;
+        }
+
         private void InDoorHum_DataUpdated(object sender, double e)
         {
             // Console.WriteLine("tUpdate wilgotnosci");
 
             Indoorhumiditycircle = 54 - e / 100 * 54;
             Indoorhumidity = e.ToString();
+        }
+
+        private void InDoorCo_DataUpdated(object sender, double e)
+        {
+            Indoorco = (int)e;
+            //TUTAJ RUSZANIE KOLEM
+            Indoorcocircle = MoveCricle(5, 0, 250, e);
         }
         private void WindDirection_DataUpdated(object sender, double e)
         {
@@ -480,6 +589,13 @@ namespace AvaloniaTest.ViewModels
             }
 
 
+        }
+
+        private int MoveCricle(int start, int minVal, int maxVal, double value)
+        {         
+           double range = maxVal - minVal;
+           double width = start + 145;
+           return (int)(width * value / range);
         }
 
         public void ChangeIndoorPreasureBar(double preasure)
