@@ -33,11 +33,11 @@ Additionally, RPi connects to ESP32 via Wi-Fi.
 - [X] MainScreen
 - [ ] SettingsScreen
     - [X] Units
-    - [ ] Internet Connection
+    - [X] Internet Connection
     - [ ] Appearance
 - [X] Wirless ESP32 - RPi communication
-- [ ] Data base
-- [ ] Plots drawing
+- [X] Data base
+- [X] Plots drawing
 
 <h2 id="colab">🤝 Collaborators</h2>
 <table>
