@@ -12,23 +12,25 @@ using Avalonia;
 using Avalonia.Controls;
 namespace AvaloniaTest.ViewModels;
 
+
+/// <summary>
+/// View model class for the settings window.
+/// </summary>
 public partial class SettingsViewModel : ViewModelBase
-    {
+{
 
     public static event EventHandler<string> CurrentSettingsOpen;
     public static string CurrentSettingsSub = "";
 
-
-
     [ObservableProperty]
     private ViewModelBase _currentsettingspage = new GeneralSettingsViewModel();
+    
     [ObservableProperty]
     private SettingsListTemplate? _selectedSettings;
 
-
-
-
-
+    /// <summary>
+    /// Constructor for the SettingsViewModel class.
+    /// </summary>
     public SettingsViewModel()
     {
         MainWindowViewModel.CurrentPageOpened += ViewModel_Activated;
@@ -36,6 +38,11 @@ public partial class SettingsViewModel : ViewModelBase
         CurrentSettingsOpen?.Invoke(this, CurrentSettingsSub ?? "");
 
     }
+    /// <summary>
+    /// Method called when the main view model is activated.
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     private void ViewModel_Activated(object sender, string e)
     {
         if (MainWindowViewModel.CurrentPageSub == "AvaloniaTest.ViewModels.SettingsViewModel")
@@ -52,7 +59,10 @@ public partial class SettingsViewModel : ViewModelBase
     }
 
 
-
+    /// <summary>
+    /// Method called when the selected settings item is changed.
+    /// </summary>
+    /// <param name="value"></param>
     partial void OnSelectedSettingsChanged(SettingsListTemplate? value)
     {
         if (value is null) return;
@@ -64,18 +74,21 @@ public partial class SettingsViewModel : ViewModelBase
         CurrentSettingsOpen?.Invoke(this, CurrentSettingsSub ?? "");
     }
 
+    /// <summary>
+    /// Collection of settings items.
+    /// </summary>
     public ObservableCollection<SettingsListTemplate> Items { get; } = new()
     {
-       
         new SettingsListTemplate(typeof(GeneralSettingsViewModel), "Ustawienia ogolne","SettingsRegular"),
         new SettingsListTemplate(typeof(NetworkSettingsViewModel), "Ustawienia sieci", "NetworkSettingsEmpty"),
-        
     };
 
 
-    }
+}
 
-
+/// <summary>
+/// Class representing a template for a settings list item.
+/// </summary>
 public class SettingsListTemplate {
     
     public SettingsListTemplate(Type type, string label, string icon) {

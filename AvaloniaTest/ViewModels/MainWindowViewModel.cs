@@ -21,61 +21,65 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace AvaloniaTest.ViewModels
 {
+    /// <summary>
+    /// View model class for the main window.
+    /// </summary>
     public partial class MainWindowViewModel : ViewModelBase
     {
-        //Np w Text umieszczam Text="{Binding Tekst}" i sie zmienia po zmianie Tekst = "abc"
-        //wywoływanie metod np po guziku to Command="{Binding btnClickCommand}" + defincja btnClick
 
-        //OTWIERANIE SPLIT VIEW
-        //  [ObservableProperty]
-        //  private bool _isMainPaneOpen = true;
-        
-        public static event EventHandler<string> CurrentPageOpened; //Wykorzystanie to informawoania danej strony ze jest otwierana/zamykana
+        public static event EventHandler<string> CurrentPageOpened;
         public static string CurrentPageSub = "";
         public  static InDoorSensor inDoorSens = new InDoorSensor();
         public static MQTTcommunication mqqt = new MQTTcommunication();
         public static string lastPage = "";
-
         public static Network siec = new Network();
-        
 
+        [ObservableProperty]
+        public ViewModelBase _currentPage = new HomePageViewModel();
+        
+        [ObservableProperty]
+        private ListItemTemplate? _selectedListItem;
+
+        /// <summary>
+        /// List of navigation items.
+        /// </summary>
+        public ObservableCollection<ListItemTemplate> Items { get; } = new()
+        {
+            new ListItemTemplate(typeof(HomePageViewModel),"HomeRegular", "Strona Główna"),
+            new ListItemTemplate(typeof(SettingsViewModel),"SettingsRegular","Ustawienia"),
+            new ListItemTemplate(typeof(ChartViewModel),"ChartRegular","Wykresy"),
+        };
+
+        /// <summary>
+        /// Constructor for the MainWindowViewModel class.
+        /// </summary>
         public MainWindowViewModel()
         {
             
-            Console.WriteLine("-------------NOwy MainWindowViewModel--------------");
-            //Na start przechodzimy do HomePage
             CurrentPageSub = "AvaloniaTest.ViewModels.HomePageViewModel";
             CurrentPageOpened?.Invoke(this, CurrentPageSub ?? "");
 
-            // Ustaw pierwszy element jako domyślnie wybrany
-            // SelectedListItem = Items.FirstOrDefault();
-          //  outDoorSens.StartMake();
-
             StartDataReading();
-
-
             mqqt.Start_Server();
             
         }
 
-
+        /// <summary>
+        /// Method to start server.
+        /// </summary>
         static async Task StartSERWER()
         {
             await mqqt.Start_Server();
         }
 
-
+        /// <summary>
+        /// Method to start reading data.
+        /// </summary>
         public async Task StartDataReading()
         {            
             Task task1 = inDoorSens.RunReadData();
             await Task.WhenAll(task1);
         }
-
-
-        [ObservableProperty]
-        public ViewModelBase _currentPage = new HomePageViewModel();
-        [ObservableProperty]
-        private ListItemTemplate? _selectedListItem;
 
         partial void OnSelectedListItemChanged(ListItemTemplate? value)
         {
@@ -91,36 +95,28 @@ namespace AvaloniaTest.ViewModels
             
            
         }
-        public ObservableCollection<ListItemTemplate> Items { get; } = new()
-        { 
-            new ListItemTemplate(typeof(HomePageViewModel),"HomeRegular", "Strona Główna"),
-            new ListItemTemplate(typeof(SettingsViewModel),"SettingsRegular","Ustawienia"),
-            new ListItemTemplate(typeof(ChartViewModel),"ChartRegular","Wykresy"),
-        };
 
-
+        /// <summary>
+        /// Method to start reading WIFI data.
+        /// </summary>
         public async Task StartWifiReading() {
             Task t1 = siec.GetWifiList();      
             await Task.WhenAll(t1);
         }
 
-
-
+        /// <summary>
+        /// Method to change the application theme.
+        /// </summary>
         [RelayCommand]
         public void ChangeTheme()
         {
-           // Console.WriteLine("POBIERANIE SIECI");
-           // Network siec = new Network();
-          //  StartWifiReading();
- 
-
-
-           // siec.ConnectToWifi();
             App app = (App)Application.Current;
             app.ChangeTheme();
-       
         }
 
+        /// <summary>
+        /// Method to set the default list item.
+        /// </summary>
         public void SetDefaultItem()
         {
             SelectedListItem = Items[0];
@@ -131,26 +127,9 @@ namespace AvaloniaTest.ViewModels
            
         }
 
-
-        //OBSULGA PANEVIEW
-        //[RelayCommand]
-        //private void BtnClick()
-        //{
-        //
-        //    if (IsMainPaneOpen)
-        //    {
-        //    IsMainPaneOpen = false;
-        //        //CurrentPage = new SettingsViewModel();
-        //    }
-        //    else
-        //    {
-        //        IsMainPaneOpen = true;
-        //    }
-        //
-        //
-        //}
-
-        //!!! Narazie przechodzi ogólnie do ustawień Zrobić żeby przechodziło od razu do ustawień motywu :) 
+        /// <summary>
+        /// Method to navigate to the settings view.
+        /// </summary>
         public void handleGoToSettgins()
         {        
             var settingsItem = Items.FirstOrDefault(item => item.ModelType == typeof(SettingsViewModel));
@@ -169,6 +148,9 @@ namespace AvaloniaTest.ViewModels
         }
     }
 
+    /// <summary>
+    /// Class representing a template for a list item.
+    /// </summary>
     public class ListItemTemplate
     {
 
