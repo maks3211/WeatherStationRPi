@@ -30,6 +30,9 @@ using ScottPlot.Statistics;
 
 namespace AvaloniaTest.ViewModels
 {
+    /// <summary>
+    /// ViewModel for managing and displaying chart data from a MySQL database.
+    /// </summary>
     public partial class ChartViewModel : ViewModelBase
     {
         MySqlConnection con;
@@ -39,9 +42,13 @@ namespace AvaloniaTest.ViewModels
 
         private readonly ObservableCollection<DateTimePoint> observableValues;
         private readonly ObservableCollection<DateTimePoint> observableValues2;
-
+        /// <summary>
+        /// Collection of trends to be displayed on the chart.
+        /// </summary>
         public ObservableCollection<ISeries> Series { get; set; }
-
+        /// <summary>
+        /// Configuration for the X axes of the chart.
+        /// </summary>
         public Axis[] XAxes { get; set; }
             = new Axis[]
             {
@@ -55,7 +62,9 @@ namespace AvaloniaTest.ViewModels
                     TextSize = 15
                 }
             };
-
+        /// <summary>
+        /// Configuration for the title of the chart.
+        /// </summary>
         public LabelVisual Title { get; set; } = new LabelVisual
         {
             Text = "Archiwum pomiarów",
@@ -63,7 +72,9 @@ namespace AvaloniaTest.ViewModels
             Padding = new LiveChartsCore.Drawing.Padding(15),
             Paint = new SolidColorPaint(SKColors.Black)
         };
-
+        /// <summary>
+        /// Configuration for the Y axes of the chart.
+        /// </summary>
         public Axis[] YAxes { get; set; } = new Axis[]
         {
             new Axis
@@ -75,51 +86,71 @@ namespace AvaloniaTest.ViewModels
                 TextSize = 15
             }
         };
-
+        /// <summary>
+        /// Command handler for Altitude button.
+        /// </summary>
         [RelayCommand]
         private void AltitudeHandler()
         {
             ReadDataFromTable("outer","Altitude", "Wysokość");
             ReadDataFromTable("inner","Altitude", "Wysokość");
         }
-
+        /// <summary>
+        /// Command handler forLuminance button.
+        /// </summary>
         [RelayCommand]
         private void LuminanceHandler()
         {
             ReadDataFromTable("outer", "Luminance", "Luminacja");
             ReadDataFromTable("inner", "Luminance", "Luminacja");
         }
-
+        /// <summary>
+        /// Command handler for Temperature button.
+        /// </summary>
         [RelayCommand]
         private void outerTempHandler()
         {
             ReadDataFromTable("outer","Temperature", "Temperatura");
             ReadDataFromTable("inner", "Temperature", "Temperatura");
         }
-
+        /// <summary>
+        /// Command handler for Preasure button.
+        /// </summary>
         [RelayCommand]
         private void preasureHandler()
         {
             ReadDataFromTable("outer","Preasure", "Ciśnienie atmosferyczne");
             ReadDataFromTable("inner", "Preasure", "Ciśnienie atmosferyczne");
         }
+        /// <summary>
+        /// Command handler for Humidity button.
+        /// </summary>
         [RelayCommand]
         private void humidityHandler()
         {
             ReadDataFromTable("outer","Humidity", "Wilgotność");
             ReadDataFromTable("inner", "Humidity", "Wilgotność");
         }
+        /// <summary>
+        /// Command handler for Co button.
+        /// </summary>
         [RelayCommand]
         private void COHandler()
         {
             ReadDataFromTable("outer","Co", "CO");
             ReadDataFromTable("inner", "Co", "CO");
         }
+        /// <summary>
+        /// Command handler for No2 button.
+        /// </summary>
         [RelayCommand]
         private void NO2Handler()
         {
             ReadDataFromTable("outer","No2", "NO2");
         }
+        /// <summary>
+        /// Command handler for NH3 button.
+        /// </summary>
         [RelayCommand]
         private void NH3Handler()
         {
@@ -127,7 +158,10 @@ namespace AvaloniaTest.ViewModels
         }
 
 
-
+        /// <summary>
+        /// Constructor for ChartViewModel.
+        /// Creating object we connect with database.
+        /// </summary>
         public ChartViewModel()
         {
             observableValues = new ObservableCollection<DateTimePoint> {};
@@ -172,7 +206,12 @@ namespace AvaloniaTest.ViewModels
 
         }
 
-
+        /// <summary>
+        /// Reads data from the specified table and updates the chart.
+        /// </summary>
+        /// <param name="location">The location identifier for sensor</param>
+        /// <param name="tableName">Part of name of the table to read from</param>
+        /// <param name="axisName">The name to set for Y-axis</param>
         private void ReadDataFromTable(string location, string tableName, string axisName)
         {
             if (location == "outer")
