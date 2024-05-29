@@ -1,31 +1,65 @@
 <UserControl xmlns="https://github.com/avaloniaui"
-			 
-             xmlns:lvc="using:LiveChartsCore.SkiaSharpView.Avalonia"
-             xmlns:vms="using:ViewModelsSamples.Lines.Basic">
-			 xmlns:ScottPlot="clr-namespace:ScottPlot.Avalonia;assembly=ScottPlot.Avalonia"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:vm="using:AvaloniaTest.ViewModels"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-			 
+             xmlns:viewModels="clr-namespace:AvaloniaTest.ViewModels"
+             xmlns:lvc="using:LiveChartsCore.SkiaSharpView.Avalonia"
              mc:Ignorable="d" d:DesignWidth="1024" d:DesignHeight="470"
-             Width="1024"
-             Height="470"
 			 x:Class="AvaloniaTest.Views.ChartView"
-			 xmlns:vm="using:AvaloniaTest.ViewModels"
-             x:DataType="vm:ChartViewModel"
->
-	Welcome to Avalonia!
+			 x:DataType="viewModels:ChartViewModel">
 
 
-<UserControl.DataContext>
-	<vms:ViewModel/>
-</UserControl.DataContext>
-<lvc:CartesianChart
-	Series="{Binding Series}"
-	Title="{Binding Title}">
-</lvc:CartesianChart>
 
-	<!--<ScottPlot:AvaPlot Name="AvaPlot1"/>-->
+
+	<StackPanel>
+		<Grid>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*"/>
+				<ColumnDefinition Width="Auto"/>
+
+			</Grid.ColumnDefinitions>
+
+			<UniformGrid Rows="8" Margin="50" HorizontalAlignment="Center">
+				<Button Command="{Binding AltitudeHandlerCommand}"
+                        HorizontalContentAlignment="Center">Wysokosc</Button>
+				<Button Command="{Binding LuminanceHandlerCommand}"
+                        HorizontalContentAlignment="Center">Luminacja</Button>
+				<Button Command="{Binding outerTempHandlerCommand}"
+                        HorizontalContentAlignment="Center">Temperatura</Button>
+				<Button Command="{Binding preasureHandlerCommand}"
+                        HorizontalContentAlignment="Center">Cisnienie atmosferyczne</Button>
+				<Button Command="{Binding humidityHandlerCommand}"
+                        HorizontalContentAlignment="Center">Wilgotnosc</Button>
+				<Button Command="{Binding COHandlerCommand}"
+                        HorizontalContentAlignment="Center">Stezenie CO</Button>
+				<Button Command="{Binding NO2HandlerCommand}"
+                        HorizontalContentAlignment="Center">Stezenie NO2</Button>
+				<Button Command="{Binding NH3HandlerCommand}"
+                        HorizontalContentAlignment="Center">Stezenie NH3</Button>
+			</UniformGrid>
+			<lvc:CartesianChart
+                Grid.Column="1"
+                Width="700"
+                Height="470"
+
+                Series="{Binding Series}"
+                Title="{Binding Title}"
+                HorizontalAlignment="Right"
+				ZoomMode="X"
+				XAxes="{Binding XAxes}"
+				YAxes="{Binding YAxes}"
+				LegendPosition="Right"
+				>
+
+			</lvc:CartesianChart>
+
+		</Grid>
+	</StackPanel>
+
+
+
+
 
 
 </UserControl>

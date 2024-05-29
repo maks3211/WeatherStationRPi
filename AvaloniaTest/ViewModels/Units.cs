@@ -8,13 +8,16 @@ using System.Threading.Tasks;
 
 namespace AvaloniaTest.ViewModels;
 
-    public class Units
+/// <summary>
+/// Class for managing units used in weather data.
+/// </summary>
+public class Units
     {
 
     private string  currentTempUnit = "°C";
     private string currentWindUnit = "m/s";
 
-    private Units() { }
+
     private static Units _instance;
     public static Units GetInstance()
     {

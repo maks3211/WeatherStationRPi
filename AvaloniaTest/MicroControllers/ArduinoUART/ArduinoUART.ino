@@ -7,8 +7,24 @@ AHT20 aht20;
 
 //Cisnienie
 Adafruit_BMP280 bmp; 
-//#define INDOOR_CO_SENSOR A0  //niebieski - output czerwony 5v czarny gnd
+#define INDOOR_CO_SENSOR A0  //niebieski - output,   czerwony-5v,  czarny-gnd
+#define coefficient_A 19.32
+#define coefficient_B -0.64
+#define R_Load 10.0
 //#define INDOOR_CO_SENSOR_OUTPUT 2
+class MQ7 {
+	private:
+		uint8_t analogPin;
+		float v_in;
+		float voltageConversion(int);
+	public:
+		MQ7(uint8_t, float);
+		float getPPM();
+		float getSensorResistance();
+		float getRatio();
+};
+
+MQ7 mq7(A0,5.0);
 
 //int sensor_co_indoor; 
 bool aht20Work = true;
@@ -86,6 +102,29 @@ float altitude = 0.0;
 Serial.print(sensor_co_indoor);
 Serial.print('\n');
 */
+//  CZYTANIE CO
+//Serial.println(mq7.getPPM());
 
 delay(5000);
+}
+
+
+
+MQ7::MQ7(uint8_t pin, float v_input){
+  analogPin = pin;
+  v_in = v_input;
+}
+float MQ7::getPPM(){
+  return (float)(coefficient_A * pow(getRatio(), coefficient_B));
+}
+float MQ7::voltageConversion(int value){
+  return (float) value * (v_in / 1023.0);
+}
+float MQ7::getRatio(){
+  int value = analogRead(analogPin);
+  float v_out = voltageConversion(value);
+  return (v_in - v_out) / v_out;
+}
+float MQ7::getSensorResistance(){
+  return R_Load * getRatio();
 }

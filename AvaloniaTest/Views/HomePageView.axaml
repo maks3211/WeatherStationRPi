@@ -14,12 +14,14 @@
       <Carousel.GestureRecognizers>
         <ScrollGestureRecognizer CanHorizontallyScroll="True" CanVerticallyScroll="True"/>
       </Carousel.GestureRecognizers>
+      
       <Canvas
         HorizontalAlignment="Center"
         Width="1024"
         Height="470">
         <!--KOLUMNA I-->
         <!--PIERWSZE OKIENKO-->
+        
         <Border  
            Canvas.Top="10" Canvas.Left="10"
            BorderBrush="{DynamicResource BorderColor}"
@@ -273,7 +275,6 @@
             </StackPanel>
           </Border>
        
-
         <!--KOLUMNA IV-->
         <!--okienko pierwsze temperatura zewnetrzna -->
         <Border
@@ -472,9 +473,8 @@
           </StackPanel>
         </Border>     
       </Canvas>
-
-      
-      
+     
+ 
       <!--STRONA DRUGA-->
       <Canvas 
         HorizontalAlignment="Center"
@@ -510,31 +510,159 @@
                   <Rectangle Canvas.Top="104" Canvas.Left="77.5"  Height="7"   Width="85"  Fill="{DynamicResource FontBlue}" ></Rectangle>
                   <Rectangle Canvas.Top="130" Canvas.Left="47.5"  Height="7"   Width="145" Fill="{DynamicResource FontBlue}" ></Rectangle>
                   <Rectangle Canvas.Top="158" Canvas.Left="77.5"  Height="7"   Width="85"  Fill="{DynamicResource FontBlue}" ></Rectangle>
-                <TextBlock Canvas.Top="70" Canvas.Left="195" FontSize="18" >1255</TextBlock>
-                <TextBlock Canvas.Top="70" Canvas.Left="3"   FontSize="18" >1255</TextBlock>
+                <TextBlock Text="{Binding Indooraltitude}" Canvas.Top="70" Canvas.Left="195" FontSize="18" >1255</TextBlock>
+                <TextBlock Text="{Binding Outdooraltitude}" Canvas.Top="70" Canvas.Left="3"   FontSize="18" >1255</TextBlock>
               </Canvas>
             </StackPanel>
             </StackPanel>
         </Border>
 
         <Border
-      Canvas.Top="10" Canvas.Left="263.5"
-     BorderBrush="{DynamicResource BorderColor}"
-     BorderThickness="2"
-     BoxShadow="2 2 2 2 Gray"
-     CornerRadius="10">
+        Canvas.Top="10" Canvas.Left="263.5"
+       BorderBrush="{DynamicResource BorderColor}"
+       BorderThickness="2"
+       BoxShadow="2 2 2 2 Gray"
+       CornerRadius="10">
           <StackPanel
-           Width="243.5"
-           Height="224"
-           VerticalAlignment="Center">
+            Width="243.5"
+            Height="240"
+            VerticalAlignment="Center">
+
             <StackPanel  Orientation="Horizontal">
               <PathIcon Data="{StaticResource HomeRegular}" VerticalAlignment="Top" Margin="10,8,0,8"></PathIcon>
               <PathIcon Data="{StaticResource ArrrowLeft}" Height="10" Margin="-4,8,10,8" VerticalAlignment="Top" ></PathIcon>
               <PathIcon Data="{StaticResource ArrowRight}" Height="10" Margin="-28,18,10,8" VerticalAlignment="Top" ></PathIcon>
-              <TextBlock VerticalAlignment="Center"  FontWeight="DemiBold" Margin="20,5,0,0">JASNOSC</TextBlock>
+              <TextBlock VerticalAlignment="Center"  FontWeight="DemiBold" Margin="30,5,0,0">JASNOSC</TextBlock>
             </StackPanel>
-            <Rectangle Height="2" Width="243.5" Fill="{DynamicResource BorderColor}" Margin="0,10,0,0"></Rectangle>
-            <TextBlock>1234 M</TextBlock>
+            <Rectangle Height="2" Width="243.5" Fill="{DynamicResource BorderColor}" Margin="0,10,0,5"></Rectangle>
+
+            <StackPanel Orientation="Horizontal" Spacing="0">
+
+              <StackPanel  Width="121.75">
+                <Rectangle
+                  HorizontalAlignment="Left"
+                  RadiusX="7"
+                  RadiusY="7"
+                  Height="15" Width="45"
+                  Fill="{Binding Indooriluminancecolors[0]}"
+                  Margin="10,10,0,0"
+                ></Rectangle>
+                <Rectangle
+    HorizontalAlignment="Left"
+    RadiusX="7"
+    RadiusY="7"
+    Height="15" Width="45"
+     Fill="{Binding Indooriluminancecolors[1]}"
+    Margin="10,10,0,0"
+                ></Rectangle>
+                <Rectangle
+    HorizontalAlignment="Left"
+    RadiusX="7"
+    RadiusY="7"
+    Height="15" Width="45"
+     Fill="{Binding Indooriluminancecolors[2]}"
+    Margin="10,10,0,0"
+                ></Rectangle>
+                <Rectangle
+    HorizontalAlignment="Left"
+    RadiusX="7"
+    RadiusY="7"
+    Height="15" Width="45"
+      Fill="{Binding Indooriluminancecolors[3]}"
+    Margin="10,10,0,0"
+                ></Rectangle>
+                <Rectangle
+    HorizontalAlignment="Left"
+    RadiusX="7"
+    RadiusY="7"
+    Height="15" Width="45"
+      Fill="{Binding Indooriluminancecolors[4]}"
+    Margin="10,10,0,0"
+                ></Rectangle>
+                <Rectangle
+    HorizontalAlignment="Left"
+    RadiusX="7"
+    RadiusY="7"
+    Height="15" Width="45"
+      Fill="{Binding Indooriluminancecolors[5]}"
+    Margin="10,10,0,0"
+                ></Rectangle>
+                <Rectangle
+    HorizontalAlignment="Left"
+    RadiusX="7"
+    RadiusY="7"
+    Height="15" Width="45"
+      Fill="{Binding Indooriluminancecolors[6]}"
+    Margin="10,10,0,0"
+                ></Rectangle>
+                <TextBlock  Width="55" TextAlignment="Center" Text="{Binding Indoorluminance}" Margin="55,-169,0,0" FontSize="20">1000</TextBlock>
+                <Image Source="avares://AvaloniaTest/Assets/Images/indoor.png" Margin="15,-160,0,10" Width="45" Height="45" ></Image>
+
+              </StackPanel>
+              <Line StartPoint="0,1" EndPoint="0,130" Margin="0,50,0,0" Stroke="{DynamicResource LightBorderColor}" StrokeThickness="2" StrokeDashArray="3"/>
+
+              <StackPanel  Width="121.75">
+                <Rectangle
+                  HorizontalAlignment="Right"
+                  RadiusX="7"
+                  RadiusY="7"
+                  Height="15" Width="45"
+                  Fill="{Binding Outdooriluminancecolors[0]}"
+                  Margin="0,10,10,0"
+                ></Rectangle>
+                <Rectangle
+    HorizontalAlignment="Right"
+    RadiusX="7"
+    RadiusY="7"
+    Height="15" Width="45"
+     Fill="{Binding Outdooriluminancecolors[1]}"
+    Margin="0,10,10,0"
+                ></Rectangle>
+                <Rectangle
+    HorizontalAlignment="Right"
+    RadiusX="7"
+    RadiusY="7"
+    Height="15" Width="45"
+     Fill="{Binding Outdooriluminancecolors[2]}"
+    Margin="0,10,10,0"
+                ></Rectangle>
+                <Rectangle
+    HorizontalAlignment="Right"
+    RadiusX="7"
+    RadiusY="7"
+    Height="15" Width="45"
+      Fill="{Binding Outdooriluminancecolors[3]}"
+    Margin="0,10,10,0"
+                ></Rectangle>
+                <Rectangle
+    HorizontalAlignment="Right"
+    RadiusX="7"
+    RadiusY="7"
+    Height="15" Width="45"
+      Fill="{Binding Outdooriluminancecolors[4]}"
+    Margin="0,10,10,0"
+                ></Rectangle>
+                <Rectangle
+    HorizontalAlignment="Right"
+    RadiusX="7"
+    RadiusY="7"
+    Height="15" Width="45"
+      Fill="{Binding Outdooriluminancecolors[5]}"
+    Margin="0,10,10,0"
+                ></Rectangle>
+                <Rectangle
+    HorizontalAlignment="Right"
+    RadiusX="7"
+    RadiusY="7"
+    Height="15" Width="45"
+      Fill="{Binding Outdooriluminancecolors[6]}"
+    Margin="0,10,10,0"
+                ></Rectangle>
+                <TextBlock Text="{Binding Outdoorluminance}" Width="55" TextAlignment="Center" Margin="-45,-169,0,0" FontSize="20">1000</TextBlock>
+                <Image Source="avares://AvaloniaTest/Assets/Images/outdoor.png" Margin="0,-110,45,80" Width="45" Height="45" ></Image>
+                <TextBlock Margin="-6,-165,0,0" FontSize="18">lx</TextBlock>
+              </StackPanel>
+            </StackPanel>
           </StackPanel>
         </Border>
 
@@ -556,7 +684,6 @@
             </StackPanel>
             <Rectangle Height="2" Width="487" Fill="{DynamicResource BorderColor}" Margin="0,10,0,0"></Rectangle>
               <Canvas>
-                
                 <Image Canvas.Left="-12.5" Canvas.Top="6" Source="avares://AvaloniaTest/Assets/Images/indoor.png" Width="40" Height="40" ></Image>
                 <TextBlock Text="CO" Canvas.Top="5" Canvas.Left="20"></TextBlock>
                 <TextBlock Text="{Binding Indoorco}" Canvas.Top="25" Canvas.Left="20"></TextBlock>
@@ -568,7 +695,6 @@
                 <Line Canvas.Top="78" Canvas.Left="10" StartPoint="0,0" EndPoint="181,0"  Stroke="{DynamicResource LightBorderColor}" StrokeThickness="2" StrokeDashArray="3"/>
 
 
-              
                 <TextBlock Text="CO" Canvas.Top="85" Canvas.Left="20"></TextBlock>
                 <TextBlock Text="{Binding Outdoorco}" Canvas.Top="105" Canvas.Left="20"></TextBlock>
                 <Image Canvas.Left="15" Canvas.Top="85" Source="avares://AvaloniaTest/Assets/Images/starp.png"  Width="150" Height="100" ></Image>
@@ -598,10 +724,7 @@
           </StackPanel>
         </Border>
       </Canvas>
-           
-      
-
-
+    
     </Carousel>
     <Panel Margin="20" VerticalAlignment="Bottom"  >
       <Button Background="{DynamicResource LightBorderColor}" Click="Previous">&lt;</Button>

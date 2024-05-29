@@ -12,36 +12,44 @@ using System.Text;
 using System.Threading.Tasks;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Diagnostics.Tracing;
+using MySql.Data.MySqlClient;
 //using System.Device.Gpio;
 
+
+//DODAC ODCZYTYWANIE Z ARDUINO JASNOSCI ORAZ CO!!!!!!!!!!
 
 
 namespace AvaloniaTest.Models
 {
-    public class OutDoorSensor
+    public class InDoorSensor
     {
        
         public event EventHandler<double> DataUpdated;
         public event EventHandler<double> DataUpdatedTwo;
         public event EventHandler<double> IndoorTempUpdated;
         public event EventHandler<double> IndoorHumUpdated;
-        public event EventHandler<double> IndoorPresUpdated;
-        public event EventHandler<double> IndoorAltiUpdated;
-
+        
+        public event EventHandler<int> IndoorAltiUpdated;
+        public event EventHandler<double> IndoorLumiUpdated;
+        public event EventHandler<double> IndoorCOUpdated;
         public event EventHandler<int> IndoorPreasureUpdated;
 
         public event EventHandler<double> WindDirectionUpdated;
         public event EventHandler<int> WindSpeedUpdated;
         public event EventHandler<int> WindGustUpdated;
 
-        private static OutDoorSensor instance;
+        private static InDoorSensor instance;
         private bool isFirst = true;
         private bool isSecond = true;
 
         public double temperature = 0.1;
         public double humidity = 0.0;
-        public double pressure = 0.0;
-        public double altitude = 0.0;
+        public double pressureDouble = 0.0;
+        public int pressure = 0;
+        public int altitude = 0;
+        public double altitudeDouble = 0.0;
+        public double luminance = 0.0;
+        public double co = 0.0;
 
         public double windDirection = 0.0;
         public int windSpeed = 0;
@@ -60,6 +68,43 @@ namespace AvaloniaTest.Models
         //    }
         //}
 
+        DateTime currentDateTime;
+        MySqlConnection con;
+        MySqlCommand cmd;
+        public InDoorSensor()
+        {
+            try
+            {
+                string connString = "server=sql11.freesqldatabase.com ; uid=sql11704729 ; pwd=89jVjCtqzd ; database=sql11704729";
+                con = new MySqlConnection();
+                con.ConnectionString = connString;
+                con.Open();
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error connecting to the database: " + ex.Message);
+            }
+        }
+
+
+        private void InsertDataIntoTable(string tableName, DateTime date, double value)
+        {
+            try
+            {
+                string insertQuery = $"INSERT INTO {tableName} (date, {tableName}) VALUES (@date, @value)";
+                cmd = new MySqlCommand(insertQuery, con);
+                cmd.Parameters.AddWithValue("@date", date);
+                cmd.Parameters.AddWithValue("@value", value);
+                cmd.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error while inserting data into the database: " + ex.Message);
+            }
+        }
+
+
         public void StopEvery()
         { 
         isFirst = false;
@@ -67,7 +112,7 @@ namespace AvaloniaTest.Models
 
         public async Task RunReadData()
         {
-            MainWindowViewModel.mqqt.OutdoorTempUpdated += OutDoorTemp_DataUpdated;
+           // MainWindowViewModel.mqqt.OutdoorTempUpdated += OutDoorTemp_DataUpdated;
             Console.WriteLine("TUTAJ");
             string portName = "/dev/ttyS0";
             int baudRate = 9600;
@@ -100,13 +145,16 @@ namespace AvaloniaTest.Models
                                 if (double.TryParse(parts[1].Replace("-%", ""), out humidity))
                                 {
                                     // Odczytanie i konwersja ciśnienia
-                                    if (double.TryParse(parts[2].Replace("-hPa",""), out pressure))
+                                    if (double.TryParse(parts[2].Replace("-hPa",""), out pressureDouble))
                                     {
+                                        pressure = (int)Math.Floor(pressureDouble);
                                         // Odczytanie i konwersja wysokości
-                                        if (double.TryParse(parts[3].Replace("-m",""), out altitude))
+                                        if (double.TryParse(parts[3].Replace("-m",""), out altitudeDouble))
                                         {
+                                            altitude = (int)Math.Floor(altitudeDouble);
+
                                             // Wszystkie wartości zostały pomyślnie odczytane i przypisane do zmiennych
-                                          
+                                            Console.WriteLine("ODCZYTANO WSZYSTKO");
                                         }
                                     }
                                 }
@@ -129,20 +177,11 @@ namespace AvaloniaTest.Models
                     temperature = Math.Round(j, 1);
                     humidity = new Random().Next(101);
 
-                    windDirection = new Random().NextDouble() * 360;
-                    windSpeed = new Random().Next(0, 31);
-                    int randomGust= new Random().Next(0, 31);
-                    if (randomGust > windGust)
-                    {
-                        windGust = randomGust;
-                    }
 
-                    preasure = new Random().Next(960, 1060);
+                    pressure = new Random().Next(960, 1060);
                     altitude = new Random().Next(200,500);
                     luminance = altitude + 5;
-                    co = new Random().NextDouble() * 200;
-                    Console.WriteLine(co);
-
+                    co = new Random().Next(1,20);
 
                 }
 
@@ -154,23 +193,36 @@ namespace AvaloniaTest.Models
                 // Console.WriteLine($"PRZEROBIONA TEMPAERTURA {a}. ");
                 // double moja = Convert.ToDouble(a);
                 // Console.WriteLine($"PRZEROBIONA TEMPAERTURA {moja} ");
-  
+                windDirection = new Random().NextDouble() * 360;
+                windSpeed = new Random().Next(0, 31);
+                int randomGust = new Random().Next(0, 31);
+                if (randomGust > windGust)
+                {
+                    windGust = randomGust;
+                }
 
-                //IndoorTempUpdated?.Invoke(this, te); // Wywołanie zdarzenia, przekazujące aktualną wartość i
+
+                IndoorTempUpdated?.Invoke(this, temperature); // Wywołanie zdarzenia, przekazujące aktualną wartość i
                 IndoorHumUpdated?.Invoke(this, humidity);
-                IndoorPresUpdated?.Invoke(this, pressure);
+                
                 IndoorAltiUpdated?.Invoke(this, altitude);
+                Console.WriteLine(pressure);
+                IndoorPreasureUpdated?.Invoke(this, pressure);
+                IndoorLumiUpdated?.Invoke(this, luminance);
+                IndoorCOUpdated?.Invoke(this, co);
+
+
                 WindDirectionUpdated?.Invoke(this, windDirection);
                 WindSpeedUpdated?.Invoke(this, windSpeed);
                 WindGustUpdated?.Invoke(this, windGust);
 
                 currentDateTime = DateTime.Now;
-                InsertDataIntoTable("innerTemperature", currentDateTime, temperature);
-                InsertDataIntoTable("innerHumidity", currentDateTime, humidity);
-                InsertDataIntoTable("innerAltitude", currentDateTime, altitude);
-                InsertDataIntoTable("innerPreasure", currentDateTime, preasure);
-                InsertDataIntoTable("innerLuminance", currentDateTime, luminance);
-                InsertDataIntoTable("innerCo", currentDateTime, co);
+                //InsertDataIntoTable("innerTemperature", currentDateTime, temperature);
+                //InsertDataIntoTable("innerHumidity", currentDateTime, humidity);
+                //InsertDataIntoTable("innerAltitude", currentDateTime, altitude);
+                //InsertDataIntoTable("innerPreasure", currentDateTime, preasure);
+                //InsertDataIntoTable("innerLuminance", currentDateTime, luminance);
+                //InsertDataIntoTable("innerCo", currentDateTime, co);
 
 
                 await Task.Delay(TimeSpan.FromSeconds(5));   
