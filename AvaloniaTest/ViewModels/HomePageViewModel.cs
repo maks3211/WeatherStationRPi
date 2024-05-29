@@ -30,19 +30,23 @@ using System.Windows.Input;
 using Avalonia.Platform;
 using System.Diagnostics.Contracts;
 
-//!!!!! - przekazywac wartosci z czujnikow jako string wraz z jednostka - mozliwosc amiany jednostki !!!!!
+
 
 namespace AvaloniaTest.ViewModels
 {
 
-
+    /// <summary>
+    /// This class provides properties and commands for the HomePage view. 
+    /// It manages the state and behavior of various UI elements on the HomePage.
+    /// </summary>
     public partial class HomePageViewModel : ViewModelBase
     {
 
-     
-
-
         private double _sliderValue;
+
+        /// <summary>
+        /// Gets or sets the value of the slider.
+        /// </summary>
         public double SliderValue
         {
             get { return _sliderValue; }
@@ -58,12 +62,6 @@ namespace AvaloniaTest.ViewModels
         }
 
 
-        // OutDoorSensor sen = new OutDoorSensor();
-      //TUTAJ
-        //private OutDoorSensor sen = new OutDoorSensor();//.Instance;
-
-
-        //WIND DIRECTION
         [ObservableProperty]
         public double _arrowx = 150;
         [ObservableProperty]
@@ -105,100 +103,102 @@ namespace AvaloniaTest.ViewModels
  
 
         //OUTDOOR SENSORS
-        //TEMPERATURA OUTDOOR
         [ObservableProperty]
         public string _outdoortemperature = Units.GetInstance().CalculateTemp(MainWindowViewModel.mqqt.OutDoorTemp).ToString().Replace(',', '.').Replace("-999", "-") + Units.GetInstance().GetTempUnit();
 
-
-        //CISNIENIE OUTDOOR
         [ObservableProperty]
         public double _outdoorpreasure;
 
-
-        //WILGOTNOSC OUTDOOR
         [ObservableProperty]
         public string _outdoorhumidity = MainWindowViewModel.inDoorSens.humidity.ToString();
+
         [ObservableProperty]
         public double _outdoorhumiditycircle = 60 - MainWindowViewModel.inDoorSens.humidity / 100 * 60;
 
-        //JASNOSC OUTDOOR
         [ObservableProperty]
         public int _outdoorluminance;
 
-        //WYSOKOSC OUTDOOR
         [ObservableProperty]
         public int _outdooraltitude;
 
-        //CO OUTDOOR
         [ObservableProperty]
         public int _outdoorco;
+
         [ObservableProperty]
         public int _outdoorcocircle = 5;
+
         [ObservableProperty]
         public int _outdoornh3;
+
         [ObservableProperty]
         public int _outdoornh3circle = 5;
+
         [ObservableProperty]
         public int _outdoorno2;
+
         [ObservableProperty]
         public int _outdoorno2circle = 5;
 
 
 
-        //TEMPERATURA INDOOR
-        //IKONA ZMIANY TEMP WZGLEDEM WCZORAJSZEJ
-
+        //INDOOR SENSORS
         [ObservableProperty]
         public string _indoortemperature = Units.GetInstance().CalculateTemp(MainWindowViewModel.inDoorSens.temperature).ToString().Replace(',', '.') + Units.GetInstance().GetTempUnit();
+        
         [ObservableProperty]
         public StreamGeometry _indoortemperaturechangeicon = (StreamGeometry)Application.Current.FindResource("ArrowUp");
+        
         [ObservableProperty]
         public string _indoortodaymintemp = "-°C";
+        
         [ObservableProperty]
         public string _indoortodaymaxtemp = "-°C";
+        
         [ObservableProperty]
         public string _indoorysterdaytemp = "-°C";
 
-        //WILGOTNOSC INDOOR
         [ObservableProperty]
         public string _indoorhumidity = MainWindowViewModel.inDoorSens.humidity.ToString();
+        
         [ObservableProperty]
         public double _indoorhumiditycircle = 54 - MainWindowViewModel.inDoorSens.humidity / 100 * 54;
 
-        //Cisnienie INDOOR
         [ObservableProperty]
         public string _indoorpreasure ="sdsd";
 
-        //JASNOSC INDOOR
         [ObservableProperty]
         public int _indoorluminance;
 
-        //WYSOKOSC INDOOR 
         [ObservableProperty]
         public int _indooraltitude;
 
-
-        //CO INDOOR
         [ObservableProperty]
         public int _indoorco;
+        
         [ObservableProperty]
         public int _indoorcocircle = 5;
 
-        //GODZINA
+        //TIME
         private DispatcherTimer timer;
+        
         [ObservableProperty]
         private string _currentDate = DateTime.Now.ToString("dd-MM-yyyy");
+        
         [ObservableProperty]
         public string _currenttime = DateTime.Now.Hour.ToString("D2") + ":" + DateTime.Now.Minute.ToString("D2");
+        
         [ObservableProperty]
         private string _currentDay = char.ToUpper(DateTime.Now.ToString("dddd")[0]) + DateTime.Now.ToString("dddd").Substring(1);
 
-        //IKONA POGODY
+        // WEATHER ICON
         [ObservableProperty]
         private Bitmap _mybitmap = new Bitmap(AssetLoader.Open(new Uri("avares://AvaloniaTest/Assets/Images/icons8-sun-144.png")));
+        
         private Bitmap _iconname;
         public event PropertyChangedEventHandler PropertyChanged;
-        //ABY ZMIENIC IKONKE POPROSTU PRZYPISZ NOWA BITMAPE DO ICONNAME
+        /// <summary>
+        /// Gets or sets the weather icon.
+        /// </summary>
         public Bitmap Iconname
         {
             get => _iconname;
@@ -211,12 +211,15 @@ namespace AvaloniaTest.ViewModels
                 }
             }
         }
+
         private void RaisePropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        //Zamiana motywu
+        /// <summary>
+        /// Command handler for change theme button.
+        /// </summary>
         [RelayCommand]
         private void ThemeBtn()
         {
@@ -225,60 +228,32 @@ namespace AvaloniaTest.ViewModels
                 
         }
 
-      //TESTOWY PRZYCISK 
-        public void ButtonClokceCommand()
-        {
-            Console.WriteLine("guzik");
-            ChangeIcon();
-        }
-        [ObservableProperty]
-        public string text = "puste";
-
-
-
-
-
-
+        /// <summary>
+        /// Initializes a new instance of the HomePageViewModel class.
+        /// </summary>
         public HomePageViewModel()
         {
-            //Units.GetInstance().ChangeWindUnit("km");
-
-          //  Console.WriteLine("NOWY HomePageViewModel" + jest);
-          //przypisanie wartosci poczatkowej ikony pogody
             _iconname = new Bitmap(AssetLoader.Open(new Uri("avares://AvaloniaTest/Assets/Images/icons8-sun-144.png")));
-           
-           //uruchomienie timera- wykorzystany do oddczytywania godziny
             timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromMinutes(1);
-
-            //CZYTANIE DANYCH ROZPOCZYNANE JEST W MAINWINDOWSVIEW - I TRWA CZALY CZAS W TLE
-            //  StartDataReading();
-            //SUB DLA ZMIANY 
-            
             MainWindowViewModel.CurrentPageOpened += ViewModel_Activated;
-            //daje suba na zmiane strony
-            //jezeli wykryto zmiane to funkcja ktora unsubuje wszystko 
         }
 
+        /// <summary>
+        /// Handles the activation of the view model
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ViewModel_Activated(object sender, string e)
         {
-            //Console.WriteLine($"TOOOOOOOO{e}");  
             if (MainWindowViewModel.CurrentPageSub == "AvaloniaTest.ViewModels.HomePageViewModel")
             {
-                // Console.WriteLine("------------WITAM HomePage---------------");
-                Console.WriteLine("-------------------Dzienin dpbry HomePage----------------------");
                 timer.Start();
                 StartClock();
                 StartOutDoorReading();
-            
             }
             else
             {
-                Console.WriteLine("-------------------DO WIDZENIA HomePage----------------------");
-                //  sen.DataUpdated -= OutDoorSensor_DataUpdated;
-                //  sen.DataUpdatedTwo -= OutDoorSensor_DataUpdatedTwo;
-
-                //INDOOR SENSORS
                 MainWindowViewModel.mqqt.OutdoorTempUpdated -= OutDoorTemp_DataUpdated;
                 MainWindowViewModel.mqqt.OutdoorPresUpdated -= OutDoorPres_DataUpdated;
                 MainWindowViewModel.mqqt.OutdoorHumiUpdated -= OutDoorHum_DataUpdated;
@@ -286,7 +261,6 @@ namespace AvaloniaTest.ViewModels
                 MainWindowViewModel.mqqt.OutdoorCOUpdated -= OutDoorCo_DataUpdated;
                 MainWindowViewModel.mqqt.OutdoorNH3Updated -= OutDoornh3_DataUpdated;
                 MainWindowViewModel.mqqt.OutdoorNO2Updated -= OutDoorno2_DataUpdated;
-
 
                 MainWindowViewModel.inDoorSens.IndoorTempUpdated -= InDoorTemp_DataUpdated;
                 MainWindowViewModel.inDoorSens.IndoorHumUpdated -= InDoorHum_DataUpdated;
@@ -298,6 +272,7 @@ namespace AvaloniaTest.ViewModels
                 MainWindowViewModel.inDoorSens.IndoorAltiUpdated -= InDoorAlti_DataUpdated;
                 MainWindowViewModel.inDoorSens.IndoorCOUpdated -= InDoorCo_DataUpdated;
                 MainWindowViewModel.CurrentPageOpened -= ViewModel_Activated;
+
                 timer.Stop();
                 StopClock();
             }
@@ -348,60 +323,92 @@ namespace AvaloniaTest.ViewModels
             MainWindowViewModel.inDoorSens.IndoorCOUpdated += InDoorCo_DataUpdated;
         }
 
-
+        /// <summary>
+        /// Update outdoor temperature value
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OutDoorTemp_DataUpdated(object sender, double e)
         {
-            // Console.WriteLine("tUpdate temperatury");
-            //Indoortemperature = e.ToString().Replace(',', '.') + "°C";
-            Console.WriteLine("TU SA TE TEMP:");
-            Console.WriteLine(e);
-            Outdoortemperature = Units.GetInstance().CalculateTemp(e).ToString().Replace(',','.') + Units.GetInstance().GetTempUnit();
-            Console.WriteLine(Outdoortemperature);
+            Outdoortemperature = Units.GetInstance().CalculateTemp(e).ToString().Replace(',', '.') + Units.GetInstance().GetTempUnit();
         }
 
+        /// <summary>
+        /// Update outdoor pressur value
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OutDoorPres_DataUpdated(object sender, double e)
         {
-           
             Outdoorpreasure = (int)e;
             ChangeVerticalBarColor(e, 1054, 960, _greencolorslist, Outdoorpreasurecolors);
         }
 
-
+        /// <summary>
+        /// Update outdoor humidity value
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OutDoorHum_DataUpdated(object sender, double e)
         {
-           // Console.WriteLine("tUpdate wilgotnosci");
-            
-        Outdoorhumiditycircle = 60 - e / 100 * 60;
-        string[] parts1 = e.ToString().Split('.', ',');
-        Outdoorhumidity = parts1[0];
+            // Console.WriteLine("tUpdate wilgotnosci");
+
+            Outdoorhumiditycircle = 60 - e / 100 * 60;
+            string[] parts1 = e.ToString().Split('.', ',');
+            Outdoorhumidity = parts1[0];
         }
 
-
+        /// <summary>
+        /// Update outdoor luminance value
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OutDoorLumi_DataUpdated(object sender, double e)
         {
-      
+
             Outdoorluminance = (int)e;
             ChangeVerticalBarColor(e, 2000, 0, _yellowcolorslist, Outdooriluminancecolors);
         }
 
-
+        /// <summary>
+        /// Update outdoor altitude value
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OutDoorAlti_DataUpdated(object sender, int e)
         {
             Outdooraltitude = e;
         }
 
+        /// <summary>
+        /// Update outdoor Co value
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OutDoorCo_DataUpdated(object sender, double e)
         {
 
             Outdoorco = (int)e;
             Outdoorcocircle = MoveCricle(5, 0, 250, e);
         }
+
+        /// <summary>
+        /// Update outdoor NH3 value
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OutDoornh3_DataUpdated(object sender, double e)
         {
 
             Outdoornh3 = (int)e;
             Outdoornh3circle = MoveCricle(15, 0, 180, e);
         }
+
+        /// <summary>
+        /// Update outdoor NO2 value
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OutDoorno2_DataUpdated(object sender, double e)
         {
 
@@ -409,22 +416,42 @@ namespace AvaloniaTest.ViewModels
             Outdoorno2circle = MoveCricle(15, 0, 10, e);
         }
 
+        /// <summary>
+        /// Update indoor temperature value
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void InDoorTemp_DataUpdated(object sender, double e)
         {
             Indoortemperature = Units.GetInstance().CalculateTemp(e).ToString().Replace(',', '.') + Units.GetInstance().GetTempUnit();
         }
 
+        /// <summary>
+        /// Update indoor luminance value
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void InDoorLumi_DataUpdated(object sender, double e)
         {
             Indoorluminance = (int)e;
             ChangeVerticalBarColor(e, 2000, 0, _yellowcolorslist, Indooriluminancecolors);
         }
 
+        /// <summary>
+        /// Update indoor altitude value
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void InDoorAlti_DataUpdated(object sender, int e)
         {
             Indooraltitude = e;
         }
 
+        /// <summary>
+        /// Update indoor humidity value
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void InDoorHum_DataUpdated(object sender, double e)
         {
             // Console.WriteLine("tUpdate wilgotnosci");
@@ -433,35 +460,64 @@ namespace AvaloniaTest.ViewModels
             string[] parts1 = e.ToString().Split('.', ',');
             Indoorhumidity = parts1[0];
         }
+
+        /// <summary>
+        /// Update wind direction
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void WindDirection_DataUpdated(object sender, double e)
         {
             Angle = e;
             ChangeWindArrow(e);
         }
+
+        /// <summary>
+        /// Update wind speed value
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void WindSpeed_DataUpdated(object sender, int e)
         {
-            WindSpeed = Units.GetInstance().CalculatWind(e).ToString().Replace(',', '.'); 
+            WindSpeed = Units.GetInstance().CalculatWind(e).ToString().Replace(',', '.');
         }
+
+        /// <summary>
+        /// Update wind gust value
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void WindGust_DataUpdated(object sender, int e)
         {
             WindGust = e;
         }
 
+        /// <summary>
+        /// Update indoor pressure value
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void IndoorPres_DataUpdated(object sender, int e)
         {
-            Console.WriteLine("UPDATE CISNIENIE");
             Indoorpreasure = e.ToString();
             ChangeVerticalBarColor(e, 1054, 960, _yellowcolorslist, Indoorpreasurecolors);
-          
+
         }
 
+        /// <summary>
+        /// Update indoor CO value
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void InDoorCo_DataUpdated(object sender, double e)
         {
             Indoorco = (int)e;
-            //TUTAJ RUSZANIE KOLEM
             Indoorcocircle = MoveCricle(5, 0, 250, e);
         }
-
+        
+        /// <summary>
+        /// Sets icon image from local png file
+        /// </summary>
         public void ChangeIcon()
         {          
             Mybitmap = new Bitmap(AssetLoader.Open(new Uri("avares://AvaloniaTest/Assets/Images/icons8-cloud-96.png")));
@@ -476,16 +532,19 @@ namespace AvaloniaTest.ViewModels
             return (int)(width * value / range);
         }
 
+        /// <summary>
+        /// Calculate and sets arrow position
+        /// </summary>
+        /// <param name="angle">Direction of wind</param>
         public void ChangeWindArrow(double angle)
         {            
             double radians = Math.PI * angle / 180;
             double arrowLength = 77; 
 
-            // Obliczanie pozycji strzałki na okręgu
-            Arrowx = 140 + arrowLength * Math.Sin(radians); //140 145
+            Arrowx = 140 + arrowLength * Math.Sin(radians);
             Arrowy = 145 - arrowLength * Math.Cos(radians) - 50; 
 
-            double circleAngle = angle + 180; // Kąt przeciwny do kąta strzałki
+            double circleAngle = angle + 180;
             double circleRadians = Math.PI * circleAngle / 180;
             double circleLength = 77;
 
@@ -521,7 +580,14 @@ namespace AvaloniaTest.ViewModels
             }
         }
 
-
+        /// <summary>
+        /// Update Bar colors to be displayed
+        /// </summary>
+        /// <param name="value">Current value.</param>
+        /// <param name="max">Max bar value.</param>
+        /// <param name="min">Min bar value.</param>
+        /// <param name="colors">Arrays of colors to be displayed</param>
+        /// <param name="axamlColors">Colors to be set</param>
         public void ChangeVerticalBarColor(double value, double max, double min, string[] colors, ObservableCollection<string> axamlColors)
         {
             int tmp = 0;
@@ -599,7 +665,10 @@ namespace AvaloniaTest.ViewModels
 
 
         }
-
+        /// <summary>
+        /// Update color of pressure bar
+        /// </summary>
+        /// <param name="preasure">Current pressure.</param>
         public void ChangeIndoorPreasureBar(double preasure)
         {
             int tmp;
