@@ -106,13 +106,6 @@ namespace AvaloniaTest.ViewModels
 
 
 
-
-        [RelayCommand]
-        public void NazwaFunkcji()
-        {
-            Console.WriteLine("asdasd");
-        }
-
         [RelayCommand]
         public void ChangeTheme()
         {

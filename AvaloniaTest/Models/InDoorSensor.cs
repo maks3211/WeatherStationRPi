@@ -44,8 +44,10 @@ namespace AvaloniaTest.Models
 
         public double temperature = 0.1;
         public double humidity = 0.0;
-        public double pressure = 0.0;
+        public double pressureDouble = 0.0;
+        public int pressure = 0;
         public int altitude = 0;
+        public double altitudeDouble = 0.0;
         public double luminance = 0.0;
         public double co = 0.0;
 
@@ -143,13 +145,16 @@ namespace AvaloniaTest.Models
                                 if (double.TryParse(parts[1].Replace("-%", ""), out humidity))
                                 {
                                     // Odczytanie i konwersja ciśnienia
-                                    if (double.TryParse(parts[2].Replace("-hPa",""), out pressure))
+                                    if (double.TryParse(parts[2].Replace("-hPa",""), out pressureDouble))
                                     {
+                                        pressure = (int)Math.Floor(pressureDouble);
                                         // Odczytanie i konwersja wysokości
-                                        if (int.TryParse(parts[3].Replace("-m",""), out altitude))
+                                        if (double.TryParse(parts[3].Replace("-m",""), out altitudeDouble))
                                         {
+                                            altitude = (int)Math.Floor(altitudeDouble);
+
                                             // Wszystkie wartości zostały pomyślnie odczytane i przypisane do zmiennych
-                                          
+                                            Console.WriteLine("ODCZYTANO WSZYSTKO");
                                         }
                                     }
                                 }
@@ -172,15 +177,8 @@ namespace AvaloniaTest.Models
                     temperature = Math.Round(j, 1);
                     humidity = new Random().Next(101);
 
-                    windDirection = new Random().NextDouble() * 360;
-                    windSpeed = new Random().Next(0, 31);
-                    int randomGust= new Random().Next(0, 31);
-                    if (randomGust > windGust)
-                    {
-                        windGust = randomGust;
-                    }
 
-                    preasure = new Random().Next(960, 1060);
+                    pressure = new Random().Next(960, 1060);
                     altitude = new Random().Next(200,500);
                     luminance = altitude + 5;
                     co = new Random().Next(1,20);
@@ -195,13 +193,21 @@ namespace AvaloniaTest.Models
                 // Console.WriteLine($"PRZEROBIONA TEMPAERTURA {a}. ");
                 // double moja = Convert.ToDouble(a);
                 // Console.WriteLine($"PRZEROBIONA TEMPAERTURA {moja} ");
-  
+                windDirection = new Random().NextDouble() * 360;
+                windSpeed = new Random().Next(0, 31);
+                int randomGust = new Random().Next(0, 31);
+                if (randomGust > windGust)
+                {
+                    windGust = randomGust;
+                }
+
 
                 IndoorTempUpdated?.Invoke(this, temperature); // Wywołanie zdarzenia, przekazujące aktualną wartość i
                 IndoorHumUpdated?.Invoke(this, humidity);
                 
                 IndoorAltiUpdated?.Invoke(this, altitude);
-                IndoorPreasureUpdated?.Invoke(this, preasure);
+                Console.WriteLine(pressure);
+                IndoorPreasureUpdated?.Invoke(this, pressure);
                 IndoorLumiUpdated?.Invoke(this, luminance);
                 IndoorCOUpdated?.Invoke(this, co);
 
@@ -211,12 +217,12 @@ namespace AvaloniaTest.Models
                 WindGustUpdated?.Invoke(this, windGust);
 
                 currentDateTime = DateTime.Now;
-                InsertDataIntoTable("innerTemperature", currentDateTime, temperature);
-                InsertDataIntoTable("innerHumidity", currentDateTime, humidity);
-                InsertDataIntoTable("innerAltitude", currentDateTime, altitude);
-                InsertDataIntoTable("innerPreasure", currentDateTime, preasure);
-                InsertDataIntoTable("innerLuminance", currentDateTime, luminance);
-                InsertDataIntoTable("innerCo", currentDateTime, co);
+                //InsertDataIntoTable("innerTemperature", currentDateTime, temperature);
+                //InsertDataIntoTable("innerHumidity", currentDateTime, humidity);
+                //InsertDataIntoTable("innerAltitude", currentDateTime, altitude);
+                //InsertDataIntoTable("innerPreasure", currentDateTime, preasure);
+                //InsertDataIntoTable("innerLuminance", currentDateTime, luminance);
+                //InsertDataIntoTable("innerCo", currentDateTime, co);
 
 
                 await Task.Delay(TimeSpan.FromSeconds(5));   

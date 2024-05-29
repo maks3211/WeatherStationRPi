@@ -35,11 +35,10 @@
           </StackPanel>
           <Rectangle Margin="0,5,0,5" Width="1024" Height="2" Fill="{DynamicResource BorderColor}"></Rectangle>
           <StackPanel>
-            <TextBlock>USTAWIENI SIECI</TextBlock>
-            <TextBlock>WUSTAIWNIA SIECI</TextBlock>
+          
+           
 
           </StackPanel>
-          <Button Command="{Binding DeleteButtonCommand}">usuwanie</Button>
 
         </StackPanel>
         

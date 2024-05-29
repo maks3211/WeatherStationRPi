@@ -371,8 +371,9 @@ namespace AvaloniaTest.ViewModels
         {
            // Console.WriteLine("tUpdate wilgotnosci");
             
-        Outdoorhumiditycircle = 60 - e / 100 * 60; 
-        Outdoorhumidity = e.ToString();
+        Outdoorhumiditycircle = 60 - e / 100 * 60;
+        string[] parts1 = e.ToString().Split('.', ',');
+        Outdoorhumidity = parts1[0];
         }
 
 
@@ -429,7 +430,8 @@ namespace AvaloniaTest.ViewModels
             // Console.WriteLine("tUpdate wilgotnosci");
 
             Indoorhumiditycircle = 54 - e / 100 * 54;
-            Indoorhumidity = e.ToString();
+            string[] parts1 = e.ToString().Split('.', ',');
+            Indoorhumidity = parts1[0];
         }
         private void WindDirection_DataUpdated(object sender, double e)
         {
@@ -447,6 +449,7 @@ namespace AvaloniaTest.ViewModels
 
         private void IndoorPres_DataUpdated(object sender, int e)
         {
+            Console.WriteLine("UPDATE CISNIENIE");
             Indoorpreasure = e.ToString();
             ChangeVerticalBarColor(e, 1054, 960, _yellowcolorslist, Indoorpreasurecolors);
           

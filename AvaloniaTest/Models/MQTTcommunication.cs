@@ -204,13 +204,13 @@ namespace AvaloniaTest.Models
                         // OutDoorTEMPERATURE = Encoding.UTF8.GetString(e.ApplicationMessage.PayloadSegment);
                         OutDoorTemp = ConvertToDouble(e.ApplicationMessage.PayloadSegment);
                         OutdoorTempUpdated?.Invoke(this, OutDoorTemp);
-                        InsertDataIntoTable("outerTemperature", currentDateTime, OutDoorTemp);
+                        //InsertDataIntoTable("outerTemperature", currentDateTime, OutDoorTemp);
                         break;
                     case "outdoorpreasure":
                            Console.WriteLine($"+ Cisnienie = {Encoding.UTF8.GetString(e.ApplicationMessage.Payload)}");
                         OutDoorPres = ConvertToDouble(e.ApplicationMessage.PayloadSegment);
                         OutdoorPresUpdated?.Invoke(this, OutDoorPres);
-                        InsertDataIntoTable("outerPreasure", currentDateTime, OutDoorPres);
+                        //InsertDataIntoTable("outerPreasure", currentDateTime, OutDoorPres);
                         break;
                     case "outdooraltitude":
                         string result = Encoding.UTF8.GetString(e.ApplicationMessage.Payload);
@@ -224,37 +224,37 @@ namespace AvaloniaTest.Models
                         }
                          OutDoorAlti = int.Parse(result);
                          OutdoorAltiUpdated?.Invoke(this, OutDoorAlti);
-                        InsertDataIntoTable("outerAltitude", currentDateTime, OutDoorAlti);
+                        //InsertDataIntoTable("outerAltitude", currentDateTime, OutDoorAlti);
                         break;
                     case "outdoornhumidity":
                         // Console.WriteLine($"+ Wilgotnosc = {Encoding.UTF8.GetString(e.ApplicationMessage.Payload)}");
                         OutDoorHumi= ConvertToDouble(e.ApplicationMessage.PayloadSegment);
                         OutdoorHumiUpdated?.Invoke(this, OutDoorHumi);
-                        InsertDataIntoTable("outerHumidity", currentDateTime, OutDoorHumi);
+                        //InsertDataIntoTable("outerHumidity", currentDateTime, OutDoorHumi);
                         break;
                     case "outdooriluminance":
                         OutDoorLumi = ConvertToDouble(e.ApplicationMessage.PayloadSegment);
                         OutdoorLumiUpdated?.Invoke(this, OutDoorLumi);
                         //Console.WriteLine($"+ Swiatlo = {Encoding.UTF8.GetString(e.ApplicationMessage.Payload)}");
-                        InsertDataIntoTable("outerLuminance", currentDateTime, OutDoorLumi);
+                        //InsertDataIntoTable("outerLuminance", currentDateTime, OutDoorLumi);
                         break;
                     case "outdoorno2":
                         OutDoorNO2 = ConvertToDouble(e.ApplicationMessage.PayloadSegment);
                         OutdoorNO2Updated?.Invoke(this, OutDoorNO2);
                         // Console.WriteLine($"+ NO2 = {Encoding.UTF8.GetString(e.ApplicationMessage.Payload)}");
-                        InsertDataIntoTable("outerNo2", currentDateTime, OutDoorNO2);
+                        //InsertDataIntoTable("outerNo2", currentDateTime, OutDoorNO2);
                         break;
                     case "outdoorco":
                         OutDoorCO = ConvertToDouble(e.ApplicationMessage.PayloadSegment);
                         OutdoorCOUpdated?.Invoke(this, OutDoorCO);
                         // Console.WriteLine($"+ CO = {Encoding.UTF8.GetString(e.ApplicationMessage.Payload)}");
-                        InsertDataIntoTable("outerCo", currentDateTime, OutDoorCO);
+                        //InsertDataIntoTable("outerCo", currentDateTime, OutDoorCO);
                         break;
                     case "outdoornh3":
                         OutDoorNH3 = ConvertToDouble(e.ApplicationMessage.PayloadSegment);
                         OutdoorNH3Updated?.Invoke(this, OutDoorNH3);
                         // Console.WriteLine($"+ NH3 = {Encoding.UTF8.GetString(e.ApplicationMessage.Payload)}");
-                        InsertDataIntoTable("outerNh3", currentDateTime, OutDoorNH3);
+                        //InsertDataIntoTable("outerNh3", currentDateTime, OutDoorNH3);
                         break;
                 }
 

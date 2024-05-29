@@ -131,14 +131,7 @@ public partial class NetworkSettingsViewModel : ViewModelBase
 
     };
 
-    [RelayCommand]
-    public void DeleteButton()
-    {
-        Selectedwifilist = null;
-        Items.Add(new WifiListTemplate("siec33", 4,true,true));
-        Items[0].Label = "zmiana";
-        
-    }
+
 
     [RelayCommand]
     public void ConnectButton()
