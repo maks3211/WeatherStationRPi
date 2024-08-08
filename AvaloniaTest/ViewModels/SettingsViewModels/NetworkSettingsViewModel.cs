@@ -14,6 +14,7 @@ using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.Input;
 using Avalonia.Input;
 using System.ComponentModel;
+using AvaloniaTest.Views;
 
 
 
@@ -73,7 +74,9 @@ public partial class NetworkSettingsViewModel : ViewModelBase
     [ObservableProperty]
     private bool _connectbuttonvis = false;
     [ObservableProperty]
-    private bool _passwordboxvis = false;
+    private bool _passwordboxvis = false;  
+    [ObservableProperty]
+    private bool _keyboardvis = false;
 
 
 
@@ -85,6 +88,7 @@ public partial class NetworkSettingsViewModel : ViewModelBase
         Console.WriteLine("Otwarto ustawienia sieci");
         StartWifiReading();
         CheckWifiStatus();
+        
         network.WifiListUpdated += (sender, e) =>
         {
             // Aktualizacja listy Items
@@ -201,6 +205,7 @@ public partial class NetworkSettingsViewModel : ViewModelBase
         Console.WriteLine(value.Label);
         Selectedwifi = value.Label;
         Passwordboxvis = true;
+        Keyboardvis = true; 
         ToConnectssid = "Połącz się z:" +  value.Label;
 
     }
