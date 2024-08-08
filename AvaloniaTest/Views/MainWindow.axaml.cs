@@ -18,9 +18,9 @@ namespace AvaloniaTest.Views
 
         public MainWindow()
         {
-            
+            //Tryp pelno-ekranowy
             //this.WindowState = WindowState.FullScreen;
-           // this.Topmost = true;
+            //this.Topmost = true;
             //this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
 
 
