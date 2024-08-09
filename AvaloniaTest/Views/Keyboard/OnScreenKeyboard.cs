@@ -11,29 +11,45 @@ using Avalonia.Interactivity;
 using Org.BouncyCastle.Bcpg.OpenPgp;
 using Org.BouncyCastle.Asn1.Cmp;
 using System.Collections.ObjectModel;
+using Org.BouncyCastle.Asn1.Ocsp;
+using Avalonia.Media;
+using Avalonia.Animation;
+using System.ComponentModel.DataAnnotations;
+using Avalonia.Animation.Easings;
+using Avalonia.Styling;
+using LiveChartsCore.Drawing;
+using Avalonia;
 namespace AvaloniaTest.Views
 {
-    public class OnScreenKeyboard : Window
+    public class OnScreenKeyboard : UserControl
     {
+        private TextBox CurrentTextBox { get; set; }
+
+        private  bool isVisable = false;
+        private TextBox _associatedTextBox;
+        private Button _associatedEnterButton;
         private Grid keyboardGrid;
 
         private Panel keyboard;
         private const string qwertyKeyboard = "`1234567890-=qwertyuiop[]\\asdfghjkl;'zxcvbnm,./";
         private const string shifKeyboard = "as";
         private string[] fnKeysList =[ "Shift", "Space", "Backspace", "Alt"];
+        private Button enterBtn;
 
-        private KeyboardKey mojGuzik;
+
         private bool shiftState = false;
         private bool altState = false;
 
         private Dictionary<string, Button> FnKeys = new Dictionary<string, Button>();
 
-        public event EventHandler<string> KeyPressed;
+        private event EventHandler<string> KeyPressed;
 
         private StackPanel mainPanel;
 
+        private StackPanel framePanel;
+        private bool ready = true;
 
-        public ObservableCollection<string> fourthRowDefault { get; } = new()
+        private ObservableCollection<string> FourthRowDefault { get; } = new()
         {
             "z", "x", "c", "v", "b", "n", "m", ",", ".", "/"
         };
@@ -62,24 +78,20 @@ namespace AvaloniaTest.Views
 
         private StackPanel fifthRow;
 
-
-
-        public OnScreenKeyboard(Panel child)
+        public OnScreenKeyboard(StackPanel frame)
         {
+            framePanel = frame;
+           
             InitializeGrid();
-            if (child is Panel panel)
-            {
-                //panel.Children.Add(keyboardGrid);
-                panel.Children.Add(mainPanel);
-            }
+
 
            
-          //  CreateButtons();
+            //  CreateButtons();
             //InitializeBackspace();
             InitFirstRow();
             InitSecondRow();
             InitThirdRow();
-            InitFourthRow(); 
+            InitFourthRow();
             InitFifthRow();
             foreach (var a in firsRowButtons)
             {
@@ -97,11 +109,186 @@ namespace AvaloniaTest.Views
             {
                 a.UpdateText(shiftState);
             }
+            if (framePanel is not null)
+            {
+                framePanel.IsVisible = isVisable;
+            }               
         }
 
+       
+        public void SetAssociatedTextBox(TextBox textBox)
+        {
+            _associatedTextBox = textBox;
+        }
+         public void SetAssociatedEnterButton(Button button)
+        {
+            _associatedEnterButton = button;
+            if (_associatedEnterButton is not null)
+            {
+              
+                var napius = _associatedEnterButton.Content;
+                enterBtn.Content = napius;
+                Console.WriteLine(napius);
+            }
+            else {
+                Console.WriteLine("JEST BNYULL");
+                enterBtn.Content = "Enter";
+            }
+
+            //  var args = new RoutedEventArgs(Button.ClickEvent);
+            // _associatedEnterButton.RaiseEvent(args);
+            //  _associatedEnterButton.Command.Execute(null);
+        }
+
+        public void HandleKeyPress(string text)
+        {
+            if (_associatedTextBox == null) return;
+            _associatedTextBox.Focus();
+            int lineNumber = _associatedTextBox.CaretIndex;
+
+            if (text.Length > 1)
+            {
+                if (text == "back")
+                {
+                    if (_associatedTextBox.Text is not null && _associatedTextBox.Text.Length > 0 && _associatedTextBox.CaretIndex > 0)
+                    {
+                        _associatedTextBox.Text = _associatedTextBox.Text.Remove(_associatedTextBox.CaretIndex - 1, 1);
+                        lineNumber--;
+                    }
+                }
+                else if (text == "right")
+                {
+                    if (_associatedTextBox.CaretIndex < _associatedTextBox.Text.Length)
+                    {
+                        lineNumber++;
+                    }
+                }
+                else if (text == "left")
+                {
+                    if (_associatedTextBox.CaretIndex > 0)
+                    {
+                        lineNumber--;
+                    }
+                }
+                else if (text == "enter")
+                {
+                    Console.WriteLine("dodac OPCJE ENTER");
+                    if (_associatedEnterButton is not null)
+                    {
+                        _associatedEnterButton?.Command?.Execute(null);
+                    }
+                    
+                }
+            }
+            else
+            {
+                string currentText = _associatedTextBox.Text ?? string.Empty;
+                int caretIndex = _associatedTextBox.CaretIndex;
+                string newText = currentText.Insert(caretIndex, text);
+                _associatedTextBox.Text = newText;
+                _associatedTextBox.CaretIndex = caretIndex + text.Length;
+                lineNumber++;
+            }
+
+            _associatedTextBox.CaretIndex = lineNumber;
+        }
+
+        public StackPanel GetKeyBoardStackPanel()
+        {
+            return mainPanel;
+        }
+
+        public async  void Close()
+        {
+            if (!isVisable) return;
+            if (!ready) return;
+            ready = false;
+            Console.WriteLine("ZASMDASDASDASDASD");
+            
+
+            var animation = new Avalonia.Animation.Animation
+            {
+                FillMode = FillMode.Forward,
+                Duration = TimeSpan.FromMilliseconds(300), // Czas trwania animacji
+                Easing = new SineEaseInOut(), // Rodzaj animacji (płynne przejście)
+                Children =
+            {
+               new Avalonia.Animation.KeyFrame
+                {
+                    Setters = { new Setter(Visual.OpacityProperty, 0.0) }, // Docelowa wartość Opacity
+                    Cue = new Cue(1d) // Na końcu animacji (1.0) ustaw Opacity na 1.0
+                },
+                 new Avalonia.Animation.KeyFrame
+                {
+                    Setters = { new Setter(Control.MarginProperty, new Thickness(40, 0, 0, 0)) }, // Docelowa wartość Opacity
+                    Cue = new Cue(0.65d) // Na końcu animacji (1.0) ustaw Opacity na 1.0
+                },
+                new Avalonia.Animation.KeyFrame
+                {
+                    Setters = { new Setter(Control.MarginProperty, new Thickness(40, 180, 0, 0)) }, // Docelowa wartość Opacity
+                    Cue = new Cue(1d) // Na końcu animacji (1.0) ustaw Opacity na 1.0
+                }
+            }
+            };
+          
+            // await animation.RunAsync(mainPanel);
+            await animation.RunAsync(framePanel);
+            
+
+            isVisable = false;
+            framePanel.IsVisible = isVisable;
+            ready = true;
+            
+        }
+        public async void Open()
+        {
+
+            if (isVisable) return;
+            if (!ready) return;
+            ready = false;
+
+            
+            isVisable = true;
+            framePanel.IsVisible = isVisable;
+
+            var animation = new Avalonia.Animation.Animation
+            {
+                FillMode = FillMode.Forward,
+                Duration = TimeSpan.FromMilliseconds(300), // Czas trwania animacji
+                Easing = new SineEaseInOut(), // Rodzaj animacji (płynne przejście)
+                Children =
+            {
+                new Avalonia.Animation.KeyFrame
+                {
+                    Setters = { new Setter(Visual.OpacityProperty, 1.0) }, // Docelowa wartość Opacity
+                    Cue = new Cue(1d) // Na końcu animacji (1.0) ustaw Opacity na 1.0
+                },
+                  new Avalonia.Animation.KeyFrame
+                {
+                    Setters = { new Setter(Control.MarginProperty, new Thickness(40, 0, 0, 0)) }, // Docelowa wartość Opacity
+                    Cue = new Cue(0.65d) // Na końcu animacji (1.0) ustaw Opacity na 1.0
+                },
+                    new Avalonia.Animation.KeyFrame
+                {
+                    Setters = { new Setter(Control.MarginProperty, new Thickness(40, -220, 0, 0)) }, // Docelowa wartość Opacity
+                    Cue = new Cue(1d) // Na końcu animacji (1.0) ustaw Opacity na 1.0
+                }
+            }
+            };
+
+            await animation.RunAsync(framePanel);
+            ready = true;
+            Console.WriteLine("kniec:");
+        }
+        public bool GetIsVisable()
+        {
+            return isVisable;
+        }
+       
         private void InitializeGrid()
         {
             mainPanel = new StackPanel();
+            mainPanel.Opacity = 1;
             firstRow = new StackPanel {
                 Margin = new Avalonia.Thickness(2, 2, 2, 2),
             Orientation = Orientation.Horizontal,
@@ -145,7 +332,8 @@ namespace AvaloniaTest.Views
                 button.KeyPressed += (sender, text) =>
                 {
                     // Forward event to parent control
-                    KeyPressed?.Invoke(this, text);
+                    //KeyPressed?.Invoke(this, text);
+                    HandleKeyPress(text);
                 };
                 firstRow.Children.Add(button);
                 firsRowButtons.Add(button);
@@ -163,7 +351,7 @@ namespace AvaloniaTest.Views
 
             backBtn.Click += (sender, e) =>
             {
-                KeyPressed?.Invoke(this, "back");
+                HandleKeyPress("back");
             };
             firstRow.Children.Add(backBtn);
         } 
@@ -179,8 +367,8 @@ namespace AvaloniaTest.Views
                 };
                 button.KeyPressed += (sender, text) =>
                 {
-                    // Forward event to parent control
-                    KeyPressed?.Invoke(this, text);
+                    HandleKeyPress(text);
+                    //  KeyPressed?.Invoke(this, text);
                 };
                 secondRow.Children.Add(button);
                 secondRowButtons.Add(button);
@@ -199,12 +387,13 @@ namespace AvaloniaTest.Views
                 button.KeyPressed += (sender, text) =>
                 {
                     // Forward event to parent control
-                    KeyPressed?.Invoke(this, text);
+                    HandleKeyPress(text);
                 };
                 thirdRow.Children.Add(button);
                 thirdRowButtons.Add(button);
             }
-            var enterBtn = new Button
+           
+             enterBtn = new Button
             {
                 Content = "Enter",
                 Width = 180,
@@ -216,7 +405,8 @@ namespace AvaloniaTest.Views
 
             enterBtn.Click += (sender, e) =>
             {
-                KeyPressed?.Invoke(this, "enter");
+                //  KeyPressed?.Invoke(this, "enter");
+                HandleKeyPress("enter");
             };
             thirdRow.Children.Add(enterBtn);
         } 
@@ -235,18 +425,18 @@ namespace AvaloniaTest.Views
 
             shiftBtn.Click += Button_Shift;
 
-            for (int i = 0; i < fourthRowDefault.Count; i++)
+            for (int i = 0; i < FourthRowDefault.Count; i++)
             {
                 var button = new KeyboardKey
                 {
-                    PrimaryText = fourthRowDefault[i],
+                    PrimaryText = FourthRowDefault[i],
                     SecondaryText = fourthRowShift[i],
                     Margin = new Avalonia.Thickness(2, 2, 2, 2)
                 };
                 button.KeyPressed += (sender, text) =>
                 {
                     // Forward event to parent control
-                    KeyPressed?.Invoke(this, text);
+                    HandleKeyPress(text);
                 };
                 fourthRow.Children.Add(button);
                 fourthRowButtons.Add(button);
@@ -299,14 +489,17 @@ namespace AvaloniaTest.Views
             spaceBtn.Click += (sender, e) =>
             {
                 KeyPressed?.Invoke(this, " ");
+                HandleKeyPress(" ");
             };
             leftBtn.Click += (sender, e) =>
             {
-                KeyPressed?.Invoke(this, "left");
+              //  KeyPressed?.Invoke(this, "left");
+                HandleKeyPress("left");
             };
             rightBtn.Click += (sender, e) =>
             {
-                KeyPressed?.Invoke(this, "right");
+              //  KeyPressed?.Invoke(this, "right");
+                HandleKeyPress("right");
             };
             fifthRow.Children.Add(spaceBtn);
             fifthRow.Children.Add(leftBtn);
@@ -314,16 +507,8 @@ namespace AvaloniaTest.Views
    
         }
 
-        private void OnKeyPressed(object sender, string text)
-        {
-            Console.WriteLine($"Key Pressed: {text}");
-            // Tutaj możesz zrobić coś z tekstem, np. dodać go do pola tekstowego
-        }
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            Button button = (Button)sender;
-            Console.WriteLine($"Kliknięto przycisk: {button.Content}");
-        } 
+ 
+      
         private void Button_Alt(object sender, RoutedEventArgs e)
         {
             altState = !altState;
@@ -365,30 +550,10 @@ namespace AvaloniaTest.Views
 
         }
 
-        private void Button_Space(object sender, RoutedEventArgs e)
-        {
-            
-        }
 
-        private void InitializeBackspace()
-        {
-            var button = new Button
-            {
-                Content = "<---",
-                Width = 90,
-                Height = 60,
-                Margin = new Avalonia.Thickness(2, 2, 2, 2)
-            };
-            Grid.SetRow(button, 0);
-            Grid.SetColumn(button, 13);
-            keyboardGrid.Children.Add(button);
-            button.Click += Backspace_Click;
-        }
+ 
 
-        private void Backspace_Click(object sender, RoutedEventArgs e)
-        {
-            Console.WriteLine("BACKSPACE");
-        }
+       
 
 
     }

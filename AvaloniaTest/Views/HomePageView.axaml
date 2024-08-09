@@ -8,7 +8,7 @@
              x:Class="AvaloniaTest.Views.HomePageView">
 
 
-  <Panel>
+  <Panel Name="HomePagePanel">
     
     <Carousel Name="SlideMenu">
       <Carousel.GestureRecognizers>

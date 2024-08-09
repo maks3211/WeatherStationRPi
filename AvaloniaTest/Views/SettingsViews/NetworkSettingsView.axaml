@@ -2,24 +2,72 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="470"
              x:Class="AvaloniaTest.Views.NetworkSettingsView"
              xmlns:vm="using:AvaloniaTest.ViewModels"
                xmlns:local="clr-namespace:AvaloniaTest.Views"
               x:DataType="vm:NetworkSettingsViewModel">
-              
+
+
+
+
+
+  <UserControl.Styles>
+    <Styles>
+      <Style Selector="Panel.KeyboardPanelsse">
+        <Style.Animations>
+          <Animation Duration="0:0:1.1"   IterationCount="1">
+            <KeyFrame Cue="0%">
+              <Setter Property="Opacity" Value="0.0"/>
+            </KeyFrame>
+            <KeyFrame Cue="100%">
+              <Setter Property="Opacity" Value="1.0"/>
+            </KeyFrame>
+          </Animation>
+        </Style.Animations>
+      </Style>
+      <Style Selector="Button.Animacja">
+        <Style.Animations>
+          <Animation Duration="0:0:0.5"   IterationCount="1">
+            <KeyFrame Cue="0%">
+              <Setter Property="Opacity" Value="0.0"/>
+            </KeyFrame>
+            <KeyFrame Cue="100%">
+              <Setter Property="Opacity" Value="1.0"/>
+            </KeyFrame>
+          </Animation>
+        </Style.Animations>
+      </Style>
+
+     
+    </Styles>
+  </UserControl.Styles>
+
+
   <Border BorderThickness="0,5,0,5">
       <ScrollViewer>
         <StackPanel>
           <StackPanel>
             <TextBlock FontWeight="DemiBold" FontSize="20" Margin="20,10,0,0">Dostepne sieci WI-FI</TextBlock>
-            
             <Line StartPoint="0,0" EndPoint="800,0" Margin="0,15,0,15" Stroke="{DynamicResource LightBorderColor}" StrokeThickness="2" StrokeDashArray="3"/>
             <TextBlock Text="{Binding Connectedssid}" FontSize="17"></TextBlock>
             <TextBlock Text="{Binding ToConnectssid}" FontSize="15"></TextBlock>
             <StackPanel Orientation="Horizontal">
-            <TextBox Name="Passwordbox" Text="{Binding Passwordbox}" IsVisible="{Binding Passwordboxvis}" Watermark="Wprowadz haslo wi-fi" Width="500" HorizontalAlignment="Left" Margin="10,10,0,0"> </TextBox>
-             
+              <StackPanel Orientation="Vertical">
+                <TextBox
+                  PointerPressed="Passwordbox_PointerPressed"
+  local:OnScreenKeyboardBehavior.IsKeyboardEnabled="True" 
+                  local:OnScreenKeyboardBehavior.EnterButton="{Binding ElementName=ConnectButton}"
+                  Name="Passwordbox"
+                  Text="{Binding Passwordbox}"
+                  IsVisible="{Binding Passwordboxvis}"
+                  Watermark="Wprowadz haslo wi-fi"
+                  Width="500"
+                  HorizontalAlignment="Left"
+                  Margin="10,10,0,0">
+                </TextBox>
+              </StackPanel>
               <Button Name="ConnectButton" Command="{Binding ConnectButtonCommand}" IsVisible="{Binding Connectbuttonvis}" Width="100" Height="35" Margin="10,10,0,0" FontSize="20" HorizontalContentAlignment="Center">Połącz</Button>
             </StackPanel>
             <ListBox CornerRadius="10" Margin="5,10,5,10"
@@ -36,23 +84,6 @@
             </ListBox>
           </StackPanel>
           <Rectangle Margin="0,5,0,5" Width="1024" Height="2" Fill="{DynamicResource BorderColor}"></Rectangle>
-          <StackPanel>
-            <Button IsVisible="{Binding Keyboardvis}" Content="Pokaz klawe" Click="OnShowKeyboardClick" Width="60" >
-              <Button.Styles>
-                <Style Selector="FlyoutPresenter">
-                  <Setter Property="Height" Value="370" />
-                  <Setter Property="MaxWidth" Value="1300" />
-                  <Setter Property="Background" Value="{DynamicResource BackGroundDark}" />     
-                </Style>
-              </Button.Styles>
-              <Button.Flyout>
-                <Flyout Placement="Bottom" HorizontalOffset="250" VerticalOffset="-190">
-                  <Panel Name="KeyboardPanel">
-                  </Panel>
-                </Flyout>
-              </Button.Flyout>
-            </Button>
-          </StackPanel>
         </StackPanel>   
       </ScrollViewer>
 
