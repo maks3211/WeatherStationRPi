@@ -21,6 +21,7 @@ using Avalonia.Media.Imaging;
 using System.IO;
 using Avalonia.Styling;
 using Avalonia.Input;
+using Avalonia.Input.GestureRecognizers;
 
 
 
@@ -38,6 +39,19 @@ namespace AvaloniaTest.Views
             InitializeComponent();
             //InitGrid();
             slideMenu();
+
+            //ZROBIONE DLA TESTA 
+            var scrollRecognizer = new ScrollGestureRecognizer
+            {
+                CanVerticallyScroll = true,  
+                CanHorizontallyScroll = true
+            };
+
+            HomePagePanel.GestureRecognizers.Add(scrollRecognizer);
+            HomePagePanel.PointerReleased += Next;
+            //KONIEC TESTA
+
+
         }
        
         private void slideMenu()
@@ -52,19 +66,16 @@ namespace AvaloniaTest.Views
             compisitePageTransition.PageTransitions.Add(pageSlide);
 
             // Ustawiamy w³aœciwoœæ PageTransition dla Carousel
-            SlideMenu.PageTransition = compisitePageTransition;
-           
-
-  
-       
-           
-           
-           
-
+            SlideMenu.PageTransition = compisitePageTransition;    
         }
+
+
+ 
+
         public void Next(object source, RoutedEventArgs args)
         {
             SlideMenu.Next();
+            
         }
 
         public void Previous(object source, RoutedEventArgs args)

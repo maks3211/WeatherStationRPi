@@ -147,6 +147,8 @@ public partial class NetworkSettingsViewModel : ViewModelBase
         Passwordbox = "";
         Connectedssid = "";
         ToConnectssid = "Łączenie z siecią";
+
+
         //Task t1 = CheckWifiStatus();
 
         //Task.WhenAll(t1);

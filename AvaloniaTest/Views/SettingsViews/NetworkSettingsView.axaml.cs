@@ -1,5 +1,6 @@
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
@@ -33,8 +34,12 @@ namespace AvaloniaTest.Views
         {
             // Tworzenie instancji OnScreenKeyboard z nazw¹ panelu
             // Console.WriteLine("Ustawienifffa - siec");
-            OnScreenKeyboard key = new OnScreenKeyboard(KeyboardPanel);
-            key.KeyPressed += OnKeyPressed;
+
+
+          //  OnScreenKeyboard key = new OnScreenKeyboard(KeyboardPanel);
+           // key.KeyPressed += OnKeyPressed;
+
+
             /* for (int i = 1; i <= 3; i++)
              {
                  var button = new Button { Content = $"Button {i}" };
@@ -42,6 +47,17 @@ namespace AvaloniaTest.Views
              }*/
 
         }
+
+        private void Passwordbox_PointerPressed(object sender, PointerPressedEventArgs args)
+        {
+            var ctl = sender as Control;
+            if (ctl != null)
+            {
+                FlyoutBase.ShowAttachedFlyout(ctl);
+            }
+            Console.WriteLine("asd");
+        }
+
         private void OnKeyPressed(object sender, string text)
         {
             Passwordbox.Focus();

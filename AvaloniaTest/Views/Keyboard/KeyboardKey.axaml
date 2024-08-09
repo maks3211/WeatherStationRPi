@@ -6,8 +6,8 @@
              x:Class="AvaloniaTest.Views.KeyboardKey">
   <Button x:Name="MainButton" Click="OnButtonClick" Width="60" Height="60" >
       <StackPanel>
-        <TextBlock x:Name="PrimaryTextBlock"   Foreground="Green"/>
-        <TextBlock x:Name="SecondaryTextBlock" Foreground="Red"/>
+        <TextBlock x:Name="PrimaryTextBlock"   />
+        <TextBlock x:Name="SecondaryTextBlock" />
       </StackPanel>
     </Button>
 </UserControl>

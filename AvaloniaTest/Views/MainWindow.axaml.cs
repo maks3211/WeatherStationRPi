@@ -1,8 +1,10 @@
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using AvaloniaTest.ViewModels;
+using LiveChartsCore.VisualElements;
 using System;
 using System.Threading.Tasks;
 using System.Threading.Tasks;
@@ -15,7 +17,7 @@ namespace AvaloniaTest.Views
         
         private bool _isButtonHeld = false;
         private DateTime _startTime;
-
+        public static OnScreenKeyboard keyboard;
         public MainWindow()
         {
             //Tryp pelno-ekranowy
@@ -36,6 +38,11 @@ namespace AvaloniaTest.Views
           changeThemeButton.AddHandler(PointerPressedEvent, changeThemeButton_OnPointerPressed, RoutingStrategies.Tunnel);
           changeThemeButton.AddHandler(PointerReleasedEvent, changeThemeButton_OnPointerReleased, RoutingStrategies.Tunnel);
 
+          this.AddHandler(PointerPressedEvent, OnWindowClick, handledEventsToo: true);
+            keyboard = new OnScreenKeyboard(KeyboardFrame);
+            OnScreenKeyboardBehavior.keyboard = keyboard;
+            KeyboardFrame.Children.Add(keyboard.GetKeyBoardStackPanel());
+            
 
         }
         private void ButtonOnClick(object? sender, RoutedEventArgs e)
@@ -93,8 +100,6 @@ namespace AvaloniaTest.Views
             {
                 _viewModel.ChangeTheme();
             }
-
-
         }
 
 
@@ -109,6 +114,33 @@ namespace AvaloniaTest.Views
         {
             // Obs³uga wciœniêcia przycisku
             Console.WriteLine("ressd");
+        }
+
+
+        private void OnWindowClick(object sender, PointerPressedEventArgs e)
+        {
+            // SprawdŸ, czy klikniêcie by³o poza obszarem StackPanel
+            if (!IsClickInsideElement(KeyboardFrame, e) && keyboard.GetIsVisable())
+            {
+                //   Ramkadwa.IsVisible = false;
+                // OnScreenKeyboard.isVisable = false;
+                // klawa.UpdateVisibility();
+                keyboard.Close();
+            }
+        }
+
+        private bool IsClickInsideElement(Avalonia.Controls.StackPanel element, PointerPressedEventArgs e)
+        {
+           // if (keyboard.GetIsVisable())
+          //  {
+                var position = e.GetPosition(element);
+                return position.X >= 0 && position.X <= element.Bounds.Width &&
+                       position.Y >= 0 && position.Y <= element.Bounds.Height;
+           // }
+           // return true;
+          
+
+        
         }
 
     }

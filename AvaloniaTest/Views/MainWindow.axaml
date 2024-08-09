@@ -71,5 +71,14 @@
       </WrapPanel>
       
     </Border>
+
+      <StackPanel Opacity="0" Name="KeyboardFrame"  Margin="40,180,0,0" Height="345" Background="{DynamicResource BackGroundDark}">
+      </StackPanel>
+    
+     
+     
+      
+    
   </DockPanel>
+
 </Window>
