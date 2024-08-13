@@ -23,30 +23,21 @@ namespace AvaloniaTest.Views
 {
     public class OnScreenKeyboard : UserControl
     {
-        private TextBox CurrentTextBox { get; set; }
-
         private  bool isVisable = false;
         private TextBox _associatedTextBox;
         private Button _associatedEnterButton;
-        private Grid keyboardGrid;
-
-        private Panel keyboard;
-        private const string qwertyKeyboard = "`1234567890-=qwertyuiop[]\\asdfghjkl;'zxcvbnm,./";
-        private const string shifKeyboard = "as";
-        private string[] fnKeysList =[ "Shift", "Space", "Backspace", "Alt"];
         private Button enterBtn;
 
 
         private bool shiftState = false;
         private bool altState = false;
 
-        private Dictionary<string, Button> FnKeys = new Dictionary<string, Button>();
 
         private event EventHandler<string> KeyPressed;
 
         private StackPanel mainPanel;
 
-        private StackPanel framePanel;
+        private readonly StackPanel framePanel;
         private bool ready = true;
 
         private ObservableCollection<string> FourthRowDefault { get; } = new()
@@ -57,24 +48,22 @@ namespace AvaloniaTest.Views
 
         private List<KeyboardKey> firsRowButtons = new List<KeyboardKey>();
         private StackPanel firstRow;
-        private string[] firstRowDefault = [ "`", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "=" ];
-        private string[] firstRowShift = [ "~", "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "_", "+" ];
+        private readonly string[]  firstRowDefault = [ "`", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "=" ];
+        private readonly string[]  firstRowShift = [ "~", "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "_", "+" ];
 
         private StackPanel secondRow;
-        private List<KeyboardKey> secondRowButtons = new List<KeyboardKey>();
-        private string[] secondRowDefault = ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "[", "]", "\\"];
-        private string[] secondRowShift = ["", "", "ę", "", "","", "€", "", "ó", "", "", "", "",];
+        private readonly List<KeyboardKey> secondRowButtons = new List<KeyboardKey>();
+        private readonly string[] secondRowDefault = ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "[", "]", "\\"];
+        private readonly string[] secondRowShift = ["", "", "ę", "", "","", "€", "", "ó", "", "", "", "",];
 
         private StackPanel thirdRow;
-        private List<KeyboardKey> thirdRowButtons = new List<KeyboardKey>();
-        private string[] thirdRowDefault = ["a", "s", "d", "f", "g", "h", "j", "k", "l", ";", "'"];
-        private string[] thirdRowShift = ["ą", "ś", "", "", "", "", "", "", "ł", "", ""];
+        private readonly List<KeyboardKey> thirdRowButtons = new List<KeyboardKey>();
+        private readonly string[] thirdRowDefault = ["a", "s", "d", "f", "g", "h", "j", "k", "l", ";", "'"];
+        private readonly string[] thirdRowShift = ["ą", "ś", "", "", "", "", "", "", "ł", "", ""];
 
         private StackPanel fourthRow;
-       // private string[] fourthRowDefault = ["z", "x", "c", "v", "b", "n", "m", ",", ".", "/"];
-        // private string[] fourthRowShift = ["Z", "X", "C", "V", "B", "N", "M", "<", ">", "?"];
-        private string[] fourthRowShift = ["ż", "ź", "ć", "", "", "ń", "", "", "", ""];       
-        private List<KeyboardKey> fourthRowButtons = new List<KeyboardKey>();
+        private readonly string[]  fourthRowShift = ["ż", "ź", "ć", "", "", "ń", "", "", "", ""];       
+        private readonly List<KeyboardKey> fourthRowButtons = new List<KeyboardKey>();
 
         private StackPanel fifthRow;
 
@@ -172,7 +161,6 @@ namespace AvaloniaTest.Views
                 }
                 else if (text == "enter")
                 {
-                    Console.WriteLine("dodac OPCJE ENTER");
                     if (_associatedEnterButton is not null)
                     {
                         _associatedEnterButton?.Command?.Execute(null);
@@ -203,14 +191,13 @@ namespace AvaloniaTest.Views
             if (!isVisable) return;
             if (!ready) return;
             ready = false;
-            Console.WriteLine("ZASMDASDASDASDASD");
             
 
             var animation = new Avalonia.Animation.Animation
             {
                 FillMode = FillMode.Forward,
-                Duration = TimeSpan.FromMilliseconds(300), // Czas trwania animacji
-                Easing = new SineEaseInOut(), // Rodzaj animacji (płynne przejście)
+                Duration = TimeSpan.FromMilliseconds(300), 
+                Easing = new SineEaseInOut(), 
                 Children =
             {
                new Avalonia.Animation.KeyFrame
@@ -220,21 +207,18 @@ namespace AvaloniaTest.Views
                 },
                  new Avalonia.Animation.KeyFrame
                 {
-                    Setters = { new Setter(Control.MarginProperty, new Thickness(40, 0, 0, 0)) }, // Docelowa wartość Opacity
-                    Cue = new Cue(0.65d) // Na końcu animacji (1.0) ustaw Opacity na 1.0
+                    Setters = { new Setter(Control.MarginProperty, new Thickness(40, 0, 0, 0)) }, 
+                    Cue = new Cue(0.65d) 
                 },
                 new Avalonia.Animation.KeyFrame
                 {
-                    Setters = { new Setter(Control.MarginProperty, new Thickness(40, 180, 0, 0)) }, // Docelowa wartość Opacity
-                    Cue = new Cue(1d) // Na końcu animacji (1.0) ustaw Opacity na 1.0
+                    Setters = { new Setter(Control.MarginProperty, new Thickness(40, 180, 0, 0)) }, 
+                    Cue = new Cue(1d) 
                 }
             }
             };
           
-            // await animation.RunAsync(mainPanel);
-            await animation.RunAsync(framePanel);
-            
-
+            await animation.RunAsync(framePanel);           
             isVisable = false;
             framePanel.IsVisible = isVisable;
             ready = true;
@@ -254,31 +238,30 @@ namespace AvaloniaTest.Views
             var animation = new Avalonia.Animation.Animation
             {
                 FillMode = FillMode.Forward,
-                Duration = TimeSpan.FromMilliseconds(300), // Czas trwania animacji
-                Easing = new SineEaseInOut(), // Rodzaj animacji (płynne przejście)
+                Duration = TimeSpan.FromMilliseconds(300), 
+                Easing = new SineEaseInOut(), 
                 Children =
             {
                 new Avalonia.Animation.KeyFrame
                 {
-                    Setters = { new Setter(Visual.OpacityProperty, 1.0) }, // Docelowa wartość Opacity
-                    Cue = new Cue(1d) // Na końcu animacji (1.0) ustaw Opacity na 1.0
+                    Setters = { new Setter(Visual.OpacityProperty, 1.0) }, 
+                    Cue = new Cue(1d) 
                 },
                   new Avalonia.Animation.KeyFrame
                 {
-                    Setters = { new Setter(Control.MarginProperty, new Thickness(40, 0, 0, 0)) }, // Docelowa wartość Opacity
-                    Cue = new Cue(0.65d) // Na końcu animacji (1.0) ustaw Opacity na 1.0
+                    Setters = { new Setter(Control.MarginProperty, new Thickness(40, 0, 0, 0)) }, 
+                    Cue = new Cue(0.65d) 
                 },
                     new Avalonia.Animation.KeyFrame
                 {
-                    Setters = { new Setter(Control.MarginProperty, new Thickness(40, -220, 0, 0)) }, // Docelowa wartość Opacity
-                    Cue = new Cue(1d) // Na końcu animacji (1.0) ustaw Opacity na 1.0
+                    Setters = { new Setter(Control.MarginProperty, new Thickness(40, -220, 0, 0)) }, 
+                    Cue = new Cue(1d) 
                 }
             }
             };
 
             await animation.RunAsync(framePanel);
             ready = true;
-            Console.WriteLine("kniec:");
         }
         public bool GetIsVisable()
         {
@@ -331,8 +314,6 @@ namespace AvaloniaTest.Views
                 };
                 button.KeyPressed += (sender, text) =>
                 {
-                    // Forward event to parent control
-                    //KeyPressed?.Invoke(this, text);
                     HandleKeyPress(text);
                 };
                 firstRow.Children.Add(button);
@@ -368,7 +349,6 @@ namespace AvaloniaTest.Views
                 button.KeyPressed += (sender, text) =>
                 {
                     HandleKeyPress(text);
-                    //  KeyPressed?.Invoke(this, text);
                 };
                 secondRow.Children.Add(button);
                 secondRowButtons.Add(button);
@@ -386,7 +366,6 @@ namespace AvaloniaTest.Views
                 };
                 button.KeyPressed += (sender, text) =>
                 {
-                    // Forward event to parent control
                     HandleKeyPress(text);
                 };
                 thirdRow.Children.Add(button);
@@ -405,7 +384,6 @@ namespace AvaloniaTest.Views
 
             enterBtn.Click += (sender, e) =>
             {
-                //  KeyPressed?.Invoke(this, "enter");
                 HandleKeyPress("enter");
             };
             thirdRow.Children.Add(enterBtn);
@@ -549,12 +527,6 @@ namespace AvaloniaTest.Views
             }
 
         }
-
-
- 
-
-       
-
 
     }
 }
