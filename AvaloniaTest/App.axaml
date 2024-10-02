@@ -1,7 +1,8 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="AvaloniaTest.App"
-             xmlns:local="using:AvaloniaTest"            
+             xmlns:local="using:AvaloniaTest" 
+           
              RequestedThemeVariant="Light">
              <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
 
@@ -10,6 +11,10 @@
     </Application.DataTemplates>
 
   <Application.Resources>
+
+   
+
+
     <ResourceDictionary>
       <ResourceDictionary.ThemeDictionaries>
         
@@ -31,6 +36,11 @@
           <SolidColorBrush x:Key='LightBorderColor'>#01234D</SolidColorBrush>
           <SolidColorBrush x:Key='BackGroundDark'>#26437d</SolidColorBrush>
 
+          
+          <!--Klawiatura-->
+          <SolidColorBrush x:Key='KeyboardBackground'>#2E3A59</SolidColorBrush>
+          <SolidColorBrush x:Key='KeyboardKey'>#D3D3D3</SolidColorBrush>
+          
           <SolidColorBrush x:Key='GreenBorder'>#48A106</SolidColorBrush>
           <!-- Czcionki -->
           <SolidColorBrush x:Key='FontBlue'>#081C34</SolidColorBrush>
@@ -57,13 +67,19 @@
 
           <SolidColorBrush x:Key='BorderColor'>#12364F</SolidColorBrush>
           <SolidColorBrush x:Key='LightBorderColor'>#3194d9</SolidColorBrush>
+
+          <!--Klawiatura-->
+          <SolidColorBrush x:Key='KeyboardBackground'>#1C1C1E</SolidColorBrush>
+          <SolidColorBrush x:Key='KeyboardKey'>#3A3A3E</SolidColorBrush>
           <!-- Czcionki -->
           <SolidColorBrush x:Key='FontBlue'>#53acce</SolidColorBrush>
           
         </ResourceDictionary>
       </ResourceDictionary.ThemeDictionaries>
     </ResourceDictionary>
-    <SolidColorBrush x:Key="Warningsss">Yellow</SolidColorBrush>   
+    <SolidColorBrush x:Key="Warningsss">#63DB09</SolidColorBrush>   
+    <SolidColorBrush x:Key="Keyboardkeylight">#D3D3D3</SolidColorBrush>   
+    <SolidColorBrush x:Key="Keyboardkeydark">#3A3A3E</SolidColorBrush>   
   </Application.Resources>
 
 
@@ -71,6 +87,8 @@
   
   
   <Application.Styles>
+    
+    
       <FluentTheme>
         <FluentTheme.Palettes>
           <ColorPaletteResources x:Key="Light" Accent="#ff355dad" AltHigh="White" AltLow="White" AltMedium="White" AltMediumHigh="White" AltMediumLow="White" BaseHigh="Black" BaseLow="#ffa3adb1" BaseMedium="#ff4c7485" BaseMediumHigh="#ff124e67" BaseMediumLow="#ff2f6176" ChromeAltLow="#ff124e67" ChromeBlackHigh="Black" ChromeBlackLow="#ffa3adb1" ChromeBlackMedium="#ff124e67" ChromeBlackMediumLow="#ff4c7485" ChromeDisabledHigh="#ffa3adb1" ChromeDisabledLow="#ff4c7485" ChromeGray="#ff2f6176" ChromeHigh="#ffa3adb1" ChromeLow="#ffcfe4e9" ChromeMedium="#ffc6d9de" ChromeMediumLow="#ffcfe4e9" ChromeWhite="White" ListLow="#ffc6d9de" ListMedium="#ffa3adb1" RegionColor="#ffd5e2e8" />
@@ -81,4 +99,7 @@
       <StyleInclude Source="/Assets/Icons.axaml"></StyleInclude>
       
     </Application.Styles>
+
+
+ 
 </Application>

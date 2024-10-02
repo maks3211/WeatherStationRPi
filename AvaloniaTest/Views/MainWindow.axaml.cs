@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
+using AvaloniaTest.Helpers;
 using AvaloniaTest.ViewModels;
 using LiveChartsCore.VisualElements;
 using System;
@@ -42,7 +43,9 @@ namespace AvaloniaTest.Views
             keyboard = new OnScreenKeyboard(KeyboardFrame);
             OnScreenKeyboardBehavior.keyboard = keyboard;
             KeyboardFrame.Children.Add(keyboard.GetKeyBoardStackPanel());
-            
+
+           
+        
 
         }
         private void ButtonOnClick(object? sender, RoutedEventArgs e)
@@ -51,7 +54,8 @@ namespace AvaloniaTest.Views
         }
 
         private void changeThemeButton_OnPointerPressed(object? sender, PointerPressedEventArgs e)
-        {     
+        {
+          
             _isButtonHeld = true;
             _startTime = DateTime.Now;
             CheckButtonHold();
@@ -68,10 +72,11 @@ namespace AvaloniaTest.Views
         
         private async void CheckButtonHold()
         {
-            if (_viewModel is null && DataContext is MainWindowViewModel viewModel)
-            {
-                _viewModel = viewModel;
-            }
+          if (_viewModel is null && DataContext is MainWindowViewModel viewModel)
+          {
+              _viewModel = viewModel;
+          }
+        
                 Console.WriteLine("licznenie");
             while (_isButtonHeld)
             {
@@ -116,7 +121,7 @@ namespace AvaloniaTest.Views
             Console.WriteLine("ressd");
         }
 
-
+        //Funkcja sprawdzajacza czy kliknieto poza klawature
         private void OnWindowClick(object sender, PointerPressedEventArgs e)
         {
             // SprawdŸ, czy klikniêcie by³o poza obszarem StackPanel
@@ -137,10 +142,7 @@ namespace AvaloniaTest.Views
                 return position.X >= 0 && position.X <= element.Bounds.Width &&
                        position.Y >= 0 && position.Y <= element.Bounds.Height;
            // }
-           // return true;
-          
-
-        
+           // return true;      
         }
 
     }

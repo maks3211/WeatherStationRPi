@@ -75,7 +75,8 @@ namespace AvaloniaTest.Models
         {
             try
             {
-                string connString = "server=sql11.freesqldatabase.com ; uid=sql11704729 ; pwd=89jVjCtqzd ; database=sql11704729";
+                // string connString = "server=sql11.freesqldatabase.com ; uid=sql11704729 ; pwd=89jVjCtqzd ; database=sql11704729";
+                string connString = "server=sql7.freesqldatabase.com ; uid=sql7733142 ; pwd=BANKMcx6Gt ; database=sql7733142";
                 con = new MySqlConnection();
                 con.ConnectionString = connString;
                 con.Open();
@@ -113,7 +114,6 @@ namespace AvaloniaTest.Models
         public async Task RunReadData()
         {
            // MainWindowViewModel.mqqt.OutdoorTempUpdated += OutDoorTemp_DataUpdated;
-            Console.WriteLine("TUTAJ");
             string portName = "/dev/ttyS0";
             int baudRate = 9600;
             SerialPort Arduino = new SerialPort(portName,baudRate);
@@ -206,7 +206,6 @@ namespace AvaloniaTest.Models
                 IndoorHumUpdated?.Invoke(this, humidity);
                 
                 IndoorAltiUpdated?.Invoke(this, altitude);
-                Console.WriteLine(pressure);
                 IndoorPreasureUpdated?.Invoke(this, pressure);
                 IndoorLumiUpdated?.Invoke(this, luminance);
                 IndoorCOUpdated?.Invoke(this, co);

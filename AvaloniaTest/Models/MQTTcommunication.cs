@@ -17,6 +17,11 @@ using Avalonia.Markup.Xaml.MarkupExtensions;
 using MySql.Data.MySqlClient;
 using Google.Protobuf.WellKnownTypes;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using AvaloniaTest.Models.ObservablesProperties;
+using Newtonsoft.Json.Linq;
+using AvaloniaTest.Messages;
+using CommunityToolkit.Mvvm.Messaging;
+using Mysqlx.Notice;
 
 
 
@@ -24,18 +29,22 @@ namespace AvaloniaTest.Models
 {
     public class MQTTcommunication
     {
+
+      
+
+   
+
+        private OutdoorSensors sensory;
+
+        public void AddSensros(OutdoorSensors s)
+        {
+            sensory = s;
+        }
+
         public static bool IsConnected = false;
         public static string OutDoorTEMPERATURE = "";
 
 
-        public event EventHandler<double> OutdoorTempUpdated;
-        public event EventHandler<double> OutdoorPresUpdated;
-        public event EventHandler<int> OutdoorAltiUpdated;
-        public event EventHandler<double> OutdoorHumiUpdated;
-        public event EventHandler<double> OutdoorLumiUpdated;
-        public event EventHandler<double> OutdoorNO2Updated;
-        public event EventHandler<double> OutdoorCOUpdated;
-        public event EventHandler<double> OutdoorNH3Updated;
 
         public double OutDoorTemp = -999.0;
         public double OutDoorPres = -999.0;
@@ -55,7 +64,8 @@ namespace AvaloniaTest.Models
         {
             try
             {
-                string connString = "server=sql11.freesqldatabase.com ; uid=sql11704729 ; pwd=89jVjCtqzd ; database=sql11704729";
+              //  string connString = "server=sql11.freesqldatabase.com ; uid=sql11704729 ; pwd=89jVjCtqzd ; database=sql11704729";
+                string connString = "server=sql7.freesqldatabase.com ; uid=sql7733142 ; pwd=BANKMcx6Gt ; database=sql7733142";
                 con = new MySqlConnection();
                 con.ConnectionString = connString;
                 con.Open();
@@ -100,8 +110,8 @@ namespace AvaloniaTest.Models
             var mqttClient = factory.CreateMqttClient();
             
 
-            Console.WriteLine(mqttClient.IsConnected.ToString());
-            Console.WriteLine("PRZED  ");
+            Console.WriteLine($"mqqt Connected: {mqttClient.IsConnected.ToString()}");
+
             var timeoutToken =  new CancellationTokenSource(TimeSpan.FromSeconds(10));
           //  try
           // {
@@ -128,7 +138,7 @@ namespace AvaloniaTest.Models
             }
             if (IsConnected)
             {
-                Console.WriteLine($"POLOCZONO: {mqttClient.IsConnected}");
+                Console.WriteLine($"stan mqqt: {mqttClient.IsConnected}");
             }
             var oTemp = await mqttClient.SubscribeAsync("outdoortemperature");
             var OPres = await mqttClient.SubscribeAsync("outdoorpreasure");
@@ -139,6 +149,8 @@ namespace AvaloniaTest.Models
             var oNo = await mqttClient.SubscribeAsync("outdoorno2");
             var oNh = await mqttClient.SubscribeAsync("outdoornh3");
             var oCo = await mqttClient.SubscribeAsync("outdoorco");
+            await mqttClient.SubscribeAsync("espSsid");
+            await mqttClient.SubscribeAsync("espStrength");
 
 
             //WYSYLANIE WIADOMOSCI - NIE TESTOWANE
@@ -169,6 +181,7 @@ namespace AvaloniaTest.Models
                     {
                         Console.WriteLine("Polaczono z mqtt");
                         var oTemp = await mqttClient.SubscribeAsync("outdoortemperature");
+                        
                         var OPres = await mqttClient.SubscribeAsync("outdoorpreasure");
                         var oAlti = await mqttClient.SubscribeAsync("outdooraltitude");
                         var oHumi = await mqttClient.SubscribeAsync("outdoornhumidity");
@@ -177,6 +190,8 @@ namespace AvaloniaTest.Models
                         var oNo = await mqttClient.SubscribeAsync("outdoorno2");
                         var oNh = await mqttClient.SubscribeAsync("outdoornh3");
                         var oCo = await mqttClient.SubscribeAsync("outdoorco");
+                        await mqttClient.SubscribeAsync("espSsid");
+                        await mqttClient.SubscribeAsync("espStrength");
                     }
                     //await mqttClient.ConnectAsync(mqttClient.Options, cancellationToken);
                 }
@@ -190,9 +205,9 @@ namespace AvaloniaTest.Models
 
             mqttClient.ApplicationMessageReceivedAsync += e =>
             {
-                // Console.WriteLine("Received application message.");
-                // Console.WriteLine($"+ Topic = {e.ApplicationMessage.Topic}");
-                //Console.WriteLine($"+ Payload = {Encoding.UTF8.GetString(e.ApplicationMessage.Payload)}");
+                 Console.WriteLine("Received application message.");
+                 Console.WriteLine($"+ Topic = {e.ApplicationMessage.Topic}");
+                Console.WriteLine($"+ Payload = {Encoding.UTF8.GetString(e.ApplicationMessage.Payload)}");
                 // Console.WriteLine($"+ QoS = {e.ApplicationMessage.QualityOfServiceLevel}");
                 // Console.WriteLine($"+ Retain = {e.ApplicationMessage.Retain}");
 
@@ -201,60 +216,66 @@ namespace AvaloniaTest.Models
                 {
                     case "outdoortemperature":
                         Console.WriteLine($"+ Temperatura = {Encoding.UTF8.GetString(e.ApplicationMessage.Payload)}");
-                        // OutDoorTEMPERATURE = Encoding.UTF8.GetString(e.ApplicationMessage.PayloadSegment);
-                        OutDoorTemp = ConvertToDouble(e.ApplicationMessage.PayloadSegment);
-                        OutdoorTempUpdated?.Invoke(this, OutDoorTemp);
-                        //InsertDataIntoTable("outerTemperature", currentDateTime, OutDoorTemp);
+                        OutDoorTemp = ConvertToDouble(e.ApplicationMessage.PayloadSegment);               
+                        sensory.OutdoorTemperature.Value= OutDoorTemp;
+
+
+                        InsertDataIntoTable("outerTemperature", currentDateTime, OutDoorTemp);
+                       
                         break;
                     case "outdoorpreasure":
                            Console.WriteLine($"+ Cisnienie = {Encoding.UTF8.GetString(e.ApplicationMessage.Payload)}");
                         OutDoorPres = ConvertToDouble(e.ApplicationMessage.PayloadSegment);
-                        OutdoorPresUpdated?.Invoke(this, OutDoorPres);
-                        //InsertDataIntoTable("outerPreasure", currentDateTime, OutDoorPres);
+                        sensory.OutdoorPressure.Value = OutDoorPres;
+                        InsertDataIntoTable("outerPreasure", currentDateTime, (int)OutDoorPres);
+                       
                         break;
                     case "outdooraltitude":
                         string result = Encoding.UTF8.GetString(e.ApplicationMessage.Payload);
                          Console.WriteLine($"+ Wysokosc = {Encoding.UTF8.GetString(e.ApplicationMessage.Payload)}");
-                        // OutDoorAlti = ConvertToInt(e.ApplicationMessage.PayloadSegment);
-
                         if (result.Contains(".") || result.Contains(","))
                         {
                             string[] parts = result.Split('.', ',');
                             result = parts[0];      
                         }
                          OutDoorAlti = int.Parse(result);
-                         OutdoorAltiUpdated?.Invoke(this, OutDoorAlti);
-                        //InsertDataIntoTable("outerAltitude", currentDateTime, OutDoorAlti);
+                        sensory.OutdoorAltitude.Value = OutDoorAlti;
+                        InsertDataIntoTable("outerAltitude", currentDateTime, OutDoorAlti);
                         break;
                     case "outdoornhumidity":
-                        // Console.WriteLine($"+ Wilgotnosc = {Encoding.UTF8.GetString(e.ApplicationMessage.Payload)}");
-                        OutDoorHumi= ConvertToDouble(e.ApplicationMessage.PayloadSegment);
-                        OutdoorHumiUpdated?.Invoke(this, OutDoorHumi);
-                        //InsertDataIntoTable("outerHumidity", currentDateTime, OutDoorHumi);
+                        OutDoorHumi = ConvertToDouble(e.ApplicationMessage.PayloadSegment);
+                       // OutdoorHumiUpdated?.Invoke(this, OutDoorHumi);
+                       sensory.OutdoorHumidity.Value = OutDoorHumi;
+                        InsertDataIntoTable("outerHumidity", currentDateTime, OutDoorHumi);
                         break;
                     case "outdooriluminance":
                         OutDoorLumi = ConvertToDouble(e.ApplicationMessage.PayloadSegment);
-                        OutdoorLumiUpdated?.Invoke(this, OutDoorLumi);
-                        //Console.WriteLine($"+ Swiatlo = {Encoding.UTF8.GetString(e.ApplicationMessage.Payload)}");
-                        //InsertDataIntoTable("outerLuminance", currentDateTime, OutDoorLumi);
+                        sensory.OutdoorIlluminance.Value = OutDoorLumi;
+                        InsertDataIntoTable("outerLuminance", currentDateTime, OutDoorLumi);
                         break;
                     case "outdoorno2":
                         OutDoorNO2 = ConvertToDouble(e.ApplicationMessage.PayloadSegment);
-                        OutdoorNO2Updated?.Invoke(this, OutDoorNO2);
-                        // Console.WriteLine($"+ NO2 = {Encoding.UTF8.GetString(e.ApplicationMessage.Payload)}");
-                        //InsertDataIntoTable("outerNo2", currentDateTime, OutDoorNO2);
+                        sensory.OutdoorNO2.Value = OutDoorNO2;
+                        InsertDataIntoTable("outerNo2", currentDateTime, OutDoorNO2);
                         break;
                     case "outdoorco":
                         OutDoorCO = ConvertToDouble(e.ApplicationMessage.PayloadSegment);
-                        OutdoorCOUpdated?.Invoke(this, OutDoorCO);
-                        // Console.WriteLine($"+ CO = {Encoding.UTF8.GetString(e.ApplicationMessage.Payload)}");
-                        //InsertDataIntoTable("outerCo", currentDateTime, OutDoorCO);
+                        sensory.OutdoorCO.Value = OutDoorCO;
+
+                        InsertDataIntoTable("outerCo", currentDateTime, OutDoorCO);
                         break;
                     case "outdoornh3":
                         OutDoorNH3 = ConvertToDouble(e.ApplicationMessage.PayloadSegment);
-                        OutdoorNH3Updated?.Invoke(this, OutDoorNH3);
-                        // Console.WriteLine($"+ NH3 = {Encoding.UTF8.GetString(e.ApplicationMessage.Payload)}");
-                        //InsertDataIntoTable("outerNh3", currentDateTime, OutDoorNH3);
+                        sensory.OutdoorNH3.Value = OutDoorNH3;    
+                        InsertDataIntoTable("outerNh3", currentDateTime, OutDoorNH3);
+                        break;
+                    case "espSsid":
+                        ESPnetworkData.GetInstance().Ssid = Encoding.UTF8.GetString(e.ApplicationMessage.PayloadSegment);
+                        ESPnetworkData.GetInstance().UpdateLastMessageTime();
+                        break;
+                    case "espStrength":
+                        ESPnetworkData.GetInstance().Strength = ConvertToDouble(e.ApplicationMessage.PayloadSegment);
+                        ESPnetworkData.GetInstance().UpdateLastMessageTime();
                         break;
                 }
 

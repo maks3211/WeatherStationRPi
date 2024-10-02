@@ -67,6 +67,18 @@
                   HorizontalAlignment="Left"
                   Margin="10,10,0,0">
                 </TextBox>
+                <TextBox
+                PointerPressed="Passwordbox_PointerPressed"
+local:OnScreenKeyboardBehavior.IsKeyboardEnabled="True"
+                local:OnScreenKeyboardBehavior.EnterButton="{Binding ElementName=ConnectButton}"
+                Name="Passwordboxs"
+                Text="{Binding Passwordbox}"
+                IsVisible="{Binding Passwordboxvis}"
+                Watermark="Inny tekst"
+                Width="500"
+                HorizontalAlignment="Left"
+                Margin="10,10,0,0">
+                </TextBox>
               </StackPanel>
               <Button Name="ConnectButton" Command="{Binding ConnectButtonCommand}" IsVisible="{Binding Connectbuttonvis}" Width="100" Height="35" Margin="10,10,0,0" FontSize="20" HorizontalContentAlignment="Center">Połącz</Button>
             </StackPanel>
@@ -82,8 +94,23 @@
                 </DataTemplate>
               </ListBox.ItemTemplate>
             </ListBox>
+            
           </StackPanel>
           <Rectangle Margin="0,5,0,5" Width="1024" Height="2" Fill="{DynamicResource BorderColor}"></Rectangle>
+          <StackPanel>
+            <Button Command="{Binding GetEspwifi}">Pokaz sieci esp- TEST</Button>
+            <ListBox CornerRadius="10" 
+     ItemsSource="{Binding EspwifiList}" SelectedItem="{Binding EspWifiList}" Background="{DynamicResource BackGroundDark}">
+              <ListBox.ItemTemplate>
+                <DataTemplate DataType="{x:Type vm:WifiListTemplate}">
+                  <StackPanel Orientation="Horizontal" Spacing="10" Height="50">
+                    <TextBlock Text="{Binding Label}" FontSize="17" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding Power}" FontSize="17" HorizontalAlignment="Center" VerticalAlignment="Center"/>    
+                  </StackPanel>
+                </DataTemplate>
+              </ListBox.ItemTemplate>
+            </ListBox>
+          </StackPanel>
         </StackPanel>   
       </ScrollViewer>
 

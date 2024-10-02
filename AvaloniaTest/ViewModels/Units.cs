@@ -1,6 +1,11 @@
-﻿using SkiaSharp;
+﻿using AvaloniaTest.Messages;
+using AvaloniaTest.Services.AppSettings;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Messaging;
+using SkiaSharp;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Security.Principal;
 using System.Text;
@@ -11,12 +16,48 @@ namespace AvaloniaTest.ViewModels;
 /// <summary>
 /// Class for managing units used in weather data.
 /// </summary>
-public class Units
+public partial class Units: ObservableObject
     {
+    public static string FormatTemperature(double temp) => $"{temp} C";
+
+    [ObservableProperty]
+    private UnitsSettings _ustaw;
+
+
+    public void SetSettings(UnitsSettings s)
+    {
+        Ustaw = s;
+    }
+
+
 
     private string  currentTempUnit = "°C";
     private string currentWindUnit = "m/s";
     private static Units _instance;
+
+
+    private Units()
+    {
+        Console.WriteLine("robie to ");
+       // Ustaw.PropertyChanged += Ustaw_PropertyChanged;
+    }
+
+    public void SetSub()
+    {
+        Ustaw.PropertyChanged += Ustaw_PropertyChanged;
+    }
+    private void Ustaw_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(Ustaw.Wind))
+        {
+            // Tutaj dodaj kod, który ma reagować na zmianę wartości
+            Console.WriteLine($"Nowa wartość wiatru: {Ustaw.Wind}");
+
+        }
+    }
+
+    
+
 
     /// <summary>
     /// Method to get the singleton instance of the Units class.
@@ -59,8 +100,11 @@ public class Units
         {
             return Math.Round(temp * 1.8 + 32, 2);
         }
-        return temp;
+        return Math.Round(temp, 2);
     }
+
+
+
 
     /// <summary>
     /// Method to calculate wind based on the current unit.
@@ -79,6 +123,22 @@ public class Units
         return Math.Round(speed * 0.514, 2);
 
     }
+
+
+    public void SetCelsius(bool celsius)
+    {
+        if (celsius)
+        {
+            ChangeTempUnit("C");
+        }
+        else 
+        {
+            ChangeTempUnit("F");
+        }
+        WeakReferenceMessenger.Default.Send(new UnitChangedMessage(true));
+    }
+
+
     /// <summary>
     /// Method to change the temperature unit.
     /// </summary>

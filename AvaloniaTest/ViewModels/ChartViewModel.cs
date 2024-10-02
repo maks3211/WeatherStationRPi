@@ -194,7 +194,8 @@ namespace AvaloniaTest.ViewModels
 
             try
             {
-                string connString = "server=sql11.freesqldatabase.com ; uid=sql11704729 ; pwd=89jVjCtqzd ; database=sql11704729";
+               // string connString = "server=sql11.freesqldatabase.com ; uid=sql11704729 ; pwd=89jVjCtqzd ; database=sql11704729";
+                string connString = "server=sql7.freesqldatabase.com ; uid=sql7733142 ; pwd=BANKMcx6Gt ; database=sql7733142";
                 con = new MySqlConnection();
                 con.ConnectionString = connString;
                 con.Open();
@@ -227,7 +228,8 @@ namespace AvaloniaTest.ViewModels
             {
                 try
                 {
-                    string connString = "server=sql11.freesqldatabase.com ; uid=sql11704729 ; pwd=89jVjCtqzd ; database=sql11704729";
+                    //  string connString = "server=sql11.freesqldatabase.com ; uid=sql11704729 ; pwd=89jVjCtqzd ; database=sql11704729";
+                    string connString = "server=sql7.freesqldatabase.com ; uid=sql7733142 ; pwd=BANKMcx6Gt ; database=sql7733142";
                     con = new MySqlConnection();
                     con.ConnectionString = connString;
                     con.Open();

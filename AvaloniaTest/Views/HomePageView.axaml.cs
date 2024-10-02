@@ -22,6 +22,9 @@ using System.IO;
 using Avalonia.Styling;
 using Avalonia.Input;
 using Avalonia.Input.GestureRecognizers;
+using AvaloniaTest.Models.WeatherForecast;
+using AvaloniaTest.ViewModels;
+using LiveChartsCore.VisualElements;
 
 
 
@@ -31,29 +34,49 @@ namespace AvaloniaTest.Views
     public partial class HomePageView : UserControl
     {
 
-    
+        private HomePageViewModel ViewModel => DataContext as HomePageViewModel;
+        public WeatherForecastViewModel weatherModel;
+        //private HomePageViewModel viewModel;
 
-    
+
         public HomePageView()
         {
             InitializeComponent();
             //InitGrid();
+        
+          //  DataContext = new HomePageViewModel(); -> TO NIE MOZE BYC BO SIE DWA RAZY TWORZY VIEWMODEL !!
             slideMenu();
+            
+         //   weatherModel = new WeatherForecastViewModel(WeatherBorder, WeatherStackPanel);
 
-            //ZROBIONE DLA TESTA 
-            var scrollRecognizer = new ScrollGestureRecognizer
-            {
-                CanVerticallyScroll = true,  
-                CanHorizontallyScroll = true
-            };
-
-            HomePagePanel.GestureRecognizers.Add(scrollRecognizer);
-            HomePagePanel.PointerReleased += Next;
-            //KONIEC TESTA
+            
 
 
         }
        
+        private void OnBorderPointerPressed(object sender, PointerPressedEventArgs e)
+        {
+         
+           // weatherModel.Open();
+           // e.Handled = true; //oznacza ze zdarzenie zostalo obsluzone i dalej nie ma byc juz brane pod uwage 
+
+        }
+
+
+        private void PagePressed(object sender, PointerPressedEventArgs e)
+        {
+           // Console.WriteLine("Klikniêto w POLE");
+          //  if (e.Source is Border border && border.Name == "WeatherBorder")
+          //  {
+   
+             //   return;
+            //}
+           
+           // weatherModel.Close();
+        }
+
+
+
         private void slideMenu()
         {
             var compisitePageTransition = new CompositePageTransition();
@@ -83,7 +106,19 @@ namespace AvaloniaTest.Views
             SlideMenu.Previous();
             
         }
-       
+
+        private void Dotyk(object sender, Avalonia.Input.PointerPressedEventArgs e)
+        {
+            // SprawdŸ, czy klikniêto w obszarze Border
+            var border = sender as StackPanel;
+            if (border != null)
+            {
+                // Twoja logika, która ma byæ wykonana po klikniêciu
+                Console.WriteLine("Klikniêto w Border");
+            }
+        }
+
+
     }
 
    

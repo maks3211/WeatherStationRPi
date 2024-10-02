@@ -17,8 +17,11 @@ using Avalonia.Animation;
 using System.ComponentModel.DataAnnotations;
 using Avalonia.Animation.Easings;
 using Avalonia.Styling;
-using LiveChartsCore.Drawing;
+
 using Avalonia;
+using System.Xml.Linq;
+using System.Diagnostics;
+
 namespace AvaloniaTest.Views
 {
     public class OnScreenKeyboard : UserControl
@@ -26,8 +29,17 @@ namespace AvaloniaTest.Views
         private  bool isVisable = false;
         private TextBox _associatedTextBox;
         private Button _associatedEnterButton;
-        private Button enterBtn;
 
+        private Button enterBtn;
+        private Button backBtn;
+        private Button leftBtn;
+        private Button rightBtn;
+        private Button spaceBtn;
+        private Button altBtn;
+        private Button shiftBtn;
+
+      //  private TextBox Ramka;
+      //  private TextBlock textBoxName;
 
         private bool shiftState = false;
         private bool altState = false;
@@ -67,14 +79,17 @@ namespace AvaloniaTest.Views
 
         private StackPanel fifthRow;
 
+        private StackPanel textBoxPanel;
+
         public OnScreenKeyboard(StackPanel frame)
         {
+            Application.Current.ActualThemeVariantChanged += Current_ActualThemeVariantChanged;
             framePanel = frame;
            
             InitializeGrid();
 
-
-           
+            // Ramka = new TextBox();
+            
             //  CreateButtons();
             //InitializeBackspace();
             InitFirstRow();
@@ -101,10 +116,43 @@ namespace AvaloniaTest.Views
             if (framePanel is not null)
             {
                 framePanel.IsVisible = isVisable;
-            }               
+            }
+
+            SetColors();
         }
 
-       
+
+        private void SetColors()
+        {
+        if (Application.Current.ActualThemeVariant == ThemeVariant.Light)
+            {
+                var color = new SolidColorBrush(Color.Parse("#D3D3D3"));
+                enterBtn.Background = color;
+                leftBtn.Background = color;
+                rightBtn.Background = color;
+                spaceBtn.Background = color;
+                altBtn.Background = color;
+                shiftBtn.Background = color;
+                backBtn.Background = color;
+
+            }
+            else 
+            {
+               var color = new SolidColorBrush(Color.Parse("#3A3A3E"));
+                enterBtn.Background = color;
+                leftBtn.Background = color;
+                rightBtn.Background = color;
+                spaceBtn.Background = color;
+                altBtn.Background = color;
+                shiftBtn.Background = color;
+                backBtn.Background = color;
+            }
+        }
+        private void Current_ActualThemeVariantChanged(object? sender, EventArgs e)
+        {      
+                SetColors(); 
+        }
+
         public void SetAssociatedTextBox(TextBox textBox)
         {
             _associatedTextBox = textBox;
@@ -117,10 +165,9 @@ namespace AvaloniaTest.Views
               
                 var napius = _associatedEnterButton.Content;
                 enterBtn.Content = napius;
-                Console.WriteLine(napius);
             }
             else {
-                Console.WriteLine("JEST BNYULL");
+                Console.WriteLine("Keybaord - enter btn not set");
                 enterBtn.Content = "Enter";
             }
 
@@ -131,6 +178,9 @@ namespace AvaloniaTest.Views
 
         public void HandleKeyPress(string text)
         {
+
+           
+
             if (_associatedTextBox == null) return;
             _associatedTextBox.Focus();
             int lineNumber = _associatedTextBox.CaretIndex;
@@ -164,6 +214,7 @@ namespace AvaloniaTest.Views
                     if (_associatedEnterButton is not null)
                     {
                         _associatedEnterButton?.Command?.Execute(null);
+                        Close();
                     }
                     
                 }
@@ -179,6 +230,13 @@ namespace AvaloniaTest.Views
             }
 
             _associatedTextBox.CaretIndex = lineNumber;
+
+
+
+
+           
+
+            // Ramka.Text = _associatedTextBox.Text;
         }
 
         public StackPanel GetKeyBoardStackPanel()
@@ -191,7 +249,11 @@ namespace AvaloniaTest.Views
             if (!isVisable) return;
             if (!ready) return;
             ready = false;
-            
+            if (_associatedTextBox != null)
+            {
+                _associatedTextBox.IsVisible = true;
+            }
+           
 
             var animation = new Avalonia.Animation.Animation
             {
@@ -230,10 +292,29 @@ namespace AvaloniaTest.Views
             if (isVisable) return;
             if (!ready) return;
             ready = false;
-
-            
             isVisable = true;
             framePanel.IsVisible = isVisable;
+  
+         
+            //PRZESUWANIE POLA TEKSOTWEGO:
+
+
+
+            // _associatedTextBox.Margin = new Thickness(_associatedTextBoxMargin.Left + 10, _associatedTextBoxMargin.Top, _associatedTextBoxMargin.Right, _associatedTextBoxMargin.Bottom);
+
+
+
+
+            //  Console.WriteLine($"MOJA pozycja: {_associatedTextBox.RenderTransform}");
+            //  var translateTransform = new TranslateTransform();
+            //  _associatedTextBox.RenderTransform = translateTransform;
+            // translateTransform.X = 100;
+            // translateTransform.Y = 0;
+
+            // var position = _associatedTextBox.PointToScreen(new Point(0d, 0d));
+
+
+
 
             var animation = new Avalonia.Animation.Animation
             {
@@ -294,6 +375,11 @@ namespace AvaloniaTest.Views
                 Margin = new Avalonia.Thickness(2, 2, 2, 2)
             };
 
+
+
+          
+
+
             mainPanel.Children.Add(firstRow);
             mainPanel.Children.Add(secondRow);
             mainPanel.Children.Add(thirdRow);
@@ -320,14 +406,15 @@ namespace AvaloniaTest.Views
                 firsRowButtons.Add(button);
             }
 
-            var backBtn = new Button
+            backBtn = new Button
             {
                 Content = "<---",
                 Width = 100,
                 Height = 60,
                 Margin = new Avalonia.Thickness(2),
                 HorizontalContentAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                VerticalContentAlignment = Avalonia.Layout.VerticalAlignment.Center
+                VerticalContentAlignment = Avalonia.Layout.VerticalAlignment.Center,
+                Background = new SolidColorBrush(Color.Parse("#D3D3D3"))
             };
 
             backBtn.Click += (sender, e) =>
@@ -335,6 +422,7 @@ namespace AvaloniaTest.Views
                 HandleKeyPress("back");
             };
             firstRow.Children.Add(backBtn);
+          
         } 
         private void InitSecondRow()
         {
@@ -371,16 +459,21 @@ namespace AvaloniaTest.Views
                 thirdRow.Children.Add(button);
                 thirdRowButtons.Add(button);
             }
-           
-             enterBtn = new Button
+
+            enterBtn = new Button
             {
                 Content = "Enter",
                 Width = 180,
                 Height = 60,
                 Margin = new Avalonia.Thickness(2),
                 HorizontalContentAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                VerticalContentAlignment = Avalonia.Layout.VerticalAlignment.Center
-            };
+                VerticalContentAlignment = Avalonia.Layout.VerticalAlignment.Center,
+                
+             };
+
+          
+       
+
 
             enterBtn.Click += (sender, e) =>
             {
@@ -390,14 +483,15 @@ namespace AvaloniaTest.Views
         } 
         private void InitFourthRow()
         {
-            var shiftBtn = new Button
+            shiftBtn = new Button
             {
                 Content = "Shift",
                 Width = 90,
                 Height = 60,
                 Margin = new Avalonia.Thickness(2),
                 HorizontalContentAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                VerticalContentAlignment = Avalonia.Layout.VerticalAlignment.Center
+                VerticalContentAlignment = Avalonia.Layout.VerticalAlignment.Center,
+                Background = new SolidColorBrush(Color.Parse("#D3D3D3"))
             };
             fourthRow.Children.Add(shiftBtn);
 
@@ -409,7 +503,7 @@ namespace AvaloniaTest.Views
                 {
                     PrimaryText = FourthRowDefault[i],
                     SecondaryText = fourthRowShift[i],
-                    Margin = new Avalonia.Thickness(2, 2, 2, 2)
+                    Margin = new Avalonia.Thickness(2, 2, 2, 2),            
                 };
                 button.KeyPressed += (sender, text) =>
                 {
@@ -423,20 +517,21 @@ namespace AvaloniaTest.Views
         }
         private void InitFifthRow()
         {
-            var altBtn = new Button
+            altBtn = new Button
             {
                 Content = "Alt",
                 Width = 110,
                 Height = 60,
                 Margin = new Avalonia.Thickness(2, 2,2,2),
                 HorizontalContentAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                VerticalContentAlignment = Avalonia.Layout.VerticalAlignment.Center
+                VerticalContentAlignment = Avalonia.Layout.VerticalAlignment.Center,
+                Background = new SolidColorBrush(Color.Parse("#D3D3D3"))
             };       
             fifthRow.Children.Add(altBtn);
             altBtn.Click += Button_Alt;
 
 
-            var spaceBtn = new Button
+             spaceBtn = new Button
             {
                 Content = "Space",
                 Width = 300,
@@ -444,9 +539,10 @@ namespace AvaloniaTest.Views
                 Margin = new Avalonia.Thickness(186, 2,2,2),
                 HorizontalContentAlignment = Avalonia.Layout.HorizontalAlignment.Center,
                 VerticalContentAlignment = Avalonia.Layout.VerticalAlignment.Center,
+                Background = new SolidColorBrush(Color.Parse("#D3D3D3")),
             };
                
-            var leftBtn = new Button
+             leftBtn = new Button
             {
                 Content = "<",
                 Width = 60,
@@ -454,8 +550,9 @@ namespace AvaloniaTest.Views
                 Margin = new Avalonia.Thickness(130, 2, 2, 2),
                 HorizontalContentAlignment = Avalonia.Layout.HorizontalAlignment.Center,
                 VerticalContentAlignment = Avalonia.Layout.VerticalAlignment.Center,
+                Background = new SolidColorBrush(Color.Parse("#D3D3D3")),
             };
-            var rightBtn = new Button
+             rightBtn = new Button
             {
                 Content = ">",
                 Width = 60,
@@ -463,6 +560,7 @@ namespace AvaloniaTest.Views
                 Margin = new Avalonia.Thickness(10, 2, 2, 2),
                 HorizontalContentAlignment = Avalonia.Layout.HorizontalAlignment.Center,
                 VerticalContentAlignment = Avalonia.Layout.VerticalAlignment.Center,
+                Background = new SolidColorBrush(Color.Parse("#D3D3D3")),
             };
             spaceBtn.Click += (sender, e) =>
             {

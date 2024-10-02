@@ -10,6 +10,10 @@ using System.Text;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
+using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using AvaloniaTest.Messages;
+using AvaloniaTest.Services.Factories;
 namespace AvaloniaTest.ViewModels;
 
 
@@ -18,24 +22,49 @@ namespace AvaloniaTest.ViewModels;
 /// </summary>
 public partial class SettingsViewModel : ViewModelBase
 {
+    private ViewModelFactory vMf;
+    private readonly Dictionary<Type, ViewModelBase> _viewModelCache = new();
+
 
     public static event EventHandler<string> CurrentSettingsOpen;
     public static string CurrentSettingsSub = "";
 
     [ObservableProperty]
-    private ViewModelBase _currentsettingspage = new GeneralSettingsViewModel();
+    private ViewModelBase _currentsettingspage;// = new GeneralSettingsViewModel();
     
     [ObservableProperty]
     private SettingsListTemplate? _selectedSettings;
 
+
+
+
+
+  
+
     /// <summary>
     /// Constructor for the SettingsViewModel class.
     /// </summary>
-    public SettingsViewModel()
+    public SettingsViewModel(ViewModelFactory factory)
     {
-        MainWindowViewModel.CurrentPageOpened += ViewModel_Activated;
-        CurrentSettingsSub = "AvaloniaTest.ViewModels.GeneralSettingsViewModel";
-        CurrentSettingsOpen?.Invoke(this, CurrentSettingsSub ?? "");
+        vMf = factory;
+        WeakReferenceMessenger.Default.Register<ViewActivatedMessages>(this, (r, m) =>
+        {
+            if (m.Value == GetType().FullName)
+            {
+                Console.WriteLine("Otwarto ustawienia");
+                WeakReferenceMessenger.Default.Send(new SettingsViewActivatedMessages(CurrentSettingsSub));
+            }
+            else
+            {
+                Console.WriteLine("Zamknięto ustawienia");
+                WeakReferenceMessenger.Default.Send(new SettingsViewActivatedMessages(""));
+            }
+        });
+
+       if (Items.Any())
+       {
+           SelectedSettings ??= Items.First();
+       }
 
     }
     /// <summary>
@@ -45,14 +74,24 @@ public partial class SettingsViewModel : ViewModelBase
     /// <param name="e"></param>
     private void ViewModel_Activated(object sender, string e)
     {
+     
         if (MainWindowViewModel.CurrentPageSub == "AvaloniaTest.ViewModels.SettingsViewModel")
         {
-           // Console.WriteLine("------------otwarto Settings---------------");
+            Console.WriteLine("-----------WSZYSKTIE USTAWIENIA---------------");
+            CurrentSettingsSub = Currentsettingspage?.ToString() ?? "AvaloniaTest.ViewModels.GeneralSettingsViewModel";
+
+           // Currentsettingspage ??= new GeneralSettingsViewModel();
+
+            CurrentSettingsOpen?.Invoke(this, CurrentSettingsSub ?? "");
+
+            
         }
         else
         {
+            Console.WriteLine("------------ZAMKNIETO WSZYSTKIE USTAWIENIA---------------");
             CurrentSettingsSub = "AvaloniaTest.ViewModels";
-            CurrentSettingsOpen?.Invoke(this, CurrentSettingsSub ?? "");
+             CurrentSettingsOpen?.Invoke(this, CurrentSettingsSub ?? "");
+           // CurrentSettingsOpen?.Invoke(this, "");
             MainWindowViewModel.CurrentPageOpened -= ViewModel_Activated;
         }
 
@@ -66,12 +105,22 @@ public partial class SettingsViewModel : ViewModelBase
     partial void OnSelectedSettingsChanged(SettingsListTemplate? value)
     {
         if (value is null) return;
-        var instance = Activator.CreateInstance(value.ModelType);
-        if(instance is null) return ;
-        Currentsettingspage = (ViewModelBase)instance;
-        CurrentSettingsSub = Currentsettingspage.ToString();
-        Console.WriteLine($"JAKA JEST STORNS: {CurrentSettingsSub}");
-        CurrentSettingsOpen?.Invoke(this, CurrentSettingsSub ?? "");
+        if (!_viewModelCache.TryGetValue(value.ModelType, out var instance))
+        {
+           // instance = (ViewModelBase)Activator.CreateInstance(value.ModelType)!;
+            instance = vMf.CreateViewModel(value.ModelType);
+            _viewModelCache[value.ModelType] = instance;
+        }
+
+        Console.WriteLine("ffghddfghdfgh");
+       Currentsettingspage = (ViewModelBase)instance;
+       CurrentSettingsSub = Currentsettingspage?.ToString() ?? "";
+       WeakReferenceMessenger.Default.Send(new SettingsViewActivatedMessages(CurrentSettingsSub));
+       
+        // CurrentSettingsOpen?.Invoke(this, CurrentSettingsSub ?? "");
+
+
+
     }
 
     /// <summary>
@@ -79,7 +128,7 @@ public partial class SettingsViewModel : ViewModelBase
     /// </summary>
     public ObservableCollection<SettingsListTemplate> Items { get; } = new()
     {
-        new SettingsListTemplate(typeof(GeneralSettingsViewModel), "Ustawienia ogolne","SettingsRegular"),
+        new SettingsListTemplate(typeof(GeneralSettingsViewModel), "Ustawienia ogólne","SettingsRegular"),
         new SettingsListTemplate(typeof(NetworkSettingsViewModel), "Ustawienia sieci", "NetworkSettingsEmpty"),
     };
 

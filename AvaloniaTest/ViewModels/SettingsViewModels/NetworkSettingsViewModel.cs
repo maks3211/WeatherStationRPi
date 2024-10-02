@@ -15,6 +15,11 @@ using CommunityToolkit.Mvvm.Input;
 using Avalonia.Input;
 using System.ComponentModel;
 using AvaloniaTest.Views;
+using AvaloniaTest.Helpers;
+using AvaloniaTest.Messages;
+using CommunityToolkit.Mvvm.Messaging;
+using Newtonsoft.Json.Linq;
+using System.Net.Http;
 
 
 
@@ -22,10 +27,18 @@ namespace AvaloniaTest.ViewModels;
 
 public partial class NetworkSettingsViewModel : ViewModelBase
 {
-    [ObservableProperty]
-    private ViewModelBase _currentwifilistselected = new GeneralSettingsViewModel();
+    //Do czego ta zmienna - chyba nie potrzebne to jest 
+    // [ObservableProperty]
+    // private ViewModelBase _currentwifilistselected = new GeneralSettingsViewModel();
+
+
     [ObservableProperty]
     private WifiListTemplate? _selectedwifilist;
+
+    [ObservableProperty]
+    private WifiListTemplate? _espWifiList;
+
+    private bool connectingToEsp = false;
 
     [ObservableProperty]
     private string _selectedwifi = "";
@@ -34,6 +47,7 @@ public partial class NetworkSettingsViewModel : ViewModelBase
     //private string _passwordbox = "";
 
     public event PropertyChangedEventHandler PropertyChanged;
+
 
 
     private string _passwordbox;
@@ -53,7 +67,7 @@ public partial class NetworkSettingsViewModel : ViewModelBase
                 }
                 else
                 {
-                    Connectbuttonvis = true;    
+                    Connectbuttonvis = true;
                 }
 
             }
@@ -66,7 +80,7 @@ public partial class NetworkSettingsViewModel : ViewModelBase
     }
 
     [ObservableProperty]
-    private string _connectedssid="";
+    private string _connectedssid = "";
     [ObservableProperty]
     private string _toConnectssid = "";
 
@@ -74,7 +88,7 @@ public partial class NetworkSettingsViewModel : ViewModelBase
     [ObservableProperty]
     private bool _connectbuttonvis = false;
     [ObservableProperty]
-    private bool _passwordboxvis = false;  
+    private bool _passwordboxvis = false;
     [ObservableProperty]
     private bool _keyboardvis = false;
 
@@ -83,36 +97,49 @@ public partial class NetworkSettingsViewModel : ViewModelBase
     private static Network network = new Network();
     private bool isOpen;
     public NetworkSettingsViewModel() {
-        isOpen = true;
-        SettingsViewModel.CurrentSettingsOpen += ViewModel_Activated;
-        Console.WriteLine("Otwarto ustawienia sieci");
-        StartWifiReading();
-        CheckWifiStatus();
-        
+        Console.WriteLine("-=-=-=-=-network SETTING KONSTRUKTOR-=-=-=-=-");
+        WeakReferenceMessenger.Default.Register<SettingsViewActivatedMessages>(this, (r, m) =>
+        {
+
+            if (m.Value == GetType().FullName)
+            {
+                Console.WriteLine("Otwarto ustawienia- siec");
+                ViewModelOpened();
+            }
+            else
+            {
+                ViewModelClosed();
+                Console.WriteLine("Zamknięto ustawienia- siec");
+            }
+        });
+        //   isOpen = true;
+        // SettingsViewModel.CurrentSettingsOpen += ViewModel_Activated;
+        //  StartWifiReading();
+        //  CheckWifiStatus();
+
         network.WifiListUpdated += (sender, e) =>
         {
             // Aktualizacja listy Items
             UpdateWifiList();
         };
-       
+
+
+
         //rozpocznij skanowanie sieci i dodaj do listy 
+
+
+
     }
 
-    private void ViewModel_Activated(object sender, string e)
+    private void ViewModelClosed()
     {
-        Console.WriteLine($"To{e}");
-        if (SettingsViewModel.CurrentSettingsSub == "AvaloniaTest.ViewModels.NetworkSettingsViewModel")
-        {
-            Console.WriteLine("------------otwarto zmiane siecii---------------");
-            isOpen = true;
-        }
-        else
-        {
-            Console.WriteLine("-------------------zamknieto siec----------------------");
-            isOpen = false;
-            SettingsViewModel.CurrentSettingsOpen -= ViewModel_Activated;
-        }
-
+        isOpen = false;
+    }
+    private void ViewModelOpened()
+    {
+        isOpen = true;
+        StartWifiReading();
+        CheckWifiStatus();
     }
 
     private void UpdateWifiList()
@@ -120,33 +147,110 @@ public partial class NetworkSettingsViewModel : ViewModelBase
         Items.Clear();
         foreach (var e in Network.wifiList)
         {
-            Items.Add(new WifiListTemplate(e.Ssid, e.PowerLevel,false,false));
+            Items.Add(new WifiListTemplate(e.Ssid, e.PowerLevel, false, false));
         }
-       
-        
-       
     }
 
-    public ObservableCollection<WifiListTemplate> Items {get; } = new()
+    public ObservableCollection<WifiListTemplate> Items { get; } = new()
     {
-        
+
         new WifiListTemplate( "siec1",2,false,false),
         new WifiListTemplate( "siec2",4,false,true),
 
     };
 
+    public ObservableCollection<WifiListTemplate> EspwifiList { get; } = new()
+    {
+    };
 
+    [RelayCommand]
+    public async Task GetEspwifi()
+    {
+        ReadESPwifiAsync();
+    }
+
+
+    private async Task ReadESPwifiAsync()
+        {
+        string esp32Url = "http://192.168.4.1/getData";
+        using (HttpClient client = new HttpClient())
+        {
+            Console.WriteLine("Czytanie siecii");
+            var response = await client.GetStringAsync($"{esp32Url}");
+
+            var jsonResponseArray = JArray.Parse(response);
+            string name;
+            int power;
+            Items.Clear();
+            foreach (var item in jsonResponseArray)
+            {
+                Console.WriteLine($"Nr {item["nr"]}");
+                Console.WriteLine($"SSID: {item["ssid"]}");
+                Console.WriteLine($"RRSI: {item["rssi"]}%");
+                Console.WriteLine($"CHANEL: {item["channel"]}");
+                Console.WriteLine("------");
+                name = (string)item["ssid"];
+                power = (int)item["rssi"];
+                Items.Add(new WifiListTemplate(name, power, false, false));
+            }
+        }
+        connectingToEsp = true;
+    }
+
+    private async Task ConnectESPtoWifiAsync()
+    {
+        string esp32Url = "http://192.168.4.1/postData";  // Adres URL do ESP32
+        // Przygotowanie danych JSON
+
+        string h = Selectedwifi;
+        string b = Passwordbox;
+        // string jsonData = "{\"wifi_ssid\":\"TP-Link_0E21\",\"wifi_pass\":\"66275022\"}";
+        string jsonData = $"{{\"wifi_ssid\":\"{Selectedwifi}\",\"wifi_pass\":\"{Passwordbox}\"}}";
+        using (HttpClient client = new HttpClient())
+        {
+            try
+            {
+                // Tworzymy zawartość zapytania POST (JSON)
+                StringContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+
+                // Wysłanie zapytania POST
+                HttpResponseMessage response = await client.PostAsync(esp32Url, content);
+
+                // Sprawdzenie, czy odpowiedź jest poprawna
+                response.EnsureSuccessStatusCode();
+
+                // Odczytanie odpowiedzi jako tekst
+                string responseData = await response.Content.ReadAsStringAsync();
+
+                // Wyświetlenie odpowiedzi w konsoli
+                Console.WriteLine("Odpowiedź z ESP32: " + responseData);
+            }
+            catch (HttpRequestException e)
+            {
+                Console.WriteLine("\nBłąd: " + e.Message);
+            }
+
+        }
+
+    }
 
     [RelayCommand]
     public void ConnectButton()
     {
         
         Console.WriteLine($"Polacz z: {Selectedwifi}");
-        
-        network.ConnectToWifi(Selectedwifi, Passwordbox);
-        Passwordbox = "";
-        Connectedssid = "";
-        ToConnectssid = "Łączenie z siecią";
+        if (connectingToEsp)
+        {
+            ConnectESPtoWifiAsync();
+        }
+        else
+        {
+            network.ConnectToWifi(Selectedwifi, Passwordbox);
+            Passwordbox = "";
+            Connectedssid = "";
+            ToConnectssid = "Łączenie z siecią";
+        }
+       
 
 
         //Task t1 = CheckWifiStatus();
@@ -168,18 +272,20 @@ public partial class NetworkSettingsViewModel : ViewModelBase
                 if (net == "")
                 {
                     Connectedssid = "Brak polaczenia z siecia";
-                   // ToConnectssid = "Wybierz sieć z listy";
+                    // ToConnectssid = "Wybierz sieć z listy";
                 }
                 else if (net == Selectedwifi)
                 {
                     Connectedssid = "Polaczono z: " + net;
                     ToConnectssid = "";
                 }
+                //Tutaj sprawdzenie czy poloczona siec to esp jezeli tak to wywolaj ReadESPwifiAsync
+             
                 else
                 {
                     Connectedssid = "Polaczono z: " + net;
-                   // Selectedwifi = "";
-                   // Connectedssid = "Wprowadź hasło dla: " + Selectedwifi;
+                    // Selectedwifi = "";
+                    // Connectedssid = "Wprowadź hasło dla: " + Selectedwifi;
 
                 }
 
@@ -209,7 +315,8 @@ public partial class NetworkSettingsViewModel : ViewModelBase
         Passwordboxvis = true;
         Keyboardvis = true; 
         ToConnectssid = "Połącz się z:" +  value.Label;
-
+        Console.WriteLine("wybrno sieć:");
+        Console.WriteLine(Selectedwifi);
     }
 
 
@@ -217,6 +324,8 @@ public partial class NetworkSettingsViewModel : ViewModelBase
     {
         while (isOpen)
         {
+            //TODO 
+            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             //w network zrobic token na 500ms i nich sama siebie zabija a tu wywoływanie tej metody co np 3sek 
             //network trwa 500 ms wywoływana w petli co 3 sek
             Console.WriteLine("Petla lecii");
@@ -255,7 +364,7 @@ public class WifiListTemplate
     }
 
     public string Label { set; get; }
-    public int Power { get; }
+    public int Power { get; set; }
     public bool IsConnected { get; set; }
     public bool NeedPassword { get; }
 

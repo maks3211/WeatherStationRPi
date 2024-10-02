@@ -7,6 +7,7 @@ using Avalonia.Input;
 using Avalonia.Controls.Primitives;
 using AvaloniaTest.Models;
 using System.Threading.Tasks;
+using LiveChartsCore.Measure;
 
 namespace AvaloniaTest.Views
 {
@@ -14,6 +15,7 @@ namespace AvaloniaTest.Views
     {
         public static OnScreenKeyboard keyboard;
         private static TextBox _textBox;
+
        // private static int lineNumber = 0;
         public static readonly AttachedProperty<bool> IsKeyboardEnabledProperty =
              AvaloniaProperty.RegisterAttached<TextBox, bool>(
@@ -25,7 +27,6 @@ namespace AvaloniaTest.Views
               AvaloniaProperty.RegisterAttached<TextBox, Button>(
                   "EnterButton",
                   typeof(OnScreenKeyboardBehavior));
-
 
         static OnScreenKeyboardBehavior()
         {   
@@ -68,7 +69,7 @@ namespace AvaloniaTest.Views
 
 
 
-        private static   void TextBox_Clicked(object? sender, PointerReleasedEventArgs e)
+        private static void TextBox_Clicked(object? sender, PointerReleasedEventArgs e)
         {
             if (sender is TextBox textBox)
             {
@@ -82,13 +83,9 @@ namespace AvaloniaTest.Views
                     {
                         keyboard.Open();
                     }
-                    
-
-                   
                 }
-             
             }
-        }  
+        }
     }
 }
 

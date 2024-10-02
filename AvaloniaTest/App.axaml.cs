@@ -6,6 +6,7 @@ using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Styling;
+
 using AvaloniaTest.ViewModels;
 using AvaloniaTest.Views;
 using System;
@@ -24,6 +25,8 @@ namespace AvaloniaTest
 
         public override void OnFrameworkInitializationCompleted()
         {
+          
+
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 Console.WriteLine("WINDOWS");
@@ -52,9 +55,13 @@ namespace AvaloniaTest
             }
             else {
                 RequestedThemeVariant = ThemeVariant.Dark;
-            }
-          
-            
+            }  
+        }
+
+
+        public void SetTheme(ThemeVariant theme)
+        {
+            RequestedThemeVariant = theme;
         }
     }
 

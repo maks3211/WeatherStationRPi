@@ -4,13 +4,15 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="1024" d:DesignHeight="470"
              xmlns:vm="using:AvaloniaTest.ViewModels"
+             xmlns:vm2 ="using:AvaloniaTest.Models.WeatherForecast"
+             xmlns:local="clr-namespace:AvaloniaTest.Views"
              x:DataType="vm:HomePageViewModel"
              x:Class="AvaloniaTest.Views.HomePageView">
 
 
-  <Panel Name="HomePagePanel">
+  <Panel Name="HomePagePanel" PointerPressed="PagePressed" Background="Transparent">
     
-    <Carousel Name="SlideMenu">
+    <Carousel Name="SlideMenu" >
       <Carousel.GestureRecognizers>
         <ScrollGestureRecognizer CanHorizontallyScroll="True" CanVerticallyScroll="True"/>
       </Carousel.GestureRecognizers>
@@ -18,48 +20,35 @@
       <Canvas
         HorizontalAlignment="Center"
         Width="1024"
-        Height="470">
+        Height="470"
+        >
         <!--KOLUMNA I-->
-        <!--PIERWSZE OKIENKO-->
+        <!--PIERWSZE OKIENKO {Binding TimeProp.CurrentTime} {Binding TimeProp.CurrentDate} {Binding TimeProp.CurrentDay} -->
         
         <Border  
            Canvas.Top="10" Canvas.Left="10"
            BorderBrush="{DynamicResource BorderColor}"
                         BorderThickness="2"                     
                         BoxShadow="2 2 2 2 Gray"
-                        CornerRadius="10">
+                        CornerRadius="10"
+           >
           <StackPanel         
             Width="243.5"
             Height="146.5"
             VerticalAlignment="Center">
-
-            <StackPanel Orientation="Horizontal">
-              <PathIcon Data="{StaticResource ClockRegular}" VerticalAlignment="Center" Margin="10,8,10,0"></PathIcon>
-              <TextBlock Margin="10,10,0,0" Text="{Binding CurrentDay}" FontSize="22" VerticalAlignment="Center"></TextBlock>
+         
+            <StackPanel Orientation="Horizontal" >
+              <PathIcon Data="{StaticResource ClockRegular}" VerticalAlignment="Center" Margin="10,-6,10,0"></PathIcon>
+              <TextBlock Margin="4,-5,0,0" Text="{Binding TimeProp.CurrentDay}" FontSize="22" VerticalAlignment="Center"></TextBlock>
+              <Image Source="{Binding WeatherController.CurrentIcon}" Height="52" Width="52" VerticalAlignment="Center" ></Image>
             </StackPanel>           
-            <Rectangle Height="2" Width="243.5" Fill="{DynamicResource BorderColor}" Margin="0,10,0,0"></Rectangle>
-            <StackPanel Orientation="Horizontal"   >
-              <TextBlock  FontSize="50" Margin="35,10,0,0" Text="{Binding Currenttime}"></TextBlock>
-              <Image Source="{Binding Mybitmap}" Height="53" Width="53" VerticalAlignment="Center" Margin="10,8,10,0"></Image>   
-            </StackPanel>
-            <TextBlock Margin="0,5,0,0" HorizontalAlignment="Center" Text="{Binding CurrentDate}" FontSize="15"></TextBlock>
+            <Rectangle Height="2" Width="243.5" Fill="{DynamicResource BorderColor}" Margin="0,-10,0,0"></Rectangle>
+            <TextBlock HorizontalAlignment="Center"  FontSize="50" Margin="0,0,0,0" Text="{Binding TimeProp.CurrentTime}"></TextBlock>           
+            <TextBlock Margin="0,-9,0,0" HorizontalAlignment="Center" Text="{Binding TimeProp.CurrentDate}" FontSize="15"></TextBlock>
           </StackPanel>
         </Border>
         <!--DRUGIE OKIENKO kolumna I-->
-        <Border
-              Canvas.Top="166.5" Canvas.Left="10"
-              BorderBrush="{DynamicResource BorderColor}"
-              BorderThickness="2"                     
-              BoxShadow="2 2 2 2 Gray"
-              CornerRadius="10"
-              >
-          <StackPanel
-                Width="243.5"
-                Height="293">
-            <TextBlock HorizontalAlignment="Center">POGODA INTERNETOWA</TextBlock>
- 
-          </StackPanel>
-        </Border>
+
 
         <!--KOLUMNA II-->
         <Border
@@ -84,25 +73,30 @@
           <Rectangle Height="2" Width="243.5" Fill="{DynamicResource BorderColor}" Margin="0,10,0,0"></Rectangle>
           <StackPanel Orientation="Horizontal">
             <Image Source="avares://AvaloniaTest/Assets/Images/thermometer.png" Width="50" Height="50" Margin="0,10,0,0" ></Image>
-            <TextBlock Text="{Binding Indoortemperature}" FontWeight="DemiBold" FontSize="35" VerticalAlignment="Center" Margin="10,10,0,0">C</TextBlock>
+            <TextBlock Text="{Binding Indoortemperature}" FontWeight="DemiBold" FontSize="35" 
+                       TextAlignment="Center"
+                       Width="145"                    
+                       VerticalAlignment="Center"
+                       Margin="5,10,0,0">C</TextBlock>
           </StackPanel>
         
           <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="20" >
-            <StackPanel>
-              <TextBlock Margin="0,15,0,0" >MAX</TextBlock>
-              <TextBlock Text="{Binding Indoortodaymaxtemp}" HorizontalAlignment="Center" Margin="0,10,0,0"></TextBlock>
+            <StackPanel >
+              <TextBlock Margin="0,15,0,0" Width="45" TextAlignment="Center">MAX</TextBlock>
+              <TextBlock Text="{Binding Indoortodaymaxtemp}"  TextAlignment="Center" Width="45" HorizontalAlignment="Center" Margin="0,10,0,0"></TextBlock>
             </StackPanel>
             <Line StartPoint="0,1" EndPoint="0,60" Margin="0,15,0,0" Stroke="{DynamicResource LightBorderColor}" StrokeThickness="2" StrokeDashArray="3"/>
             <StackPanel Orientation="Vertical">
               <TextBlock Foreground="{DynamicResource FontBlue}" Margin="0,15,0,0" >WCZORAJ</TextBlock>
-              <TextBlock Text="{Binding Indoorysterdaytemp}" FontSize="19" HorizontalAlignment="Center" Margin="0,10,0,0"></TextBlock>
+              <TextBlock Text="{Binding Indoorysterdaytemp}" FontSize="19" Width="55" TextAlignment="Center" HorizontalAlignment="Center" Margin="0,10,0,0"></TextBlock>
               <PathIcon   Data="{Binding Indoortemperaturechangeicon}" Foreground="{DynamicResource LightBorderColor}"  VerticalAlignment="Center" Margin="-55,-23,5,0"></PathIcon>
             </StackPanel>
            
             <Line StartPoint="0,1" EndPoint="0,60" Margin="0,15,0,0" Stroke="{DynamicResource LightBorderColor}" StrokeThickness="2" StrokeDashArray="3"/>
             <StackPanel>
-              <TextBlock Margin="0,15,0,0">MIN</TextBlock>
-              <TextBlock Text="{Binding Indoortodaymintemp}" HorizontalAlignment="Center" Margin="0,10,0,0"></TextBlock>            
+              <TextBlock Margin="-10,15,0,0" Width="45"  TextAlignment="Center"                           
+                         >MIN</TextBlock>
+              <TextBlock Text="{Binding Indoortodaymintemp}" HorizontalAlignment="Center" Width="45" TextAlignment="Center" Margin="-10,10,0,0"></TextBlock>            
             </StackPanel>
 
           </StackPanel>
@@ -160,7 +154,7 @@
               
               <Image Source="avares://AvaloniaTest/Assets/Images/hygrometer.png" Width="45" Height="45" Margin="-100,-190,0,0" ></Image>
               <StackPanel Margin="100,-155,0,0">
-                <TextBlock Width="65"  Margin="-120,0,0,0" TextAlignment="Right"   Text="{Binding Outdoorhumidity}" FontWeight="DemiBold" FontSize="35" VerticalAlignment="Center">10</TextBlock>
+                <TextBlock Width="65"  Margin="-120,0,0,0" TextAlignment="Right"   Text="{Binding OutdoorSensorsProp.OutdoorHumidity.DisplayName}" FontWeight="DemiBold" FontSize="35" VerticalAlignment="Center">10</TextBlock>
                 <Image Source="avares://AvaloniaTest/Assets/Images/outdoor.png" Margin="-30,-41,0,0" Width="40" Height="40" ></Image>
                 <TextBlock   Margin="4,0,0,0" FontWeight="DemiBold" FontSize="35" VerticalAlignment="Center">%</TextBlock>
                 <TextBlock Width="65" TextAlignment="Right"  Margin="-120,0,0,0" Text="{Binding Indoorhumidity}" FontWeight="DemiBold" FontSize="35" VerticalAlignment="Center">100</TextBlock>
@@ -298,25 +292,41 @@
             <Rectangle Height="2" Width="243.5" Fill="{DynamicResource BorderColor}" Margin="0,10,0,0"></Rectangle>
             <StackPanel Orientation="Horizontal">
               <Image Source="avares://AvaloniaTest/Assets/Images/temperatureOut.png" Width="50" Height="50" Margin="-6,10,0,0" ></Image>
-              <TextBlock Text="{Binding Outdoortemperature}" FontWeight="DemiBold" FontSize="35" VerticalAlignment="Center" Margin="15,10,0,0">C</TextBlock>
+              <TextBlock  Width="145" Text="{Binding OutdoorSensorsProp.OutdoorTemperature.DisplayName}" 
+                         FontWeight="DemiBold" 
+                         FontSize="35" 
+                         VerticalAlignment="Center" 
+                         TextAlignment="Center"                
+                         Margin="10,10,0,0">-</TextBlock>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="20" >
               <StackPanel>
-                <TextBlock Margin="0,15,0,0" >MAX</TextBlock>
-                <TextBlock Text="{Binding Indoortodaymaxtemp}" HorizontalAlignment="Center" Margin="0,10,0,0"></TextBlock>
+                <TextBlock Margin="0,15,0,0" Width="45" TextAlignment="Center"> MAX</TextBlock>
+                <TextBlock Text="{Binding OutdoorSensorsProp.MaxTemperature}" HorizontalAlignment="Center"
+                           Margin="0,10,0,0" 
+                           TextAlignment="Center"
+                           Width="45"></TextBlock>
               </StackPanel>
               <Line StartPoint="0,1" EndPoint="0,60" Margin="0,15,0,0" Stroke="{DynamicResource LightBorderColor}" StrokeThickness="2" StrokeDashArray="3"/>
               <StackPanel Orientation="Vertical">
                 <TextBlock Foreground="{DynamicResource FontBlue}" Margin="0,15,0,0" >WCZORAJ</TextBlock>
-                <TextBlock Text="{Binding Indoorysterdaytemp}" FontSize="19" HorizontalAlignment="Center" Margin="0,10,0,0"></TextBlock>
-                <PathIcon   Data="{Binding Indoortemperaturechangeicon}" Foreground="{DynamicResource LightBorderColor}"  VerticalAlignment="Center" Margin="-55,-23,5,0"></PathIcon>
+                <TextBlock Text="{Binding OutdoorSensorsProp.LastTemperature}" 
+                           Width="55"
+                           TextAlignment="Center"
+                           FontSize="19"
+                           HorizontalAlignment="Center"
+                           Margin="0,10,0,0"></TextBlock>
+                <PathIcon   Data="{Binding OutdoorSensorsProp.Temperatureicon}" Foreground="{DynamicResource LightBorderColor}"  VerticalAlignment="Center" Margin="-55,-23,5,0"></PathIcon>
               </StackPanel>
 
               <Line StartPoint="0,1" EndPoint="0,60" Margin="0,15,0,0" Stroke="{DynamicResource LightBorderColor}" StrokeThickness="2" StrokeDashArray="3"/>
               <StackPanel>
-                <TextBlock Margin="0,15,0,0">MIN</TextBlock>
-                <TextBlock Text="{Binding Indoortodaymintemp}" HorizontalAlignment="Center" Margin="0,10,0,0"></TextBlock>
+                <TextBlock Margin="-10,15,0,0" Width="45" TextAlignment="Center">MIN</TextBlock>
+                <TextBlock Text="{Binding OutdoorSensorsProp.MinTemperature}"
+                            Width="45"
+                           TextAlignment="Center"
+                           HorizontalAlignment="Center" Margin="-10,10,0,0"></TextBlock>
               </StackPanel>
 
             </StackPanel>
@@ -465,13 +475,141 @@
       Fill="{Binding Outdoorpreasurecolors[6]}"
     Margin="0,10,10,0"
                 ></Rectangle>
-                <TextBlock Text="{Binding Outdoorpreasure}" Margin="5,-169,0,0" FontSize="20">1000</TextBlock>
+                <TextBlock Text="{Binding OutdoorSensorsProp.OutdoorPressure.DisplayName}" Margin="5,-169,0,0" FontSize="20">1000</TextBlock>
                 <Image Source="avares://AvaloniaTest/Assets/Images/outdoor.png" Margin="0,-110,45,80" Width="45" Height="45" ></Image>
                 <TextBlock Margin="-15,-165,0,0" FontSize="15">hPa</TextBlock>
               </StackPanel>
             </StackPanel>
           </StackPanel>
-        </Border>     
+        </Border>
+        
+        <!--PROGNOZA POGODY -->
+        <Border
+      Canvas.Top="166.5" Canvas.Left="10"
+      BorderBrush="{DynamicResource BorderColor}"
+      BorderThickness="2"
+      BoxShadow="2 2 2 2 Gray"
+      CornerRadius="10"
+      Name="WeatherBorder"
+      PointerPressed="OnBorderPointerPressed"
+      >
+          
+          <ScrollViewer VerticalScrollBarVisibility="Visible"   Width="243.5"
+                Height="293">
+                <StackPanel>
+             
+
+                  <Button Margin="195,0,0,-30"
+                          IsVisible="{Binding !WeatherController.AutoWeatherRefresh}"
+                          Command="{Binding OnRefreshForecastClicked}"
+                          Background="Transparent"
+                          MaxHeight="33">
+                    <PathIcon Data="{StaticResource ArrowRepeat}"  VerticalAlignment="Top" ></PathIcon>
+                  </Button>
+                  <TextBlock HorizontalAlignment="Center" Margin="0,5,0,0"  FontSize="12">
+                  <TextBlock.Text>
+                    <MultiBinding StringFormat="Ostatnie uakt: {0}">
+                      <Binding Path="WeatherController.LastUpdateTime" />
+                    </MultiBinding>
+                  </TextBlock.Text>
+                  </TextBlock>
+                  <TextBlock HorizontalAlignment="Center" Text="{Binding WeatherController.City}" FontSize="23"></TextBlock>
+                  <TextBlock HorizontalAlignment="Center" Text="{Binding WeatherController.CurrentTemperature, StringFormat='{}{0}°'}" FontSize="35"></TextBlock>
+                  <TextBlock HorizontalAlignment="Center" Text="{Binding WeatherController.WeatherDesc}" FontSize="17" ></TextBlock>
+                  <TextBlock HorizontalAlignment="Center" FontSize="15">
+                    <TextBlock.Text>
+                      <MultiBinding StringFormat="Od {0}° do {1}°">
+                        <Binding Path="WeatherController.MinTemperature" />
+                        <Binding Path="WeatherController.MaxTemperature" />
+                      </MultiBinding>
+                    </TextBlock.Text>
+                  </TextBlock>
+
+                  <ListBox ScrollViewer.HorizontalScrollBarVisibility="Visible" ScrollViewer.VerticalScrollBarVisibility="Visible"  SelectedItem="{Binding SelectedHorulyForecast}" ItemsSource="{Binding WeatherController.HourlyForecastItems}"
+       Background="Transparent"
+       CornerRadius="5 5 5 5" Width="238" Height="120"  >
+                    
+                    <ListBox.ItemsPanel>
+                      
+                      <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal" />
+                      </ItemsPanelTemplate>                     
+                    </ListBox.ItemsPanel>
+                    <ListBox.ItemTemplate>
+                      <DataTemplate DataType="{x:Type vm2:HourlyForecastTemplate}">
+                        <StackPanel Orientation="Horizontal" >                       
+                        <StackPanel  Spacing="5" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" >
+                          <TextBlock VerticalAlignment="Center" Text="{Binding HourTime}" Margin="2,0,0,0"></TextBlock>
+                          <Image Source="{Binding Icon}" Height="30" Width="30" VerticalAlignment="Center" Margin="-5,0,0,-10"></Image>
+                          <TextBlock IsVisible="{Binding IsRain}"  FontSize="13" FontWeight="Medium"  VerticalAlignment="Center" Text="{Binding PrecipitationProb, StringFormat='{}{0}%'}" Foreground="{DynamicResource FontBlue}" Margin="0,0,0,0"></TextBlock>
+                          <TextBlock IsVisible="{Binding !IsRain}"  FontSize="13" FontWeight="Medium"  VerticalAlignment="Center" Text="" Foreground="Transparent" Margin="0,0,0,0"></TextBlock>
+                          <TextBlock VerticalAlignment="Center"  Text="{Binding Temperature, StringFormat='{}{0}°'}"></TextBlock>
+                        </StackPanel>
+                          
+                          <TextBlock Text="{Binding NextDay}" Margin="10,0,0,0" IsVisible="{Binding IsNextDay}"></TextBlock>
+                          <Line StartPoint="0,20" EndPoint="0,90" IsVisible="{Binding IsNextDay}" Margin="-10,0,0,0" Stroke="{DynamicResource LightBorderColor}" />
+                        </StackPanel>
+                        
+                      </DataTemplate>
+                      
+                    </ListBox.ItemTemplate>
+                    
+                  </ListBox>
+                 <!-- <AutoCompleteBox-->
+              <!--         Name="Wyszukiwarka"                          -->
+              <!-- Text="{Binding CityInput, Mode=TwoWay}"              -->
+              <!-- ItemsSource="{Binding CitySuggestions, Mode=TwoWay}" -->
+              <!-- FilterMode="StartsWith">                             -->
+              <!--       </AutoCompleteBox>                             -->
+              
+                  
+                  <!--POGODNIA DZIENNA-->
+                  <ListBox  ScrollViewer.VerticalScrollBarVisibility="Visible"  ItemsSource="{Binding WeatherController.DailyForecastItems}"
+       Background="Transparent"
+       CornerRadius="5 5 5 5" Width="238"
+                           Margin="0,15,0,0">
+
+                    <ListBox.ItemsPanel>
+                      <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Vertical" />
+                      </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                    <ListBox.ItemTemplate>
+                      <DataTemplate DataType="{x:Type vm2:DailyForecastTemplate}" >
+
+                        <StackPanel Orientation="Vertical" Width="230">
+                          <Border Width="230" BorderBrush="{DynamicResource LightBorderColor}" BorderThickness="0,0,0,3" Margin="0,0,1,1">
+                          <StackPanel  Spacing="5" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" >
+                            <TextBlock VerticalAlignment="Center" TextAlignment="Center" Width="40" Text="{Binding Day}" Margin="2,0,0,0"></TextBlock>                          
+                            <Image Source="{Binding Icon}" Height="30" Width="30" VerticalAlignment="Center" Margin="0,-10,0,0"></Image>
+                            <TextBlock IsVisible="{Binding IsRain}" Width="40" FontSize="13" FontWeight="Medium" VerticalAlignment="Center" Text="{Binding PrecipitationProb, StringFormat='{}{0}%'}" Foreground="{DynamicResource FontBlue}" Margin="-27,25,0,0"></TextBlock>
+                            <TextBlock IsVisible="{Binding !IsRain}"  Width="40" FontSize="13" FontWeight="Medium" VerticalAlignment="Center" Text="" Margin="-27,25,0,0"></TextBlock>
+                           
+                            
+                            <TextBlock IsVisible="{Binding IsRain}" FontSize="11" FontWeight="Medium" VerticalAlignment="Center" Width="50" TextAlignment="Center"  Text="{Binding RainVol, StringFormat='{}{0}mm'}" Foreground="{DynamicResource FontBlue}" Margin="0,0,0,0"></TextBlock>
+                            <TextBlock IsVisible="{Binding !IsRain}"  FontSize="13" FontWeight="Medium" Width="50"  VerticalAlignment="Center" Text=""  Foreground="Transparent" Margin="0,0,0,0"></TextBlock>
+                          
+                            <TextBlock VerticalAlignment="Center"   Width="30" TextAlignment="Center"  Text="{Binding MinTemp, StringFormat='{}{0}°'}"  Margin="1,0,5,0"></TextBlock>
+                            <TextBlock VerticalAlignment="Center"  Width="30" TextAlignment="Center" Text="{Binding MaxTemp, StringFormat='{}{0}°'}"></TextBlock>
+                          </StackPanel>
+                          </Border>
+                        </StackPanel>
+
+                      </DataTemplate>
+
+                    </ListBox.ItemTemplate>
+
+                  </ListBox>
+                </StackPanel>
+
+
+
+          </ScrollViewer>
+
+
+          
+            </Border>
+        
       </Canvas>
      
  
@@ -493,7 +631,7 @@
            VerticalAlignment="Center">
             <StackPanel  Orientation="Horizontal">
               <PathIcon Data="{StaticResource HomeRegular}" VerticalAlignment="Top" Margin="10,8,0,8"></PathIcon>
-              <PathIcon Data="{StaticResource ArrrowLeft}" Height="10" Margin="-4,8,10,8" VerticalAlignment="Top" ></PathIcon>
+              <PathIcon Data="{StaticResource ArrrowLeft}" Height="10" Margin="-4,8,10,8" VerticalAlignment="Top" ></PathIcon>  
               <PathIcon Data="{StaticResource ArrowRight}" Height="10" Margin="-28,18,10,8" VerticalAlignment="Top" ></PathIcon>
               <TextBlock VerticalAlignment="Center"  FontWeight="DemiBold" Margin="20,5,0,0">WYSOKOSC</TextBlock>
             </StackPanel>
@@ -511,7 +649,7 @@
                   <Rectangle Canvas.Top="130" Canvas.Left="47.5"  Height="7"   Width="145" Fill="{DynamicResource FontBlue}" ></Rectangle>
                   <Rectangle Canvas.Top="158" Canvas.Left="77.5"  Height="7"   Width="85"  Fill="{DynamicResource FontBlue}" ></Rectangle>
                 <TextBlock Text="{Binding Indooraltitude}" Canvas.Top="70" Canvas.Left="195" FontSize="18" >1255</TextBlock>
-                <TextBlock Text="{Binding Outdooraltitude}" Canvas.Top="70" Canvas.Left="3"   FontSize="18" >1255</TextBlock>
+                <TextBlock Text="{Binding OutdoorSensorsProp.OutdoorAltitude.DisplayName}" Canvas.Top="70" Canvas.Left="3"   FontSize="18" >1255</TextBlock>
               </Canvas>
             </StackPanel>
             </StackPanel>
@@ -658,7 +796,7 @@
       Fill="{Binding Outdooriluminancecolors[6]}"
     Margin="0,10,10,0"
                 ></Rectangle>
-                <TextBlock Text="{Binding Outdoorluminance}" Width="55" TextAlignment="Center" Margin="-45,-169,0,0" FontSize="20">1000</TextBlock>
+                <TextBlock Text="{Binding OutdoorSensorsProp.OutdoorIlluminance.DisplayName}" Width="55" TextAlignment="Center" Margin="-45,-169,0,0" FontSize="20">1000</TextBlock>
                 <Image Source="avares://AvaloniaTest/Assets/Images/outdoor.png" Margin="0,-110,45,80" Width="45" Height="45" ></Image>
                 <TextBlock Margin="-6,-165,0,0" FontSize="18">lx</TextBlock>
               </StackPanel>
@@ -696,13 +834,13 @@
 
 
                 <TextBlock Text="CO" Canvas.Top="85" Canvas.Left="20"></TextBlock>
-                <TextBlock Text="{Binding Outdoorco}" Canvas.Top="105" Canvas.Left="20"></TextBlock>
+                <TextBlock Text="{Binding OutdoorSensorsProp.OutdoorCO.DisplayName}" Canvas.Top="105" Canvas.Left="20"></TextBlock>
                 <Image Canvas.Left="15" Canvas.Top="85" Source="avares://AvaloniaTest/Assets/Images/starp.png"  Width="150" Height="100" ></Image>
                 <Ellipse Canvas.Left="{Binding Outdoorcocircle}" Canvas.Top="127" Width="16" Height="16"  Stroke="{DynamicResource BackGroundLight}" StrokeThickness="4" Fill="White" />
 
                 
                 <TextBlock Text="NH3" Canvas.Top="5" Canvas.Left="215"></TextBlock>
-                <TextBlock Text="{Binding Outdoornh3}" Canvas.Top="20" Canvas.Left="210"></TextBlock>
+                <TextBlock Text="{Binding OutdoorSensorsProp.OutdoorNH3.DisplayName}" Canvas.Top="20" Canvas.Left="210"></TextBlock>
                 <Image Canvas.Left="186" Canvas.Top="35" Source="avares://AvaloniaTest/Assets/Images/starp.png"  Width="150" Height="100" >
                   <Image.RenderTransform>
                     <RotateTransform Angle="90"/>
@@ -712,7 +850,7 @@
 
                 
                 <TextBlock Text="NO2" Canvas.Top="5" Canvas.Left="355"></TextBlock>
-                <TextBlock Text="{Binding Outdoorno2}" Canvas.Top="20" Canvas.Left="350"></TextBlock>
+                <TextBlock Text="{Binding OutdoorSensorsProp.OutdoorNO2.DisplayName}" Canvas.Top="20" Canvas.Left="350"></TextBlock>
                 <Image Canvas.Left="325" Canvas.Top="35" Source="avares://AvaloniaTest/Assets/Images/starp.png"  Width="150" Height="100" >
                   <Image.RenderTransform>
                     <RotateTransform Angle="90"/>

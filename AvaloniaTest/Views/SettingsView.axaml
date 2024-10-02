@@ -9,30 +9,33 @@
              xmlns:vm="using:AvaloniaTest.ViewModels"
              x:DataType="vm:SettingsViewModel"
              >
-  <SplitView IsPaneOpen ="True"
-           OpenPaneLength="225"
-           CompactPaneLength="86"
-           DisplayMode="CompactInline"
-           Background="{DynamicResource BackGroundLight}"
-           PaneBackground="{DynamicResource BackGround}">
-    
-    <SplitView.Pane>
-      <ListBox CornerRadius="10" Margin="5,10,5,10" 
-        ItemsSource="{Binding Items}" SelectedItem="{Binding SelectedSettings}" Background="{DynamicResource BackGroundDark}">
-        <ListBox.ItemTemplate>
-          <DataTemplate DataType="{x:Type vm:SettingsListTemplate}">
-            <StackPanel Orientation="Horizontal" Spacing="10" Height="50">
-              <PathIcon Data="{Binding ItemIcon}" Width="25" Height="25" HorizontalAlignment="Center" VerticalAlignment="Center"></PathIcon>
-              <TextBlock Text="{Binding Label}" FontSize="17" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-            </StackPanel>
-          </DataTemplate>
-        </ListBox.ItemTemplate>
-      </ListBox>
-    </SplitView.Pane>
-    <SplitView.Content>
-      <Border>
-        <TransitioningContentControl Content="{Binding Currentsettingspage}" Margin="10,10,10,10"/>
-      </Border>
-    </SplitView.Content>
-  </SplitView>
+ 
+    <SplitView IsPaneOpen ="True"
+             OpenPaneLength="225"
+             CompactPaneLength="86"
+             DisplayMode="CompactInline"
+             Background="{DynamicResource BackGroundLight}"
+             PaneBackground="{DynamicResource BackGround}">
+
+      <SplitView.Pane>
+        <ListBox CornerRadius="10" Margin="5,10,5,10"
+          ItemsSource="{Binding Items}" SelectedItem="{Binding SelectedSettings}" Background="{DynamicResource BackGroundDark}">
+          <ListBox.ItemTemplate>
+            <DataTemplate DataType="{x:Type vm:SettingsListTemplate}">
+              <StackPanel Orientation="Horizontal" Spacing="10" Height="50">
+                <PathIcon Data="{Binding ItemIcon}" Width="25" Height="25" HorizontalAlignment="Center" VerticalAlignment="Center"></PathIcon>
+                <TextBlock Text="{Binding Label}" FontSize="17" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+              </StackPanel>
+            </DataTemplate>
+          </ListBox.ItemTemplate>
+        </ListBox>
+      </SplitView.Pane>
+      <SplitView.Content>
+        <Border>
+          <TransitioningContentControl Content="{Binding Currentsettingspage}" Margin="10,10,10,10"/>
+        </Border>
+      </SplitView.Content>
+    </SplitView>
+  
+  
 </UserControl>

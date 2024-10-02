@@ -24,8 +24,65 @@
   <DockPanel LastChildFill="False">
     <!--NAGLOWEK-->
     <Border Height="50" Background="{DynamicResource BackGroundDark}" DockPanel.Dock="Top" CornerRadius="0,0,10,10">
-      <TextBlock>PRZYKŁADOWA ZAWARTOŚĆ </TextBlock>
+
+      <Panel   Height="45" >
+        
+        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center"  FontSize="18" Margin="10,0,0,0" Text="{Binding TimeProp.CurrentTime}"></TextBlock>
+
+        <TextBlock
+          VerticalAlignment="Center"
+        HorizontalAlignment="Center"
+          Opacity="0" FontSize="30"
+                   Name="Napis"
+                   Text ="{Binding CurrentPageName}"
+                   Classes.triggered="{Binding AnimationOn}">
+          <TextBlock.Styles>
+            <Style Selector="TextBlock.triggered">
+              <Style.Animations>
+                <Animation Duration="0:0:2" IterationCount="1">
+                  <KeyFrame Cue="0%">
+                    <Setter Property="Opacity" Value="0.0"/>
+                  </KeyFrame>
+                  <KeyFrame Cue="35%">
+                    <Setter Property="Opacity" Value="1.0"/>
+                  </KeyFrame>
+                  <KeyFrame Cue="65%">
+                    <Setter Property="Opacity" Value="1.0"/>
+                  </KeyFrame>
+                  <KeyFrame Cue="100%">
+                    <Setter Property="Opacity" Value="0.0"/>
+                  </KeyFrame>
+                </Animation>
+              </Style.Animations>
+            </Style>
+          </TextBlock.Styles>
+        </TextBlock>
+       
+        <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Spacing="20">
+          <StackPanel IsVisible="{Binding !EspNet.Connected}">
+            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center">ESP:</TextBlock>
+            <TextBlock Text="Brak połączenia" VerticalAlignment="Center"></TextBlock>
+          </StackPanel>
+         
+          <StackPanel IsVisible="{Binding EspNet.Connected}">
+            <TextBlock Text="{Binding EspNet.Ssid} " HorizontalAlignment="Center"></TextBlock>
+            <PathIcon Data="{Binding  EspNet.StrenghIcon}  "></PathIcon>
+          </StackPanel>
+          <StackPanel>
+            <TextBlock Text="TP-link Z45"  HorizontalAlignment="Center"></TextBlock>
+            <TextBlock Text="70%"  HorizontalAlignment="Center"></TextBlock>
+          </StackPanel>
+        </StackPanel>
+
+
+
+      </Panel>
+     
     </Border>
+    
+    
+    
+    
     <!--ZAWARTOSC GLOWNA-->
     <Border   DockPanel.Dock="Top">
       <TransitioningContentControl Content="{Binding CurrentPage}"/>
@@ -37,7 +94,7 @@
       <WrapPanel VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,0,0,0">
         <Button Margin="0,0,15,2"
             Name="changeThemeButton"
-             
+             IsVisible="{Binding ThemeBtnVis}"
             Grid.Row="2" Grid.Column="0"
             Width="70"
             Height="70"
@@ -67,18 +124,15 @@
             </DataTemplate>
           </ListBox.ItemTemplate>
         </ListBox>
-        <Button Margin="550,-50,0,0" Height="40"  Click="ButtonOnClick" HorizontalContentAlignment="Center" Background="{DynamicResource MainButton}" VerticalContentAlignment="Center">ZAMKNIJ</Button>       
+        <Button Margin="550,-50,0,0" Height="40"  Click="ButtonOnClick" HorizontalContentAlignment="Center" Background="{DynamicResource MainButton}" VerticalContentAlignment="Center">ZAMKNIJ</Button>
+        <Button Margin="30,-40,0,0" Command="{Binding SaveCommand}">Odczyt wifi</Button>
+        <Button Margin="30,-40,0,0" Command="{Binding SendCommand}">Wybierz wifi</Button>
+        
       </WrapPanel>
       
-    </Border>
-
-      <StackPanel Opacity="0" Name="KeyboardFrame"  Margin="40,180,0,0" Height="345" Background="{DynamicResource BackGroundDark}">
+    </Border> 
+      <StackPanel Opacity="0" Name="KeyboardFrame"  Margin="40,180,0,0" Height="345" Background="{DynamicResource KeyboardBackground}">
       </StackPanel>
-    
-     
-     
-      
-    
   </DockPanel>
 
 </Window>

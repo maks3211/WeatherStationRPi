@@ -24,12 +24,20 @@ using AvaloniaTest.Models;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using Avalonia.Controls.ApplicationLifetimes;
-
+using AvaloniaTest.Helpers;
 
 using System.Windows.Input;
 using Avalonia.Platform;
 using System.Diagnostics.Contracts;
-
+using AvaloniaTest.Models.WeatherForecast;
+using AvaloniaTest.Models.AddressSearch;
+using AvaloniaTest.Messages;
+using CommunityToolkit.Mvvm.Messaging;
+using AvaloniaTest.Models.ObservablesProperties;
+using ScottPlot.Colormaps;
+using static AvaloniaTest.Models.WeatherForecast.WeatherForecast;
+using AvaloniaTest.Services;
+//using AvaloniaTest.ViewModels.WeatherForecastTemplate;
 
 
 namespace AvaloniaTest.ViewModels
@@ -42,8 +50,24 @@ namespace AvaloniaTest.ViewModels
     public partial class HomePageViewModel : ViewModelBase
     {
 
-        private double _sliderValue;
 
+        private double _sliderValue;
+        [ObservableProperty]
+        public WeatherForecastController _weatherController;
+
+        AddressSearchController AddressSearchController = new AddressSearchController();
+        //Hourly Forecast 
+        [ObservableProperty]
+        private HourlyForecastTemplate? _selectedHorulyForecast;
+
+      
+      
+
+
+
+
+
+       
         /// <summary>
         /// Gets or sets the value of the slider.
         /// </summary>
@@ -75,14 +99,14 @@ namespace AvaloniaTest.ViewModels
         [ObservableProperty]
         public string _windDirection = "N";
         [ObservableProperty]
-        public string _windSpeed = Units.GetInstance().CalculatWind(MainWindowViewModel.inDoorSens.temperature).ToString().Replace(',','.');
+        public string _windSpeed = Units.GetInstance().CalculatWind(MainWindowViewModel.inDoorSens.temperature).ToString().Replace(',', '.');
         [ObservableProperty]
         public int _windGust = 0;
         [ObservableProperty]
         public string _windUnit = Units.GetInstance().GetWindUnit();
 
         private string[] _yellowcolorslist = { "#322c19", "#3d341a", "#534317", "#675114", "#795d12", "#8f6d0f", "#ffbc00" };
-        private string[] _greencolorslist = {  "#2b2727", "#2d3029", "#2f372b", "#31402d", "#334a30","#355132", "#4dba50" };
+        private string[] _greencolorslist = { "#2b2727", "#2d3029", "#2f372b", "#31402d", "#334a30", "#355132", "#4dba50" };
 
         public ObservableCollection<string> Indoorpreasurecolors { get; } = new()
         {
@@ -100,71 +124,50 @@ namespace AvaloniaTest.ViewModels
         {
             "#2b2727", "#2d3029", "#2f372b", "#31402d", "#334a30","#355132", "#4dba50"
         };
- 
 
-        //OUTDOOR SENSORS
-        [ObservableProperty]
-        public string _outdoortemperature = Units.GetInstance().CalculateTemp(MainWindowViewModel.mqqt.OutDoorTemp).ToString().Replace(',', '.').Replace("-999", "-") + Units.GetInstance().GetTempUnit();
 
         [ObservableProperty]
-        public double _outdoorpreasure;
+        public double _outdoorhumiditycircle;
 
         [ObservableProperty]
-        public string _outdoorhumidity = MainWindowViewModel.inDoorSens.humidity.ToString();
+        public int _outdoorcocircle;
 
         [ObservableProperty]
-        public double _outdoorhumiditycircle = 60 - MainWindowViewModel.inDoorSens.humidity / 100 * 60;
+        public int _outdoornh3circle;
 
         [ObservableProperty]
-        public int _outdoorluminance;
+        public int _outdoorno2circle;
 
-        [ObservableProperty]
-        public int _outdooraltitude;
 
-        [ObservableProperty]
-        public int _outdoorco;
 
-        [ObservableProperty]
-        public int _outdoorcocircle = 5;
 
-        [ObservableProperty]
-        public int _outdoornh3;
-
-        [ObservableProperty]
-        public int _outdoornh3circle = 5;
-
-        [ObservableProperty]
-        public int _outdoorno2;
-
-        [ObservableProperty]
-        public int _outdoorno2circle = 5;
 
 
 
         //INDOOR SENSORS
         [ObservableProperty]
         public string _indoortemperature = Units.GetInstance().CalculateTemp(MainWindowViewModel.inDoorSens.temperature).ToString().Replace(',', '.') + Units.GetInstance().GetTempUnit();
-        
+
         [ObservableProperty]
         public StreamGeometry _indoortemperaturechangeicon = (StreamGeometry)Application.Current.FindResource("ArrowUp");
-        
+
         [ObservableProperty]
         public string _indoortodaymintemp = "-°C";
-        
+
         [ObservableProperty]
         public string _indoortodaymaxtemp = "-°C";
-        
+
         [ObservableProperty]
         public string _indoorysterdaytemp = "-°C";
 
         [ObservableProperty]
         public string _indoorhumidity = MainWindowViewModel.inDoorSens.humidity.ToString();
-        
+
         [ObservableProperty]
         public double _indoorhumiditycircle = 54 - MainWindowViewModel.inDoorSens.humidity / 100 * 54;
 
         [ObservableProperty]
-        public string _indoorpreasure ="sdsd";
+        public string _indoorpreasure = "sdsd";
 
         [ObservableProperty]
         public int _indoorluminance;
@@ -174,26 +177,26 @@ namespace AvaloniaTest.ViewModels
 
         [ObservableProperty]
         public int _indoorco;
-        
+
         [ObservableProperty]
         public int _indoorcocircle = 5;
 
         //TIME
-        private DispatcherTimer timer;
-        
+     //   private DispatcherTimer timer;
+
+       [ObservableProperty]
+       private string _currentDate = DateTime.Now.ToString("dd-MM-yyyy");
+
         [ObservableProperty]
-        private string _currentDate = DateTime.Now.ToString("dd-MM-yyyy");
-        
+       public string _currenttime = DateTime.Now.Hour.ToString("D2") + ":" + DateTime.Now.Minute.ToString("D2");
+
         [ObservableProperty]
-        public string _currenttime = DateTime.Now.Hour.ToString("D2") + ":" + DateTime.Now.Minute.ToString("D2");
-        
-        [ObservableProperty]
-        private string _currentDay = char.ToUpper(DateTime.Now.ToString("dddd")[0]) + DateTime.Now.ToString("dddd").Substring(1);
+       private string _currentDay = char.ToUpper(DateTime.Now.ToString("dddd")[0]) + DateTime.Now.ToString("dddd").Substring(1);
 
         // WEATHER ICON
         [ObservableProperty]
         private Bitmap _mybitmap = new Bitmap(AssetLoader.Open(new Uri("avares://AvaloniaTest/Assets/Images/icons8-sun-144.png")));
-        
+
         private Bitmap _iconname;
         public event PropertyChangedEventHandler PropertyChanged;
         /// <summary>
@@ -212,6 +215,105 @@ namespace AvaloniaTest.ViewModels
             }
         }
 
+
+
+        [ObservableProperty]
+        private double _weatherWidth = 243.5;
+        [ObservableProperty]
+        private double _weatherHeight = 293.0;   
+        [ObservableProperty]
+        private double _weatherLeftPos = 10;
+        [ObservableProperty]
+        private double _weatherTopPos = 166.5;
+
+        private string lastCityImput = "";
+        private string _cityInput;
+        public string CityInput
+        {
+            get => _cityInput;
+            set
+            {
+                if (_cityInput != value)
+                {
+                    _cityInput = value;
+                    OnPropertyChanged(nameof(CityInput));
+                    UpdateCitySuggestions();  // Wywołanie metody przy zmianie tekstu
+                }
+            }
+        }
+
+        public async Task UpdateCitySuggestions()
+        {
+            //Console.WriteLine($"Display Name: {resuts[0].display_name}");
+            Console.WriteLine($"Ostatni  input: {lastCityImput}");
+            Console.WriteLine($"Aktualny input: {CityInput}");
+
+ 
+            if (CityInput.Length < 3)
+            {
+                Console.WriteLine("Mniejsze od 3 ");
+                return;
+            }
+            else
+            {
+             Console.WriteLine("OK wieksze od 3 ");
+            }
+            if (CityInput.Length - lastCityImput.Length < 5)
+            {
+                Console.WriteLine("Za mała różnica");
+                if (CityInput.Length - lastCityImput.Length < -5)
+                {
+                    Console.WriteLine("ZERO");
+                    lastCityImput = CityInput;
+                }
+                else
+                {
+                    return;
+                }
+            }
+            else
+            {
+                Console.WriteLine("OK roznica ");
+                lastCityImput = CityInput;
+            }
+           
+          
+         
+            lastCityImput = CityInput;
+
+            Console.WriteLine("SZUKANIE");
+             var resuts = await AddressSearchController.Search(CityInput);
+               if (resuts != null)
+               {
+                   CitySuggestions.Clear();
+
+                   foreach (var a in resuts)
+                   {
+                       CitySuggestions.Add(a.display_name);
+                   }
+               }
+               else
+               {
+                   Console.WriteLine("NULLLL");
+               }
+
+
+        }
+
+        private ObservableCollection<string> _citySuggestions;
+        public ObservableCollection<string> CitySuggestions
+        {
+            get { return _citySuggestions; }
+            set
+            {
+                _citySuggestions = value;
+                OnPropertyChanged(nameof(CitySuggestions));
+            }
+        }
+
+       
+       
+
         private void RaisePropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -220,24 +322,97 @@ namespace AvaloniaTest.ViewModels
         /// <summary>
         /// Command handler for change theme button.
         /// </summary>
-        [RelayCommand]
-        private void ThemeBtn()
+   /*     [RelayCommand]        RACZEJ NIE POTRZEBNE ~!!!! --       BEZ TEGO ZMIANA MOTYWU TEZ DZIALA
+       private void ThemeBtn()
         {
+          
             App app = (App)Application.Current;
             app.ChangeTheme();
-                
-        }
+
+        }*/
 
         /// <summary>
         /// Initializes a new instance of the HomePageViewModel class.
         /// </summary>
-        public HomePageViewModel()
+        /// 
+
+
+        [ObservableProperty]
+        TimeProperties timeProp;
+
+        [ObservableProperty]
+        private OutdoorSensors _outdoorSensorsProp;
+        public HomePageViewModel(TimeProperties timeProperties, OutdoorSensors outdoorSensors, WeatherForecastController weatherController)
         {
+            //HourlyForecastItems = WeatherController.HourlyForecastItems;
+            OutdoorSensorsProp = outdoorSensors;
+            TimeProp = timeProperties;
+            WeatherController = weatherController;
+            Console.WriteLine("--------HOME PAGE VIEW MODEL----------- konstruktor");
+
+            // WeatherController.GetWeather();
             _iconname = new Bitmap(AssetLoader.Open(new Uri("avares://AvaloniaTest/Assets/Images/icons8-sun-144.png")));
-            timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromMinutes(1);
-            MainWindowViewModel.CurrentPageOpened += ViewModel_Activated;
+       
+            //    timer = new DispatcherTimer();
+        //    timer.Interval = TimeSpan.FromMinutes(1);
+
+            // MainWindowViewModel.CurrentPageOpened += ViewModel_Activated;
+            //dodane
+
+            //timer.Start();
+           // StartClock();
+            StartOutDoorReading();
+
+            //InitializeForecast(); TU BYLO !!!
+
+            CitySuggestions = new ObservableCollection<string>();
+
+
+
+            SubOutdoorPressureChange();
+            SubOutdoorHumChanges();
+            SubOutdoorIlluChanges();
+            SubOutdoorCOChanges();
+            SubOutdoorNH3Changes();
+            SubOutdoorNO2Changes();
+
+
+            WeakReferenceMessenger.Default.Register<ViewActivatedMessages>(this, (r, m) =>
+            {
+
+                if (m.Value == GetType().FullName)
+                {
+                    Console.WriteLine("Otwarto strone główną");
+                }
+                else 
+                {
+                    Console.WriteLine("Zamknięto stornę główną");
+                }
+            });
+
+           
+
+          
         }
+        private void UpdateZegar()
+        {
+           
+            //  DateTime t = DateTime.Now;
+            DateTime t = Clock.Instance.CurrentTime;
+           
+            CurrentDate = t.ToString("dd-MM-yyyy");
+            CurrentDay =  char.ToUpper(t.ToString("dddd")[0]) + t.ToString("dddd").Substring(1);
+            Currenttime = t.Hour.ToString("D2") + ":" + t.Minute.ToString("D2");
+        }
+
+
+        
+
+
+       
+
+      
+
 
         /// <summary>
         /// Handles the activation of the view model
@@ -248,39 +423,42 @@ namespace AvaloniaTest.ViewModels
         {
             if (MainWindowViewModel.CurrentPageSub == "AvaloniaTest.ViewModels.HomePageViewModel")
             {
-                timer.Start();
-                StartClock();
+           //     timer.Start();
+                //StartClock();
                 StartOutDoorReading();
+                // InitializeForecast();          TU BYŁO      
             }
             else
             {
-                MainWindowViewModel.mqqt.OutdoorTempUpdated -= OutDoorTemp_DataUpdated;
-                MainWindowViewModel.mqqt.OutdoorPresUpdated -= OutDoorPres_DataUpdated;
-                MainWindowViewModel.mqqt.OutdoorHumiUpdated -= OutDoorHum_DataUpdated;
-                MainWindowViewModel.mqqt.OutdoorLumiUpdated -= OutDoorLumi_DataUpdated;
-                MainWindowViewModel.mqqt.OutdoorCOUpdated -= OutDoorCo_DataUpdated;
-                MainWindowViewModel.mqqt.OutdoorNH3Updated -= OutDoornh3_DataUpdated;
-                MainWindowViewModel.mqqt.OutdoorNO2Updated -= OutDoorno2_DataUpdated;
-
-                MainWindowViewModel.inDoorSens.IndoorTempUpdated -= InDoorTemp_DataUpdated;
-                MainWindowViewModel.inDoorSens.IndoorHumUpdated -= InDoorHum_DataUpdated;
-                MainWindowViewModel.inDoorSens.WindDirectionUpdated -= WindDirection_DataUpdated;
-                MainWindowViewModel.inDoorSens.WindSpeedUpdated -= WindSpeed_DataUpdated;
-                MainWindowViewModel.inDoorSens.WindGustUpdated -= WindGust_DataUpdated;
-                MainWindowViewModel.inDoorSens.IndoorPreasureUpdated -= IndoorPres_DataUpdated;
-                MainWindowViewModel.inDoorSens.IndoorLumiUpdated -= InDoorLumi_DataUpdated;
-                MainWindowViewModel.inDoorSens.IndoorAltiUpdated -= InDoorAlti_DataUpdated;
-                MainWindowViewModel.inDoorSens.IndoorCOUpdated -= InDoorCo_DataUpdated;
-                MainWindowViewModel.CurrentPageOpened -= ViewModel_Activated;
-
-                timer.Stop();
-                StopClock();
+               UnsubscribeAll();
+            //   timer.Stop();
+             //  StopClock();
             }
         }
 
-    
-        private void StartClock()
+        private void UnsubscribeAll()
         {
+
+           
+         
+
+            MainWindowViewModel.inDoorSens.IndoorTempUpdated -= InDoorTemp_DataUpdated;
+            MainWindowViewModel.inDoorSens.IndoorHumUpdated -= InDoorHum_DataUpdated;
+            MainWindowViewModel.inDoorSens.WindDirectionUpdated -= WindDirection_DataUpdated;
+            MainWindowViewModel.inDoorSens.WindSpeedUpdated -= WindSpeed_DataUpdated;
+            MainWindowViewModel.inDoorSens.WindGustUpdated -= WindGust_DataUpdated;
+            MainWindowViewModel.inDoorSens.IndoorPreasureUpdated -= IndoorPres_DataUpdated;
+            MainWindowViewModel.inDoorSens.IndoorLumiUpdated -= InDoorLumi_DataUpdated;
+            MainWindowViewModel.inDoorSens.IndoorAltiUpdated -= InDoorAlti_DataUpdated;
+            MainWindowViewModel.inDoorSens.IndoorCOUpdated -= InDoorCo_DataUpdated;
+            MainWindowViewModel.CurrentPageOpened -= ViewModel_Activated;
+        }
+
+
+
+      /*  private void StartClock()
+        {
+            Console.WriteLine("ZEGAR START");
             timer.Tick += (sender, e) =>
             {
                 DateTime t = DateTime.Now;
@@ -291,26 +469,22 @@ namespace AvaloniaTest.ViewModels
         }
         private void StopClock()
         {
-
+            Console.WriteLine("ZEGAR STOP");
             timer.Tick -= (sender, e) =>
             {
             };
         }
-
+*/
 
         private void StartOutDoorReading()
         {
            
            // MainWindowViewModel.outDoorSens.IndoorTempUpdated += OutDoorTemp_DataUpdated;
            //OUTDOOR SENSORS
-            MainWindowViewModel.mqqt.OutdoorTempUpdated += OutDoorTemp_DataUpdated;
-            MainWindowViewModel.mqqt.OutdoorPresUpdated += OutDoorPres_DataUpdated;
-            MainWindowViewModel.mqqt.OutdoorHumiUpdated += OutDoorHum_DataUpdated;
-            MainWindowViewModel.mqqt.OutdoorLumiUpdated += OutDoorLumi_DataUpdated;
-            MainWindowViewModel.mqqt.OutdoorAltiUpdated += OutDoorAlti_DataUpdated;
-            MainWindowViewModel.mqqt.OutdoorCOUpdated += OutDoorCo_DataUpdated;
-            MainWindowViewModel.mqqt.OutdoorNH3Updated += OutDoornh3_DataUpdated;
-            MainWindowViewModel.mqqt.OutdoorNO2Updated += OutDoorno2_DataUpdated;
+
+     
+         
+         
 
             MainWindowViewModel.inDoorSens.IndoorTempUpdated += InDoorTemp_DataUpdated;
             MainWindowViewModel.inDoorSens.IndoorHumUpdated += InDoorHum_DataUpdated;
@@ -328,93 +502,111 @@ namespace AvaloniaTest.ViewModels
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void OutDoorTemp_DataUpdated(object sender, double e)
-        {
-            Outdoortemperature = Units.GetInstance().CalculateTemp(e).ToString().Replace(',', '.') + Units.GetInstance().GetTempUnit();
-        }
+        //  private void OutDoorTemp_DataUpdated(object sender, double e)
+        //  {
+        //      Outdoortemperature = Units.GetInstance().CalculateTemp(e).ToString().Replace(',', '.') + Units.GetInstance().GetTempUnit();
+        // }
 
+
+        [RelayCommand]
+        public void OnRefreshForecastClicked()
+        {
+            WeatherController.GetAllData();
+        }
+        private void SubOutdoorPressureChange()
+        {
+            if (OutdoorSensorsProp.OutdoorPressure != null)
+            {
+                OutdoorSensorsProp.OutdoorPressure.PropertyChanged += OutDoorPres_DataUpdated;  
+            }
+        }
         /// <summary>
         /// Update outdoor pressur value
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void OutDoorPres_DataUpdated(object sender, double e)
+        private void OutDoorPres_DataUpdated(object sender, PropertyChangedEventArgs e)
         {
-            Outdoorpreasure = (int)e;
-            ChangeVerticalBarColor(e, 1054, 960, _greencolorslist, Outdoorpreasurecolors);
+           
+            ChangeVerticalBarColor(OutdoorSensorsProp.OutdoorPressure.Value, 1054, 960, _greencolorslist, Outdoorpreasurecolors);
         }
 
-        /// <summary>
-        /// Update outdoor humidity value
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void OutDoorHum_DataUpdated(object sender, double e)
-        {
-            // Console.WriteLine("tUpdate wilgotnosci");
+   
 
-            Outdoorhumiditycircle = 60 - e / 100 * 60;
-            string[] parts1 = e.ToString().Split('.', ',');
-            Outdoorhumidity = parts1[0];
+
+        private void SubOutdoorHumChanges()
+        {
+            if (OutdoorSensorsProp.OutdoorHumidity != null)
+            {
+                OutdoorSensorsProp.OutdoorHumidity.PropertyChanged += OnOutdoorHumidityChanged;
+            }
+        }
+        private void OnOutdoorHumidityChanged(object sender, PropertyChangedEventArgs e)
+        {
+                Outdoorhumiditycircle = 60 - OutdoorSensorsProp.OutdoorHumidity.Value / 100 * 60;  
         }
 
-        /// <summary>
-        /// Update outdoor luminance value
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void OutDoorLumi_DataUpdated(object sender, double e)
-        {
+  
 
-            Outdoorluminance = (int)e;
-            ChangeVerticalBarColor(e, 2000, 0, _yellowcolorslist, Outdooriluminancecolors);
+        private void SubOutdoorIlluChanges()
+        {
+            if (OutdoorSensorsProp.OutdoorIlluminance != null)
+            {
+                OutdoorSensorsProp.OutdoorIlluminance.PropertyChanged += OnOutdoorIlluminanceChanged;
+            }
+        }
+        private void OnOutdoorIlluminanceChanged(object sender, PropertyChangedEventArgs e)
+        {
+            ChangeVerticalBarColor(OutdoorSensorsProp.OutdoorIlluminance.Value, 2000, 0, _yellowcolorslist, Outdooriluminancecolors);
         }
 
-        /// <summary>
-        /// Update outdoor altitude value
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void OutDoorAlti_DataUpdated(object sender, int e)
+
+
+
+    
+
+
+
+        private void SubOutdoorCOChanges()
         {
-            Outdooraltitude = e;
+            if (OutdoorSensorsProp.OutdoorCO != null)
+            {
+                OutdoorSensorsProp.OutdoorCO.PropertyChanged += OnOutdoorCOChanged;
+            }
+        }
+        private void OnOutdoorCOChanged(object sender, PropertyChangedEventArgs e)
+        {
+            Outdoorcocircle = MoveCricle(5, 0, 250, OutdoorSensorsProp.OutdoorCO.Value);
         }
 
-        /// <summary>
-        /// Update outdoor Co value
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void OutDoorCo_DataUpdated(object sender, double e)
-        {
 
-            Outdoorco = (int)e;
-            Outdoorcocircle = MoveCricle(5, 0, 250, e);
+ 
+
+        private void SubOutdoorNH3Changes()
+        {
+            if (OutdoorSensorsProp.OutdoorNH3 != null)
+            {
+                OutdoorSensorsProp.OutdoorNH3.PropertyChanged += OnOutdoorNH3Changed;
+            }
+        }
+        private void OnOutdoorNH3Changed(object sender, PropertyChangedEventArgs e)
+        {
+            Outdoornh3circle = MoveCricle(15, 0, 180, OutdoorSensorsProp.OutdoorNH3.Value);
         }
 
-        /// <summary>
-        /// Update outdoor NH3 value
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void OutDoornh3_DataUpdated(object sender, double e)
+        private void SubOutdoorNO2Changes()
         {
-
-            Outdoornh3 = (int)e;
-            Outdoornh3circle = MoveCricle(15, 0, 180, e);
+            if (OutdoorSensorsProp.OutdoorNO2 != null)
+            {
+                OutdoorSensorsProp.OutdoorNO2.PropertyChanged += OnOutdoorNO2Changed;
+            }
+        }
+        private void OnOutdoorNO2Changed(object sender, PropertyChangedEventArgs e)
+        {
+            Outdoorno2circle = MoveCricle(15, 0, 10, OutdoorSensorsProp.OutdoorNO2.Value);
         }
 
-        /// <summary>
-        /// Update outdoor NO2 value
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void OutDoorno2_DataUpdated(object sender, double e)
-        {
-
-            Outdoorno2 = (int)e;
-            Outdoorno2circle = MoveCricle(15, 0, 10, e);
-        }
+    
 
         /// <summary>
         /// Update indoor temperature value
@@ -743,7 +935,45 @@ namespace AvaloniaTest.ViewModels
                 Indoorpreasurecolors[6] = _yellowcolorslist[6];
             }
         }
+    }
 
-   
+    public abstract class ForecastBase
+    {
+        public Bitmap Icon { get; }
+        public bool IsRain { get; }
+        public int PrecipitationProb { get; }
+        public double RainVol { get; }
+
+        protected ForecastBase(Bitmap icon, bool isRain, int precipitationProb, double rainVol)
+        {
+            Icon = icon;
+            IsRain = isRain;
+            PrecipitationProb = precipitationProb;
+            RainVol = rainVol;
+        }
+    }
+
+  
+
+    public class DailyForecastTemplate : ForecastBase
+    {
+        public string Day { get; }
+        public int MinTemp { get; set; }
+        public int MaxTemp { get; set; }
+
+        public DailyForecastTemplate(
+            string day,
+            Bitmap icon,
+            int minTemp,
+            int maxTemp,
+            bool isRain,
+            int precipitationProb,
+            double rainVol)
+            : base(icon, isRain, precipitationProb, rainVol)
+        {
+            Day = day;
+            MinTemp = minTemp;
+            MaxTemp = maxTemp;
+        }
     }
 }
