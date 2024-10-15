@@ -1,4 +1,6 @@
-﻿using AvaloniaTest.Messages;
+﻿using AvaloniaTest.Helpers;
+using AvaloniaTest.Messages;
+using AvaloniaTest.Services.Enums;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using System;
@@ -11,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace AvaloniaTest.Models.ObservablesProperties
 {
-    public partial class MqttTopic<T> : ObservableObject
+    public partial class SensorInfo<T> : ObservableObject
     {
         public Func<T, T>? CalculateValue { get; set; } // przelicza 
 
@@ -35,14 +37,19 @@ namespace AvaloniaTest.Models.ObservablesProperties
 
             set
             {
-                Console.WriteLine("jest setter w mqqt topic");
                 
              //   _value = CalculateValue != null ? CalculateValue(value) : value; //przelicz jezli podano funkcje 
              _value = value; //value przechowuje wartosc w domyslnej jednostece
+
+                if (ErrorChecker.IsError(value))
+                {
+                    return;
+                }
+
               _unitValue = CalculateValue != null ? CalculateValue(value) : value;  //to zawiera juz przeliczonoa wartosc
 
                 var format = _unitValue?.ToString();
-
+                    
                 if (format != null)
                 {
                     if (GetUnit != null)
@@ -87,14 +94,18 @@ namespace AvaloniaTest.Models.ObservablesProperties
             // W przypadku niepowodzenia zwróć pusty string lub obsłuż błąd
             return "";
         }
-        public MqttTopic(string name, bool toInt = false ,Func<string> getUnit = null, Func<T, T> calculateValue = null)
+        public SensorInfo(string name, bool toInt = false ,Func<string> getUnit = null, Func<T, T> calculateValue = null)
         {
             Name = name;
             ConvertToInt = toInt;
             //  FormatDisplayName = formatDisplayName;
             GetUnit = getUnit;
             CalculateValue = calculateValue;
-            if (calculateValue != null)
+
+
+
+            //to juz nie potrzebne jest 
+/*            if (calculateValue != null)
             {
                 WeakReferenceMessenger.Default.Register<UnitChangedMessage>(this, (r, m) =>
                 {
@@ -105,7 +116,7 @@ namespace AvaloniaTest.Models.ObservablesProperties
                     }
 
                 });
-            }
+            }*/
 
         }
 

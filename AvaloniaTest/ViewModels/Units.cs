@@ -38,8 +38,6 @@ public partial class Units: ObservableObject
 
     private Units()
     {
-        Console.WriteLine("robie to ");
-       // Ustaw.PropertyChanged += Ustaw_PropertyChanged;
     }
 
     public void SetSub()

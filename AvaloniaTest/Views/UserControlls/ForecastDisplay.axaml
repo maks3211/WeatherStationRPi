@@ -1,0 +1,120 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" 
+             xmlns:vm="using:AvaloniaTest.ViewModels"
+             xmlns:vm2 ="using:AvaloniaTest.Models.WeatherForecast"
+             x:DataType="vm:HomePageViewModel"
+             x:Class="AvaloniaTest.Views.ForecastDisplay">
+  <Viewbox >
+  <Border
+        BorderBrush="{DynamicResource BorderColor}"
+        BorderThickness="2"
+        CornerRadius="10"    
+     >
+
+    <ScrollViewer VerticalScrollBarVisibility="Visible" Height="311.0" Width="243.5">
+    
+        <StackPanel>
+          <Button Margin="195,0,0,-30"
+                  IsVisible="{Binding !WeatherController.AutoWeatherRefresh}"
+                  Command="{Binding OnRefreshForecastClicked}"
+                  Background="Transparent"
+                  MaxHeight="33">
+            <PathIcon Data="{StaticResource ArrowRepeat}"  VerticalAlignment="Top" ></PathIcon>
+          </Button>
+          <TextBlock HorizontalAlignment="Center" Margin="0,5,0,0"  FontSize="12">
+            <TextBlock.Text>
+              <MultiBinding StringFormat="Ostatnie uakt: {0}">
+                <Binding Path="WeatherController.LastUpdateTime" />
+              </MultiBinding>
+            </TextBlock.Text>
+          </TextBlock>
+          <TextBlock HorizontalAlignment="Center" Text="{Binding WeatherController.City}" FontSize="23"></TextBlock>
+          <TextBlock HorizontalAlignment="Center" Text="{Binding WeatherController.CurrentTemperature, StringFormat='{}{0}°'}" FontSize="35"></TextBlock>
+          <TextBlock HorizontalAlignment="Center" Text="{Binding WeatherController.WeatherDesc}" FontSize="17" ></TextBlock>
+          <TextBlock HorizontalAlignment="Center" FontSize="15">
+            <TextBlock.Text>
+              <MultiBinding StringFormat="Od {0}° do {1}°">
+                <Binding Path="WeatherController.MinTemperature" />
+                <Binding Path="WeatherController.MaxTemperature" />
+              </MultiBinding>
+            </TextBlock.Text>
+          </TextBlock>
+          <!--POGODA GODZINOWA-->
+          <ListBox ScrollViewer.HorizontalScrollBarVisibility="Visible" ScrollViewer.VerticalScrollBarVisibility="Visible"  SelectedItem="{Binding SelectedHorulyForecast}" ItemsSource="{Binding WeatherController.HourlyForecastItems}"
+       Background="Transparent"
+       CornerRadius="5 5 5 5"
+                  Width="238"
+                  Height="120">
+
+            <ListBox.ItemsPanel>
+
+              <ItemsPanelTemplate>
+                <WrapPanel Orientation="Horizontal" />
+              </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+            <ListBox.ItemTemplate>
+              <DataTemplate DataType="{x:Type vm2:HourlyForecastTemplate}">
+                <StackPanel Orientation="Horizontal" >
+                  <StackPanel  Spacing="5" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" >
+                    <TextBlock VerticalAlignment="Center" Text="{Binding HourTime}" Margin="2,0,0,0"></TextBlock>
+                    <Image Source="{Binding Icon}" Height="30" Width="30" VerticalAlignment="Center" Margin="-5,0,0,-10"></Image>
+                    <TextBlock IsVisible="{Binding IsRain}"  FontSize="13" FontWeight="Medium"  VerticalAlignment="Center" Text="{Binding PrecipitationProb, StringFormat='{}{0}%'}" Foreground="{DynamicResource FontBlue}" Margin="0,0,0,0"></TextBlock>
+                    <TextBlock IsVisible="{Binding !IsRain}"  FontSize="13" FontWeight="Medium"  VerticalAlignment="Center" Text="" Foreground="Transparent" Margin="0,0,0,0"></TextBlock>
+                    <TextBlock VerticalAlignment="Center"  Text="{Binding Temperature, StringFormat='{}{0}°'}"></TextBlock>
+                  </StackPanel>
+
+                  <TextBlock Text="{Binding NextDay}" Margin="10,0,0,0" IsVisible="{Binding IsNextDay}"></TextBlock>
+                  <Line StartPoint="0,20" EndPoint="0,90" IsVisible="{Binding IsNextDay}" Margin="-10,0,0,0" Stroke="{DynamicResource LightBorderColor}" />
+                </StackPanel>
+
+              </DataTemplate>
+
+            </ListBox.ItemTemplate>
+
+          </ListBox>
+          <!-- <AutoCompleteBox-->
+          <!--         Name="Wyszukiwarka"                          -->
+          <!-- Text="{Binding CityInput, Mode=TwoWay}"              -->
+          <!-- ItemsSource="{Binding CitySuggestions, Mode=TwoWay}" -->
+          <!-- FilterMode="StartsWith">                             -->
+          <!--       </AutoCompleteBox>                             -->
+
+
+          <!--POGODNIA DZIENNA-->
+          <ListBox  ScrollViewer.VerticalScrollBarVisibility="Visible"  ItemsSource="{Binding WeatherController.DailyForecastItems}"
+       Background="Transparent"
+       CornerRadius="5 5 5 5" Width="238"
+                   Margin="0,15,0,0">
+            <ListBox.ItemsPanel>
+              <ItemsPanelTemplate>
+                <WrapPanel Orientation="Vertical" />
+              </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+            <ListBox.ItemTemplate>
+              <DataTemplate DataType="{x:Type vm2:DailyForecastTemplate}" >
+
+                <StackPanel Orientation="Vertical" Width="230">
+                  <Border Width="230" BorderBrush="{DynamicResource LightBorderColor}" BorderThickness="0,0,0,3" Margin="0,0,1,1">
+                    <StackPanel  Spacing="5" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" >
+                      <TextBlock VerticalAlignment="Center" TextAlignment="Center" Width="40" Text="{Binding Day}" Margin="2,0,0,0"></TextBlock>
+                      <Image Source="{Binding Icon}" Height="30" Width="30" VerticalAlignment="Center" Margin="0,-10,0,0"></Image>
+                      <TextBlock IsVisible="{Binding IsRain}" Width="40" FontSize="13" FontWeight="Medium" VerticalAlignment="Center" Text="{Binding PrecipitationProb, StringFormat='{}{0}%'}" Foreground="{DynamicResource FontBlue}" Margin="-27,25,0,0"></TextBlock>
+                      <TextBlock IsVisible="{Binding !IsRain}"  Width="40" FontSize="13" FontWeight="Medium" VerticalAlignment="Center" Text="" Margin="-27,25,0,0"></TextBlock>
+                      <TextBlock IsVisible="{Binding IsRain}" FontSize="11" FontWeight="Medium" VerticalAlignment="Center" Width="50" TextAlignment="Center"  Text="{Binding RainVol, StringFormat='{}{0}mm'}" Foreground="{DynamicResource FontBlue}" Margin="0,0,0,0"></TextBlock>
+                      <TextBlock IsVisible="{Binding !IsRain}"  FontSize="13" FontWeight="Medium" Width="50"  VerticalAlignment="Center" Text=""  Foreground="Transparent" Margin="0,0,0,0"></TextBlock>
+                      <TextBlock VerticalAlignment="Center"   Width="30" TextAlignment="Center"  Text="{Binding MinTemp, StringFormat='{}{0}°'}"  Margin="1,0,5,0"></TextBlock>
+                      <TextBlock VerticalAlignment="Center"  Width="30" TextAlignment="Center" Text="{Binding MaxTemp, StringFormat='{}{0}°'}"></TextBlock>
+                    </StackPanel>
+                  </Border>
+                </StackPanel>
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>
+        </StackPanel>
+    </ScrollViewer>
+  </Border>
+  </Viewbox>
+</UserControl>

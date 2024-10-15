@@ -50,4 +50,14 @@
       <SubType>Designer</SubType>
     </AvaloniaResource>
   </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Views\UserControlls\OutdoorTemperatureDisplay.axaml.cs">
+      <DependentUpon>OutdoorTemperatureDisplay.axaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\UserControlls\AltitudeDisplay.axaml" />
+  </ItemGroup>
 </Project>

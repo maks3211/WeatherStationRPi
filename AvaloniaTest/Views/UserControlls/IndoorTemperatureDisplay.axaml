@@ -1,0 +1,60 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+              xmlns:vm="using:AvaloniaTest.ViewModels"
+             x:DataType="vm:HomePageViewModel"
+             x:Class="AvaloniaTest.Views.IndoorTemperatureDisplay">
+  <Viewbox>
+  <Border
+            BorderBrush="{DynamicResource BorderColor}"
+            BorderThickness="2"
+            CornerRadius="10">
+    <!--pierwszy panel-->
+
+      <StackPanel
+        VerticalAlignment="Center">
+
+        <StackPanel  Orientation="Horizontal">
+          <PathIcon Data="{StaticResource HomeRegular}" VerticalAlignment="Top" Margin="10,8,0,8"></PathIcon>
+          <PathIcon Data="{StaticResource ArrrowLeft}" Height="10" Margin="-4,14,10,8" VerticalAlignment="Top" ></PathIcon>
+
+          <TextBlock VerticalAlignment="Center"  FontWeight="DemiBold" Margin="20,5,0,0">TEMPERATURA</TextBlock>
+        </StackPanel>
+
+        <Rectangle Height="2" Width="243.5" Fill="{DynamicResource BorderColor}" Margin="0,10,0,0"></Rectangle>
+        <StackPanel Orientation="Horizontal">
+          <Image Source="avares://AvaloniaTest/Assets/Images/thermometer.png" Width="50" Height="50" Margin="0,10,0,0" ></Image>
+          <TextBlock Text="{Binding Indoortemperature}" FontWeight="DemiBold" FontSize="35"
+                     TextAlignment="Center"
+                     Width="145"
+                     VerticalAlignment="Center"
+                     Margin="5,10,0,0">C</TextBlock>
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="20" >
+          <StackPanel >
+            <TextBlock Margin="0,15,0,0" Width="45" TextAlignment="Center">MAX</TextBlock>
+            <TextBlock Text="{Binding IndoorSensorsProp.MaxTemp.DisplayName}"  TextAlignment="Center" Width="45" HorizontalAlignment="Center" Margin="0,10,0,0"></TextBlock>
+          </StackPanel>
+          <Line StartPoint="0,1" EndPoint="0,60" Margin="0,15,0,0" Stroke="{DynamicResource LightBorderColor}" StrokeThickness="2" StrokeDashArray="3"/>
+          <StackPanel Orientation="Vertical">
+            <TextBlock Foreground="{DynamicResource FontBlue}" Margin="0,15,0,0" >WCZORAJ</TextBlock>
+            <TextBlock Text="{Binding IndoorSensorsProp.LastTemp.DisplayName}" FontSize="19" Width="55" TextAlignment="Center" HorizontalAlignment="Center" Margin="0,10,0,0"></TextBlock>
+            <PathIcon   Data="{Binding IndoorSensorsProp.TempIcon}" Foreground="{DynamicResource LightBorderColor}"  VerticalAlignment="Center" Margin="-55,-23,5,0"></PathIcon>
+          </StackPanel>
+
+          <Line StartPoint="0,1" EndPoint="0,60" Margin="0,15,0,0" Stroke="{DynamicResource LightBorderColor}" StrokeThickness="2" StrokeDashArray="3"/>
+          <StackPanel>
+            <TextBlock Margin="-10,15,0,0" Width="45"  TextAlignment="Center"
+                         >MIN</TextBlock>
+            <TextBlock Text="{Binding IndoorSensorsProp.MinTemp.DisplayName}" HorizontalAlignment="Center" Width="45" TextAlignment="Center" Margin="-10,10,0,0"></TextBlock>
+          </StackPanel>
+
+        </StackPanel>
+      </StackPanel>
+
+  </Border>
+  </Viewbox>
+</UserControl>

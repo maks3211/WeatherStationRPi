@@ -3,21 +3,23 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="1024" d:DesignHeight="470"
-             Width="1024"
-             Height="470"
+
              x:Class="AvaloniaTest.Views.SettingsView"
              xmlns:vm="using:AvaloniaTest.ViewModels"
              x:DataType="vm:SettingsViewModel"
              >
- 
-    <SplitView IsPaneOpen ="True"
+  <Panel >
+
+      <SplitView IsPaneOpen ="True"
              OpenPaneLength="225"
              CompactPaneLength="86"
              DisplayMode="CompactInline"
              Background="{DynamicResource BackGroundLight}"
+             
              PaneBackground="{DynamicResource BackGround}">
 
       <SplitView.Pane>
+      
         <ListBox CornerRadius="10" Margin="5,10,5,10"
           ItemsSource="{Binding Items}" SelectedItem="{Binding SelectedSettings}" Background="{DynamicResource BackGroundDark}">
           <ListBox.ItemTemplate>
@@ -29,13 +31,17 @@
             </DataTemplate>
           </ListBox.ItemTemplate>
         </ListBox>
-      </SplitView.Pane>
+
+        </SplitView.Pane>
       <SplitView.Content>
-        <Border>
+        
+        <Border >
           <TransitioningContentControl Content="{Binding Currentsettingspage}" Margin="10,10,10,10"/>
         </Border>
+        
       </SplitView.Content>
     </SplitView>
   
+  </Panel>
   
 </UserControl>

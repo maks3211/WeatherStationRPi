@@ -112,18 +112,20 @@ namespace AvaloniaTest.ViewModels
         {
             "#322c19", "#3d341a", "#534317", "#675114", "#795d12", "#8f6d0f", "#ffbc00"
         };
+        public ObservableCollection<string> Indooriluminancecolors { get; } = new()
+        {
+             "#322c19", "#3d341a", "#534317", "#675114", "#795d12", "#8f6d0f", "#ffbc00"
+        };
+
         public ObservableCollection<string> Outdoorpreasurecolors { get; } = new()
         {
             "#2b2727", "#2d3029", "#2f372b", "#31402d", "#334a30","#355132", "#4dba50"
         };
         public ObservableCollection<string> Outdooriluminancecolors { get; } = new()
         {
-             "#322c19", "#3d341a", "#534317", "#675114", "#795d12", "#8f6d0f", "#ffbc00"
+               "#2b2727", "#2d3029", "#2f372b", "#31402d", "#334a30","#355132", "#4dba50"
         };
-        public ObservableCollection<string> Indooriluminancecolors { get; } = new()
-        {
-            "#2b2727", "#2d3029", "#2f372b", "#31402d", "#334a30","#355132", "#4dba50"
-        };
+
 
 
         [ObservableProperty]
@@ -244,14 +246,11 @@ namespace AvaloniaTest.ViewModels
 
         public async Task UpdateCitySuggestions()
         {
-            //Console.WriteLine($"Display Name: {resuts[0].display_name}");
-            Console.WriteLine($"Ostatni  input: {lastCityImput}");
-            Console.WriteLine($"Aktualny input: {CityInput}");
+
 
  
             if (CityInput.Length < 3)
             {
-                Console.WriteLine("Mniejsze od 3 ");
                 return;
             }
             else
@@ -273,7 +272,6 @@ namespace AvaloniaTest.ViewModels
             }
             else
             {
-                Console.WriteLine("OK roznica ");
                 lastCityImput = CityInput;
             }
            
@@ -281,7 +279,7 @@ namespace AvaloniaTest.ViewModels
          
             lastCityImput = CityInput;
 
-            Console.WriteLine("SZUKANIE");
+            Console.WriteLine("SZUKANIE miasta w homepagevm");
              var resuts = await AddressSearchController.Search(CityInput);
                if (resuts != null)
                {
@@ -342,13 +340,18 @@ namespace AvaloniaTest.ViewModels
 
         [ObservableProperty]
         private OutdoorSensors _outdoorSensorsProp;
-        public HomePageViewModel(TimeProperties timeProperties, OutdoorSensors outdoorSensors, WeatherForecastController weatherController)
+
+        [ObservableProperty]
+        private IndoorSensors _indoorSensorsProp;
+        public HomePageViewModel(TimeProperties timeProperties, OutdoorSensors outdoorSensors, WeatherForecastController weatherController, IndoorSensors indoorSensors)
         {
             //HourlyForecastItems = WeatherController.HourlyForecastItems;
             OutdoorSensorsProp = outdoorSensors;
+            IndoorSensorsProp = indoorSensors;
+
             TimeProp = timeProperties;
             WeatherController = weatherController;
-            Console.WriteLine("--------HOME PAGE VIEW MODEL----------- konstruktor");
+          
 
             // WeatherController.GetWeather();
             _iconname = new Bitmap(AssetLoader.Open(new Uri("avares://AvaloniaTest/Assets/Images/icons8-sun-144.png")));
@@ -527,7 +530,7 @@ namespace AvaloniaTest.ViewModels
         /// <param name="e"></param>
         private void OutDoorPres_DataUpdated(object sender, PropertyChangedEventArgs e)
         {
-           
+            
             ChangeVerticalBarColor(OutdoorSensorsProp.OutdoorPressure.Value, 1054, 960, _greencolorslist, Outdoorpreasurecolors);
         }
 
@@ -557,7 +560,7 @@ namespace AvaloniaTest.ViewModels
         }
         private void OnOutdoorIlluminanceChanged(object sender, PropertyChangedEventArgs e)
         {
-            ChangeVerticalBarColor(OutdoorSensorsProp.OutdoorIlluminance.Value, 2000, 0, _yellowcolorslist, Outdooriluminancecolors);
+            ChangeVerticalBarColor(OutdoorSensorsProp.OutdoorIlluminance.Value, 2000, 0, _greencolorslist, Outdooriluminancecolors);
         }
 
 

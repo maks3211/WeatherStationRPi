@@ -19,6 +19,7 @@ namespace AvaloniaTest.Services.Factories
         public UnitsSettings UnitSettings { get; set; }
         public TimeProperties TimeProperties { get; set; }
         public OutdoorSensors OutdoorSensors { get; set; }
+        public IndoorSensors IndoorSensors { get; set; }
         public WeatherForecastController WeatherController { get; set; }
         public DataBaseService DataBaseService { get; set; }
      
@@ -26,7 +27,7 @@ namespace AvaloniaTest.Services.Factories
         {        
             if (viewModelType == typeof(HomePageViewModel))
             {
-                return new HomePageViewModel(TimeProperties, OutdoorSensors, WeatherController);
+                return new HomePageViewModel(TimeProperties, OutdoorSensors, WeatherController, IndoorSensors);
             }
             else if (viewModelType == typeof(SettingsViewModel))
             {
@@ -38,7 +39,7 @@ namespace AvaloniaTest.Services.Factories
             }
             else if (viewModelType == typeof(GeneralSettingsViewModel))
             {
-                return new GeneralSettingsViewModel(Settings, ApperanceSettings, UnitSettings, OutdoorSensors, WeatherController);
+                return new GeneralSettingsViewModel(Settings, ApperanceSettings, UnitSettings, WeatherController);
             }
             else if (viewModelType == typeof(NetworkSettingsViewModel))
             {

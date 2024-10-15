@@ -36,8 +36,7 @@ namespace AvaloniaTest.Models.AddressSearch
                     return null;
                 }
                 SearchResults = JsonConvert.DeserializeObject<List<Root>>(json);
-                Console.WriteLine("moze cos z tego bedzie");
-                Console.WriteLine(SearchResults.Count());
+                Console.WriteLine($"Znaleziono: {SearchResults.Count()} miast");
                 return SearchResults;
          
             }

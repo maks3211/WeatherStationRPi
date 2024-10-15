@@ -27,12 +27,12 @@ namespace AvaloniaTest.ViewModels;
 
 public partial class GeneralSettingsViewModel : ViewModelBase
 {
-    public GeneralSettingsViewModel(SettingsManager settings, ApperanceSettings apperanceSettings, UnitsSettings unitsSettings, OutdoorSensors outdoorsensors, WeatherForecastController weatherContoller)
+    public GeneralSettingsViewModel(SettingsManager settings, ApperanceSettings apperanceSettings, UnitsSettings unitsSettings, WeatherForecastController weatherContoller)
     {
         CitySuggestion = new ObservableCollection<string>();
         settingsManager = settings;
         this.ApperanceSettings = apperanceSettings;
-        this.outdoorSensors = outdoorsensors;
+      
         UnitSettings = unitsSettings;
         WeatherController = weatherContoller;
 

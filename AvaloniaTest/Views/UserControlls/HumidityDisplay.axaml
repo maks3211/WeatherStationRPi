@@ -1,0 +1,74 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:vm="using:AvaloniaTest.ViewModels"
+             x:DataType="vm:HomePageViewModel"
+             x:Class="AvaloniaTest.Views.HumidityDisplay">
+  <Viewbox>
+  <Border
+          BorderBrush="{DynamicResource BorderColor}"
+          BorderThickness="2"
+          CornerRadius="10"
+
+              >
+
+      <StackPanel
+             VerticalAlignment="Center"
+            
+                >
+        <StackPanel Orientation="Horizontal">
+          <PathIcon Data="{StaticResource HomeRegular}" VerticalAlignment="Top" Margin="10,8,0,8"></PathIcon>
+          <PathIcon Data="{StaticResource ArrrowLeft}" Height="10" Margin="-4,8,10,8" VerticalAlignment="Top" ></PathIcon>
+          <PathIcon Data="{StaticResource ArrowRight}" Height="10" Margin="-28,18,10,8" VerticalAlignment="Top" ></PathIcon>
+          <TextBlock VerticalAlignment="Center"  FontWeight="DemiBold" Margin="20,5,0,0">WILGOTNOSC</TextBlock>
+        </StackPanel>
+        <Rectangle Height="2" Width="243.5" Fill="{DynamicResource BorderColor}" Margin="0,10,0,0"></Rectangle>
+        <StackPanel  Margin="0,0,0,10">
+          <Ellipse
+                  Margin="0,10,0,0"
+                  Width="180" Height="180" Fill="Transparent"
+                  Stroke="{DynamicResource GreenBorder}"
+                  StrokeThickness="9"
+                  StrokeDashArray="60"
+                  StrokeDashOffset="{Binding Outdoorhumiditycircle}"
+                      >
+            <Ellipse.RenderTransform>
+              <RotateTransform Angle="270" />
+            </Ellipse.RenderTransform>
+          </Ellipse>
+
+
+          <Ellipse
+    Margin="0,-180,0,0"
+    Width="162" Height="162" Fill="Transparent"
+    Stroke="{DynamicResource FontBlue}"
+    StrokeThickness="8.9"
+    StrokeDashArray="54"
+    StrokeDashOffset="{Binding Indoorhumiditycircle}"
+                      >
+            <Ellipse.RenderTransform>
+              <RotateTransform Angle="270" />
+            </Ellipse.RenderTransform>
+          </Ellipse>
+
+
+          <Image Source="avares://AvaloniaTest/Assets/Images/hygrometer.png" Width="45" Height="45" Margin="-100,-190,0,0" ></Image>
+          <StackPanel Margin="100,-155,0,0">
+            <TextBlock Width="65"  Margin="-120,0,0,0" TextAlignment="Right"   Text="{Binding OutdoorSensorsProp.OutdoorHumidity.DisplayName}" FontWeight="DemiBold" FontSize="35" VerticalAlignment="Center">10</TextBlock>
+            <Image Source="avares://AvaloniaTest/Assets/Images/outdoor.png" Margin="-30,-41,0,0" Width="40" Height="40" ></Image>
+            <TextBlock   Margin="4,0,0,0" FontWeight="DemiBold" FontSize="35" VerticalAlignment="Center">%</TextBlock>
+            <TextBlock Width="65" TextAlignment="Right"  Margin="-120,0,0,0" Text="{Binding Indoorhumidity}" FontWeight="DemiBold" FontSize="35" VerticalAlignment="Center">100</TextBlock>
+            <Image Source="avares://AvaloniaTest/Assets/Images/indoor.png" Margin="-40,-38,0,0" Width="40" Height="40" ></Image>
+          </StackPanel>
+
+        </StackPanel>
+
+
+
+      </StackPanel>
+
+  </Border>
+  </Viewbox>
+</UserControl>

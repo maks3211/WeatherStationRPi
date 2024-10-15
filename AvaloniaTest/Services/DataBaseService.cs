@@ -1,4 +1,6 @@
 ﻿using Avalonia.Markup.Xaml.MarkupExtensions;
+using AvaloniaTest.Helpers;
+using Google.Protobuf.WellKnownTypes;
 using LiveChartsCore.Defaults;
 using MySql.Data.MySqlClient;
 using ScottPlot.TickGenerators.TimeUnits;
@@ -72,12 +74,14 @@ namespace AvaloniaTest.Services
                     return (T)Convert.ChangeType(result, typeof(T));
                 }
 
-                return default; // Zwraca wartość domyślną, jeśli wynik jest null
+              //  return GetErrorValues<T>(); // Zwraca wartość domyślną, jeśli wynik jest null
+                return ErrorValues.GetErrorValue<T>();
             }
             catch (Exception ex)
             {
                 Console.WriteLine("Error while retrieving data from the database: " + ex.Message);
-                return default; // Zwraca wartość domyślną w przypadku błędu
+                return ErrorValues.GetErrorValue<T>();
+                //return GetErrorValues<T>(); // Zwraca wartość domyślną w przypadku błędu
             }
         }
 
@@ -87,7 +91,7 @@ namespace AvaloniaTest.Services
         /// <typeparam name="T"></typeparam>
         /// <param name="tableName"></param>
         /// <returns></returns>
-        public (T MinValue, T MaxValue)  GetTodayMinMaxValue<T>(string tableName)
+        public (T? MinValue, T? MaxValue)  GetTodayMinMaxValue<T>(string tableName)
         {
             try
             {
@@ -106,10 +110,30 @@ namespace AvaloniaTest.Services
                 {
                     object minResult = reader[0];
                     object maxResult = reader[1];
-
-                    T minValue = minResult != DBNull.Value ? (T)Convert.ChangeType(minResult, typeof(T)) : default;
-                    T maxValue = maxResult != DBNull.Value ? (T)Convert.ChangeType(maxResult, typeof(T)) : default;
-
+                    T minValue;
+                    T? maxValue;
+                    if (minResult is System.DBNull)
+                    {
+                       // minValue = GetErrorValues<T>();
+                        minValue = ErrorValues.GetErrorValue<T>();
+                    }
+                    else
+                    {
+                        //odczytano min
+                         minValue = minResult != DBNull.Value ? (T)Convert.ChangeType(minResult, typeof(T)) : default;
+                    }
+                    if (maxResult is System.DBNull)
+                    {
+                       // maxValue = GetErrorValues<T>();
+                        maxValue = ErrorValues.GetErrorValue<T>();
+                      
+                    }
+                    else 
+                    {
+                        //odczytano max
+                         maxValue = maxResult != DBNull.Value ? (T)Convert.ChangeType(maxResult, typeof(T)) : default;
+                    }
+                    
                     return (minValue, maxValue); // Zwrócenie wartości jako krotki (min, max)
                 }
 
@@ -122,6 +146,9 @@ namespace AvaloniaTest.Services
             }
 
         }
+
+
+
 
     }
 }

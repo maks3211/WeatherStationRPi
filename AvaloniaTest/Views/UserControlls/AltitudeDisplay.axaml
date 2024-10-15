@@ -1,0 +1,43 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:vm="using:AvaloniaTest.ViewModels"
+             x:DataType="vm:HomePageViewModel"
+             x:Class="AvaloniaTest.Views.AltitudeDisplay">
+  <Border
+     
+     BorderBrush="{DynamicResource BorderColor}"
+     BorderThickness="2"
+     CornerRadius="10">
+    <StackPanel
+     Width="243.5"
+     Height="224"
+     VerticalAlignment="Center">
+      <StackPanel  Orientation="Horizontal">
+        <PathIcon Data="{StaticResource HomeRegular}" VerticalAlignment="Top" Margin="10,8,0,8"></PathIcon>
+        <PathIcon Data="{StaticResource ArrrowLeft}" Height="10" Margin="-4,8,10,8" VerticalAlignment="Top" ></PathIcon>
+        <PathIcon Data="{StaticResource ArrowRight}" Height="10" Margin="-28,18,10,8" VerticalAlignment="Top" ></PathIcon>
+        <TextBlock VerticalAlignment="Center"  FontWeight="DemiBold" Margin="20,5,0,0">WYSOKOSC</TextBlock>
+      </StackPanel>
+      <Rectangle Height="2" Width="243.5" Fill="{DynamicResource BorderColor}" Margin="0,10,0,0"></Rectangle>
+
+      <StackPanel >
+        <Canvas Margin="0,5,0,0"  Width="240" Height="165" HorizontalAlignment="Center" >
+
+          <Rectangle  Canvas.Top="0" Canvas.Left="112.5"    Height="165" Width="15"  Fill="{DynamicResource FontBlue}" ></Rectangle>
+          <Rectangle Canvas.Top="0"   Canvas.Left="77.5"  Height="7"   Width="85"  Fill="{DynamicResource FontBlue}" ></Rectangle>
+          <Rectangle Canvas.Top="26"  Canvas.Left="47.5"  Height="7"   Width="145" Fill="{DynamicResource FontBlue}" ></Rectangle>
+          <Rectangle Canvas.Top="52"  Canvas.Left="77.5"  Height="7"   Width="85"  Fill="{DynamicResource FontBlue}" ></Rectangle>
+          <Rectangle Canvas.Top="78"  Canvas.Left="47.5"  Height="7"   Width="145" Fill="{DynamicResource FontBlue}" ></Rectangle>
+          <Rectangle Canvas.Top="104" Canvas.Left="77.5"  Height="7"   Width="85"  Fill="{DynamicResource FontBlue}" ></Rectangle>
+          <Rectangle Canvas.Top="130" Canvas.Left="47.5"  Height="7"   Width="145" Fill="{DynamicResource FontBlue}" ></Rectangle>
+          <Rectangle Canvas.Top="158" Canvas.Left="77.5"  Height="7"   Width="85"  Fill="{DynamicResource FontBlue}" ></Rectangle>
+          <TextBlock Text="{Binding Indooraltitude}" Canvas.Top="70" Canvas.Left="195" FontSize="18" >1255</TextBlock>
+          <TextBlock Text="{Binding OutdoorSensorsProp.OutdoorAltitude.DisplayName}" Canvas.Top="70" Canvas.Left="3"   FontSize="18" >1255</TextBlock>
+        </Canvas>
+      </StackPanel>
+    </StackPanel>
+  </Border>
+</UserControl>

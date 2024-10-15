@@ -330,12 +330,12 @@ namespace AvaloniaTest.Views
                 },
                   new Avalonia.Animation.KeyFrame
                 {
-                    Setters = { new Setter(Control.MarginProperty, new Thickness(40, 0, 0, 0)) }, 
+                    Setters = { new Setter(Control.MarginProperty, new Thickness(0, 0, 0, 0)) }, 
                     Cue = new Cue(0.65d) 
                 },
                     new Avalonia.Animation.KeyFrame
                 {
-                    Setters = { new Setter(Control.MarginProperty, new Thickness(40, -220, 0, 0)) }, 
+                    Setters = { new Setter(Control.MarginProperty, new Thickness(0, 210, 0, 0)) }, 
                     Cue = new Cue(1d) 
                 }
             }

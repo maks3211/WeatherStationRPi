@@ -4,9 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AvaloniaTest.Models
+namespace AvaloniaTest.Services.Enums
 {
-    internal class BTCommunication
+    public enum ErrorCode
     {
+        NoDataFound = -1000,
+
+
     }
 }

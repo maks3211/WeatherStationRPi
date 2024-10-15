@@ -21,9 +21,8 @@ namespace AvaloniaTest.Helpers
 
         public async void AnimateTest()
         {
-            Console.WriteLine("NIE Animate idzie");
+         
             if (TargetElement is not null) {
-                Console.WriteLine("Animate idzie");
             var animation = new Avalonia.Animation.Animation
             {
                 FillMode = FillMode.Forward,

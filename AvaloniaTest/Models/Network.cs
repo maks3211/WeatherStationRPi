@@ -162,7 +162,7 @@ namespace AvaloniaTest.Models
                 // Zakończ proces
                 startInfo.WaitForExit();
             }
-            Console.WriteLine($"WYNIK: {resultMessage}");
+            Console.WriteLine($"WYNIK laczenia wifi: {resultMessage}");
         }
 
 

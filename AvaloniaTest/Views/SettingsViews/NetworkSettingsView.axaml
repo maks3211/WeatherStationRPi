@@ -45,12 +45,12 @@
   </UserControl.Styles>
 
 
-  <Border BorderThickness="0,5,0,5">
-      <ScrollViewer>
+  <Border BorderThickness="0,5,0,5" >
+      <ScrollViewer >
         <StackPanel>
           <StackPanel>
             <TextBlock FontWeight="DemiBold" FontSize="20" Margin="20,10,0,0">Dostepne sieci WI-FI</TextBlock>
-            <Line StartPoint="0,0" EndPoint="800,0" Margin="0,15,0,15" Stroke="{DynamicResource LightBorderColor}" StrokeThickness="2" StrokeDashArray="3"/>
+            <!--<Line StartPoint="0,0" EndPoint="800,0" Margin="0,15,0,15" Stroke="{DynamicResource LightBorderColor}" StrokeThickness="2" StrokeDashArray="3"/>-->
             <TextBlock Text="{Binding Connectedssid}" FontSize="17"></TextBlock>
             <TextBlock Text="{Binding ToConnectssid}" FontSize="15"></TextBlock>
             <StackPanel Orientation="Horizontal">
@@ -96,7 +96,7 @@ local:OnScreenKeyboardBehavior.IsKeyboardEnabled="True"
             </ListBox>
             
           </StackPanel>
-          <Rectangle Margin="0,5,0,5" Width="1024" Height="2" Fill="{DynamicResource BorderColor}"></Rectangle>
+          <!--<Rectangle Margin="0,5,0,5" Width="1024" Height="2" Fill="{DynamicResource BorderColor}"></Rectangle>-->
           <StackPanel>
             <Button Command="{Binding GetEspwifi}">Pokaz sieci esp- TEST</Button>
             <ListBox CornerRadius="10" 

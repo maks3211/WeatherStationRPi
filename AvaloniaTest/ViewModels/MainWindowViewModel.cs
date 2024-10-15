@@ -107,107 +107,7 @@ namespace AvaloniaTest.ViewModels
 
 
 
-        private readonly SettingsManager settingsManager;   
-       
-
-        [RelayCommand]
-        public async Task SaveCommand()
-        {
-              Console.WriteLine("Czytanie siecii");
-              string esp32Url = "http://192.168.4.1/getData";
-              using (HttpClient client = new HttpClient())
-              {
-                  Console.WriteLine("Czytanie sieciisss");
-                  var response = await client.GetStringAsync($"{esp32Url}");
-
-
-                  var jsonResponseArray = JArray.Parse(response);
-
-                  foreach (var item in jsonResponseArray)
-                  {
-                      Console.WriteLine($"Nr {item["nr"]}");
-                      Console.WriteLine($"SSID: {item["ssid"]}");
-                      Console.WriteLine($"RRSI: {item["rssi"]}%");
-                      Console.WriteLine($"CHANEL: {item["channel"]}");
-                      Console.WriteLine("------");
-                  }
-        }
-        }
-
-
-        [RelayCommand]
-        public async Task SendCommand()
-        {
-            /* Console.WriteLine("Wysylanie wiadomosci");
-             string baseUrl = "http://192.168.4.1/";
-
-             // Parametry zapytania
-             string message = "TP-Link_0E21";
-             string queryString = $"wiadomosc={Uri.EscapeDataString(message)}";
-
-             // Tworzymy pełny URL z parametrami
-             string fullUrl = $"{baseUrl}?{queryString}";
-
-             using (HttpClient client = new HttpClient())
-             {
-                 try
-                 {
-                     // Wysyłamy zapytanie GET do pełnego URL
-                     HttpResponseMessage response = await client.GetAsync(fullUrl);
-
-                     // Sprawdzamy, czy odpowiedź była udana
-                     response.EnsureSuccessStatusCode();
-
-                     // Odczytujemy treść odpowiedzi jako string
-                     string responseBody = await response.Content.ReadAsStringAsync();
-
-                     // Wyświetlamy treść odpowiedzi na konsoli
-                     Console.WriteLine(responseBody);
-                 }
-                 catch (HttpRequestException e)
-                 {
-                     Console.WriteLine($"Błąd podczas zapytania: {e.Message}");
-                 }
-             }*/
-            string esp32Url = "http://192.168.4.1/postData";  // Adres URL do ESP32
-
-            // Przygotowanie danych JSON
-            string jsonData = "{\"wifi_ssid\":\"TP-Link_0E21\",\"wifi_pass\":\"66275022\"}";
-
-            using (HttpClient client = new HttpClient())
-            {
-                try
-                {
-                    // Tworzymy zawartość zapytania POST (JSON)
-                    StringContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-
-                    // Wysłanie zapytania POST
-                    HttpResponseMessage response = await client.PostAsync(esp32Url, content);
-
-                    // Sprawdzenie, czy odpowiedź jest poprawna
-                    response.EnsureSuccessStatusCode();
-
-                    // Odczytanie odpowiedzi jako tekst
-                    string responseData = await response.Content.ReadAsStringAsync();
-
-                    // Wyświetlenie odpowiedzi w konsoli
-                    Console.WriteLine("Odpowiedź z ESP32: " + responseData);
-                }
-                catch (HttpRequestException e)
-                {
-                    Console.WriteLine("\nBłąd: " + e.Message);
-                }
-            
-        }
-
-        }
-
-
-
-
-
-        public OutdoorVal Wartosci { get; } = new OutdoorVal();
-
+        private readonly SettingsManager settingsManager;      
         private TimeSpan LightThemeTime;
         private TimeSpan DarkThemeTime;
 
@@ -239,7 +139,10 @@ namespace AvaloniaTest.ViewModels
 
 
         [ObservableProperty]
-        public OutdoorSensors _sensei;
+        public OutdoorSensors _outdoorSens; 
+        
+        [ObservableProperty]
+        public IndoorSensors _indoorSens;
 
         [ObservableProperty]
         public ESPnetworkData _espNet;
@@ -249,15 +152,16 @@ namespace AvaloniaTest.ViewModels
 
         public MainWindowViewModel()
         {
-            Console.WriteLine("KONSTRUKOR !!!!!!!!!!");
-
-            
             settingsManager = new SettingsManager("ustawienia.json");
             LoadSettings();
             DataBaseService = new DataBaseService();
 
             UnitsCon = new UnitsConverter(UnitSettings);
-            Sensei = new OutdoorSensors(DataBaseService, UnitSettings, UnitsCon);
+
+            OutdoorSens = new OutdoorSensors(DataBaseService, UnitSettings, UnitsCon);
+            IndoorSens = new IndoorSensors(DataBaseService, UnitSettings, UnitsCon);
+
+
             WeatherForecastController = new WeatherForecastController(WeatherSettings, settingsManager, UnitsCon, UnitSettings);
 
 
@@ -271,8 +175,8 @@ namespace AvaloniaTest.ViewModels
             Units.GetInstance().Ustaw = UnitSettings;
             Units.GetInstance().SetSub();
             vMf.TimeProperties = TimeProp;
-            vMf.OutdoorSensors = _sensei;
-            
+            vMf.OutdoorSensors = _outdoorSens;
+            vMf.IndoorSensors = _indoorSens;
 
              
             WeakReferenceMessenger.Default.Register<ThemeBtnVisMessage>(this, (r, m) =>
@@ -304,7 +208,7 @@ namespace AvaloniaTest.ViewModels
 
             Clock.Instance.AddTask("Clock", UpdateClock, TimeSpan.FromSeconds(1));
            
-            mqqt.AddSensros(Sensei);
+            mqqt.AddSensros(OutdoorSens);
             SubESPwifiStrength();
            
 
@@ -357,7 +261,7 @@ namespace AvaloniaTest.ViewModels
             // Używamy reflection, aby subskrybować zmiany właściwości we wszystkich obiektach MqttTopic
             foreach (var property in typeof(OutdoorSensors).GetProperties())
             {
-                if (property.GetValue(Sensei) is MqttTopic<double> topic)
+                if (property.GetValue(OutdoorSens) is SensorInfo<double> topic)
                 {
                     topic.PropertyChanged += OnMqttTopicPropertyChanged;
                 }
@@ -366,10 +270,10 @@ namespace AvaloniaTest.ViewModels
         //co sie dzieje przy zmianie wszystkich doubli
         private void OnMqttTopicPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(MqttTopic<string>.DisplayName))
+            if (e.PropertyName == nameof(SensorInfo<string>.DisplayName))
             {
                 // Odpowiednia reakcja na zmianę wartości
-                Console.WriteLine($"{((MqttTopic<double>)sender).Name} zmieniło się na {((MqttTopic<double>)sender).DisplayName}");
+                Console.WriteLine($"{((SensorInfo<double>)sender).Name} zmieniło się na {((SensorInfo<double>)sender).DisplayName}");
             }
         }
 

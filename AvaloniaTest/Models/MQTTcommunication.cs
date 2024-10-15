@@ -22,6 +22,8 @@ using Newtonsoft.Json.Linq;
 using AvaloniaTest.Messages;
 using CommunityToolkit.Mvvm.Messaging;
 using Mysqlx.Notice;
+using AvaloniaTest.Services.Enums;
+using AvaloniaTest.Helpers;
 
 
 
@@ -46,15 +48,15 @@ namespace AvaloniaTest.Models
 
 
 
-        public double OutDoorTemp = -999.0;
-        public double OutDoorPres = -999.0;
-        public int    OutDoorAlti = -999;
-        public double OutDoorHumi = -999.0;
-       
-        public double OutDoorLumi = -99.0;
-        public double OutDoorNO2 = -99.0;
-        public double OutDoorCO = -99.0;
-        public double OutDoorNH3 = -99.0;
+        public double OutDoorTemp = -ErrorValues.GetErrorValue<double>();
+        public double OutDoorPres = -ErrorValues.GetErrorValue<double>();
+        public int    OutDoorAlti = -ErrorValues.GetErrorValue<int>();
+        public double OutDoorHumi = -ErrorValues.GetErrorValue<double>();
+
+        public double OutDoorLumi = ErrorValues.GetErrorValue<double>();
+        public double OutDoorNO2 = ErrorValues.GetErrorValue<double>();
+        public double OutDoorCO =  ErrorValues.GetErrorValue<double>();
+        public double OutDoorNH3 = ErrorValues.GetErrorValue<double>();
 
 
         DateTime currentDateTime;
@@ -214,14 +216,10 @@ namespace AvaloniaTest.Models
                 currentDateTime = DateTime.Now;
                 switch (e.ApplicationMessage.Topic)
                 {
-                    case "outdoortemperature":
-                        Console.WriteLine($"+ Temperatura = {Encoding.UTF8.GetString(e.ApplicationMessage.Payload)}");
+                    case "outdoortemperature":                 
                         OutDoorTemp = ConvertToDouble(e.ApplicationMessage.PayloadSegment);               
                         sensory.OutdoorTemperature.Value= OutDoorTemp;
-
-
                         InsertDataIntoTable("outerTemperature", currentDateTime, OutDoorTemp);
-                       
                         break;
                     case "outdoorpreasure":
                            Console.WriteLine($"+ Cisnienie = {Encoding.UTF8.GetString(e.ApplicationMessage.Payload)}");
@@ -300,7 +298,7 @@ namespace AvaloniaTest.Models
         private double ConvertToDouble(ArraySegment<byte> value)
         {
             string i = Encoding.UTF8.GetString(value);
-            double result = -99.99;
+            double result = -ErrorValues.GetErrorValue<double>();
             try
             {
                 result = double.Parse(i);

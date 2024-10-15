@@ -11,22 +11,22 @@
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
         Background="{DynamicResource BackGroundLight}"
-        Title="Weather Station">
-    
-
-
+        Title="Weather Station">  
     <Design.DataContext>
         <!-- This only sets the DataContext for the previewer in an IDE,
              to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
         <vm:MainWindowViewModel/>
     </Design.DataContext>
-
+  <Viewbox>
+    <Grid>
   <DockPanel LastChildFill="False">
-    <!--NAGLOWEK-->
-    <Border Height="50" Background="{DynamicResource BackGroundDark}" DockPanel.Dock="Top" CornerRadius="0,0,10,10">
 
+
+  
+    <!--NAGLOWEK-->
+    <Border DockPanel.Dock="Top"  Height="50" Background="{DynamicResource BackGroundDark}"  CornerRadius="0,0,10,10">
       <Panel   Height="45" >
-        
+
         <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center"  FontSize="18" Margin="10,0,0,0" Text="{Binding TimeProp.CurrentTime}"></TextBlock>
 
         <TextBlock
@@ -57,13 +57,13 @@
             </Style>
           </TextBlock.Styles>
         </TextBlock>
-       
+
         <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Spacing="20">
           <StackPanel IsVisible="{Binding !EspNet.Connected}">
             <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center">ESP:</TextBlock>
             <TextBlock Text="Brak połączenia" VerticalAlignment="Center"></TextBlock>
           </StackPanel>
-         
+
           <StackPanel IsVisible="{Binding EspNet.Connected}">
             <TextBlock Text="{Binding EspNet.Ssid} " HorizontalAlignment="Center"></TextBlock>
             <PathIcon Data="{Binding  EspNet.StrenghIcon}  "></PathIcon>
@@ -73,25 +73,30 @@
             <TextBlock Text="70%"  HorizontalAlignment="Center"></TextBlock>
           </StackPanel>
         </StackPanel>
-
-
-
       </Panel>
-     
     </Border>
-    
-    
-    
-    
+    <!--KONIEC NAGLOWEK-->
+
     <!--ZAWARTOSC GLOWNA-->
-    <Border   DockPanel.Dock="Top">
-      <TransitioningContentControl Content="{Binding CurrentPage}"/>
-    </Border>
-    
+   
+      <Border DockPanel.Dock="Top" MaxHeight="470" MinHeight="470" MinWidth="1024" HorizontalAlignment="Stretch">
+        <TransitioningContentControl Content="{Binding CurrentPage}"/>
+      </Border>
+   
+    <!--KONIEC ZAWARTOSC GLOWNA-->
+
+
     <!--STOPKA-->
-    <!-- Command="{Binding ThemeBtnCommand}"-->
-    <Border  Name="feet" Height="80" Background="{DynamicResource BackGroundDark}"  DockPanel.Dock="Bottom" CornerRadius="10,10,0,0">
-      <WrapPanel VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,0,0,0">
+    <Border DockPanel.Dock="Bottom"
+      Name="feet"
+            Height="80"
+            Background="{DynamicResource BackGroundDark}"
+           
+            CornerRadius="10,10,0,0">
+      <WrapPanel     
+        VerticalAlignment="Center"
+        HorizontalAlignment="Left"
+        Margin="10,0,0,0">
         <Button Margin="0,0,15,2"
             Name="changeThemeButton"
              IsVisible="{Binding ThemeBtnVis}"
@@ -103,36 +108,55 @@
             Background="{DynamicResource MainButton}">
           <PathIcon Data="{StaticResource DarkThemeRegular}"></PathIcon>
         </Button>
-      
+
 
         <!--DYNAMICZNIE DODAWNE PRZYCISKI-->
         <ListBox Grid.Row="1" Grid.Column="0" SelectedItem="{Binding SelectedListItem}" ItemsSource="{Binding Items}"
                  Background="{DynamicResource MainButton}"
-                 Margin="5,0,0,0"                
+                 Margin="5,0,0,0"
                  CornerRadius="5 5 5 5">
-          <ListBox.ItemsPanel >
-            <ItemsPanelTemplate>
-              <WrapPanel Orientation="Horizontal" />
-            </ItemsPanelTemplate>
-          </ListBox.ItemsPanel>
-          <ListBox.ItemTemplate>
-            <DataTemplate DataType="{x:Type vm:ListItemTemplate}">
-              <StackPanel Spacing="10" Orientation="Horizontal" Height="50">
-                <PathIcon Data="{Binding ListItemIcon}" Margin="0, 0, 10, 0"></PathIcon>
-                <TextBlock VerticalAlignment="Center" Text="{Binding Label}"></TextBlock>
-              </StackPanel>
-            </DataTemplate>
+            <ListBox.ItemsPanel >
+                <ItemsPanelTemplate>
+                <WrapPanel Orientation="Horizontal"/>
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+            <ListBox.ItemTemplate>
+              <DataTemplate DataType="{x:Type vm:ListItemTemplate}">
+                <StackPanel Spacing="10" Orientation="Horizontal" Height="50">
+                  <PathIcon Data="{Binding ListItemIcon}" Margin="0, 0, 10, 0"></PathIcon>
+                  <TextBlock VerticalAlignment="Center" Text="{Binding Label}"></TextBlock>
+                </StackPanel>
+              </DataTemplate>
           </ListBox.ItemTemplate>
         </ListBox>
-        <Button Margin="550,-50,0,0" Height="40"  Click="ButtonOnClick" HorizontalContentAlignment="Center" Background="{DynamicResource MainButton}" VerticalContentAlignment="Center">ZAMKNIJ</Button>
-        <Button Margin="30,-40,0,0" Command="{Binding SaveCommand}">Odczyt wifi</Button>
-        <Button Margin="30,-40,0,0" Command="{Binding SendCommand}">Wybierz wifi</Button>
         
+        
+        <Button Height="40" HorizontalAlignment="Right"  Click="ButtonOnClick" HorizontalContentAlignment="Center" Background="{DynamicResource MainButton}" VerticalContentAlignment="Center">ZAMKNIJ</Button>
       </WrapPanel>
-      
-    </Border> 
-      <StackPanel Opacity="0" Name="KeyboardFrame"  Margin="40,180,0,0" Height="345" Background="{DynamicResource KeyboardBackground}">
-      </StackPanel>
+    </Border>
+
+ 
+    <!--KONIEC STOPKA-->
+
+
+
+
+      <!--KLAWIATURA-->
+
+   
+     
+ 
   </DockPanel>
+      <Viewbox  MaxWidth="980">
+      <StackPanel ZIndex="1"  Opacity="0" 
+                  Name="KeyboardFrame"
+                  Margin="40,180,0,0"  
+                  Height="345" 
+                 
+                  Background="{DynamicResource KeyboardBackground}">
+      </StackPanel>
+      </Viewbox>
+    </Grid>
+</Viewbox>
 
 </Window>

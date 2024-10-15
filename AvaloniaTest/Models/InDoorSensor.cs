@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Diagnostics.Tracing;
 using MySql.Data.MySqlClient;
+using Avalonia.Controls;
 //using System.Device.Gpio;
 
 
@@ -113,6 +114,11 @@ namespace AvaloniaTest.Models
 
         public async Task RunReadData()
         {
+
+            if (!Design.IsDesignMode)
+            {
+                
+           
            // MainWindowViewModel.mqqt.OutdoorTempUpdated += OutDoorTemp_DataUpdated;
             string portName = "/dev/ttyS0";
             int baudRate = 9600;
@@ -154,7 +160,7 @@ namespace AvaloniaTest.Models
                                             altitude = (int)Math.Floor(altitudeDouble);
 
                                             // Wszystkie wartości zostały pomyślnie odczytane i przypisane do zmiennych
-                                            Console.WriteLine("ODCZYTANO WSZYSTKO");
+                                            Console.WriteLine("ODCZYTANO WSZYSTKO uart- InDoorSensor");
                                         }
                                     }
                                 }
@@ -224,9 +230,10 @@ namespace AvaloniaTest.Models
                 //InsertDataIntoTable("innerCo", currentDateTime, co);
 
 
-                await Task.Delay(TimeSpan.FromSeconds(5));   
+                await Task.Delay(TimeSpan.FromSeconds(5));
+                }
+            }
         }
-    }
 
 
         private void OutDoorTemp_DataUpdated(object sender, double e)
