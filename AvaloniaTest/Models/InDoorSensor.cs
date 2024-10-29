@@ -133,8 +133,8 @@ namespace AvaloniaTest.Models
             }
 
             while (isFirst)
-            {               
-               
+            {
+                    
                 try
                 {
                     if (Arduino.BytesToRead > 0)
@@ -199,13 +199,13 @@ namespace AvaloniaTest.Models
                 // Console.WriteLine($"PRZEROBIONA TEMPAERTURA {a}. ");
                 // double moja = Convert.ToDouble(a);
                 // Console.WriteLine($"PRZEROBIONA TEMPAERTURA {moja} ");
-                windDirection = new Random().NextDouble() * 360;
-                windSpeed = new Random().Next(0, 31);
-                int randomGust = new Random().Next(0, 31);
-                if (randomGust > windGust)
-                {
-                    windGust = randomGust;
-                }
+               // windDirection = new Random().NextDouble() * 360;
+              ///  windSpeed = new Random().Next(0, 31);
+              //  int randomGust = new Random().Next(0, 31);
+              //  if (randomGust > windGust)
+               // {
+               //     windGust = randomGust;
+               // }
 
 
                 IndoorTempUpdated?.Invoke(this, temperature); // Wywołanie zdarzenia, przekazujące aktualną wartość i
@@ -217,9 +217,9 @@ namespace AvaloniaTest.Models
                 IndoorCOUpdated?.Invoke(this, co);
 
 
-                WindDirectionUpdated?.Invoke(this, windDirection);
-                WindSpeedUpdated?.Invoke(this, windSpeed);
-                WindGustUpdated?.Invoke(this, windGust);
+              //  WindDirectionUpdated?.Invoke(this, windDirection);
+               // WindSpeedUpdated?.Invoke(this, windSpeed);
+               // WindGustUpdated?.Invoke(this, windGust);
 
                 currentDateTime = DateTime.Now;
                 //InsertDataIntoTable("innerTemperature", currentDateTime, temperature);
@@ -260,9 +260,9 @@ namespace AvaloniaTest.Models
 
         public async Task StartMake()
         {
-            Task task1 = RunReadData();
-            Task task2 = RunReadDataTwo();
-            await Task.WhenAll(task1, task2);
+          //  Task task1 = RunReadData();
+          //  Task task2 = RunReadDataTwo();
+          //  await Task.WhenAll(task1, task2);
         }
     } 
 }

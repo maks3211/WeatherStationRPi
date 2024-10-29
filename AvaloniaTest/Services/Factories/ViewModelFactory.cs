@@ -23,6 +23,7 @@ namespace AvaloniaTest.Services.Factories
         public WeatherForecastController WeatherController { get; set; }
         public DataBaseService DataBaseService { get; set; }
      
+        public NetworkManager NetworkManager { get; set; }
         public ViewModelBase CreateViewModel(Type viewModelType)
         {        
             if (viewModelType == typeof(HomePageViewModel))
@@ -43,11 +44,9 @@ namespace AvaloniaTest.Services.Factories
             }
             else if (viewModelType == typeof(NetworkSettingsViewModel))
             {
-                return new NetworkSettingsViewModel();
+                return new NetworkSettingsViewModel(NetworkManager);
             }
             throw new ArgumentException("Unknown ViewModel type", nameof(viewModelType));
         }
-
-
     }
 }

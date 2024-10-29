@@ -34,16 +34,22 @@ namespace AvaloniaTest.Services.AppSettings
             return Math.Round(temp, 2);
         }
 
-        public double CalculatWind(double speed)
+        public double CalculateWind(double speed)
         {
+
+
+
             if (Settings.Wind == Unit.MS)
             {
-                return speed;
+
+                return Math.Round(speed, 2);
             }
             if (Settings.Wind == Unit.KMH)
             {
+   
                 return Math.Round(speed * 3.6, 2);
             }
+
             return Math.Round(speed * 0.514, 2);
         }
 

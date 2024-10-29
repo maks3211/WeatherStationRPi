@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using AvaloniaTest.Helpers;
 namespace AvaloniaTest.Services.AppSettings
 {
     public partial class ApperanceSettings: ObservableObject
@@ -27,7 +27,10 @@ namespace AvaloniaTest.Services.AppSettings
         [ObservableProperty]
         public TimeSpan? customDarkThemeTime;
 
-       
+        [IgnoreDuringSerialization(true)]  // Użycie atrybutu
+        public bool prevLightTheme;
+
+
 
     }
 }

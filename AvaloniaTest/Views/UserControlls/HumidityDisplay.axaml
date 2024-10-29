@@ -22,7 +22,7 @@
           <PathIcon Data="{StaticResource HomeRegular}" VerticalAlignment="Top" Margin="10,8,0,8"></PathIcon>
           <PathIcon Data="{StaticResource ArrrowLeft}" Height="10" Margin="-4,8,10,8" VerticalAlignment="Top" ></PathIcon>
           <PathIcon Data="{StaticResource ArrowRight}" Height="10" Margin="-28,18,10,8" VerticalAlignment="Top" ></PathIcon>
-          <TextBlock VerticalAlignment="Center"  FontWeight="DemiBold" Margin="20,5,0,0">WILGOTNOSC</TextBlock>
+          <TextBlock VerticalAlignment="Center"  FontWeight="DemiBold" Margin="20,5,0,0">WILGOTNOŚĆ</TextBlock>
         </StackPanel>
         <Rectangle Height="2" Width="243.5" Fill="{DynamicResource BorderColor}" Margin="0,10,0,0"></Rectangle>
         <StackPanel  Margin="0,0,0,10">
@@ -59,7 +59,7 @@
             <TextBlock Width="65"  Margin="-120,0,0,0" TextAlignment="Right"   Text="{Binding OutdoorSensorsProp.OutdoorHumidity.DisplayName}" FontWeight="DemiBold" FontSize="35" VerticalAlignment="Center">10</TextBlock>
             <Image Source="avares://AvaloniaTest/Assets/Images/outdoor.png" Margin="-30,-41,0,0" Width="40" Height="40" ></Image>
             <TextBlock   Margin="4,0,0,0" FontWeight="DemiBold" FontSize="35" VerticalAlignment="Center">%</TextBlock>
-            <TextBlock Width="65" TextAlignment="Right"  Margin="-120,0,0,0" Text="{Binding Indoorhumidity}" FontWeight="DemiBold" FontSize="35" VerticalAlignment="Center">100</TextBlock>
+            <TextBlock Width="65" TextAlignment="Right"  Margin="-120,0,0,0" Text="{Binding IndoorSensorsProp.Humidity.DisplayName}" FontWeight="DemiBold" FontSize="35" VerticalAlignment="Center">100</TextBlock>
             <Image Source="avares://AvaloniaTest/Assets/Images/indoor.png" Margin="-40,-38,0,0" Width="40" Height="40" ></Image>
           </StackPanel>
 

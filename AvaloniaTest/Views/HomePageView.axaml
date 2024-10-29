@@ -12,7 +12,7 @@
 
   <Panel Name="HomePagePanel" PointerPressed="PagePressed" Background="Transparent">
     
-    <Carousel Name="SlideMenu" >
+    <Carousel Name="SlideMenu" Background="Transparent">
       <Carousel.GestureRecognizers>
         <ScrollGestureRecognizer CanHorizontallyScroll="True" CanVerticallyScroll="True"/>
       </Carousel.GestureRecognizers>
@@ -47,8 +47,8 @@
       </Viewbox>
     </Carousel>
     <!--Przyciski zmiany strony-->
-    <Panel Margin="20" VerticalAlignment="Bottom"  >
-      <Button Background="{DynamicResource LightBorderColor}" Click="Previous">&lt;</Button>
+    <Panel Margin="20,0,0,-20" VerticalAlignment="Bottom"  >
+      <Button  Background="{DynamicResource LightBorderColor}" Click="Previous">&lt;</Button>
       <Button Background="{DynamicResource LightBorderColor}" Click="Next"
               HorizontalAlignment="Right">&gt;</Button>
     </Panel>

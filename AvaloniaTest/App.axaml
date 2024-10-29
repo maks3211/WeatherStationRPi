@@ -36,6 +36,9 @@
           <SolidColorBrush x:Key='LightBorderColor'>#01234D</SolidColorBrush>
           <SolidColorBrush x:Key='BackGroundDark'>#26437d</SolidColorBrush>
 
+
+          <SolidColorBrush x:Key='OptionBackGround'>#D1E7F7</SolidColorBrush>
+          <SolidColorBrush x:Key='ForecastBackGround'>#4D80B5</SolidColorBrush>
           
           <!--Klawiatura-->
           <SolidColorBrush x:Key='KeyboardBackground'>#2E3A59</SolidColorBrush>
@@ -44,7 +47,7 @@
           <SolidColorBrush x:Key='GreenBorder'>#48A106</SolidColorBrush>
           <!-- Czcionki -->
           <SolidColorBrush x:Key='FontBlue'>#081C34</SolidColorBrush>
-
+          <SolidColorBrush x:Key='FontGrey'>#84B3DE</SolidColorBrush>
           
         </ResourceDictionary>
         
@@ -67,12 +70,15 @@
 
           <SolidColorBrush x:Key='BorderColor'>#12364F</SolidColorBrush>
           <SolidColorBrush x:Key='LightBorderColor'>#3194d9</SolidColorBrush>
-
+          <SolidColorBrush x:Key='OptionBackGround'>#144272</SolidColorBrush>
+          <SolidColorBrush x:Key='ForecastBackGround'>#144272</SolidColorBrush>
           <!--Klawiatura-->
           <SolidColorBrush x:Key='KeyboardBackground'>#1C1C1E</SolidColorBrush>
           <SolidColorBrush x:Key='KeyboardKey'>#3A3A3E</SolidColorBrush>
           <!-- Czcionki -->
           <SolidColorBrush x:Key='FontBlue'>#53acce</SolidColorBrush>
+          <SolidColorBrush x:Key='FontGrey'>#5589BB</SolidColorBrush>
+          
           
         </ResourceDictionary>
       </ResourceDictionary.ThemeDictionaries>

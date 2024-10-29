@@ -17,56 +17,78 @@
       <ScrollViewer Name="MainScroll"  >
         
         <StackPanel>
-        <StackPanel>
+
+          <!--JEDNOSTKI-->
+          <StackPanel>
           <TextBlock FontWeight="DemiBold" FontSize="20" Margin="20,10,0,0">JEDNOSTKI</TextBlock>
-          <!--<Line StartPoint="0,0" EndPoint="700,0" Margin="0,15,0,15" Stroke="{DynamicResource LightBorderColor}" StrokeThickness="2" StrokeDashArray="3"/>-->
+          <Line StartPoint="0,0" EndPoint="700,0" Margin="0,15,0,15" Stroke="{DynamicResource LightBorderColor}" StrokeThickness="2" StrokeDashArray="3"/>
           <StackPanel Orientation="Horizontal" Spacing="10">
-            <StackPanel>
-              <RadioButton GroupName="wiater" Content="ms"
-               IsChecked="{Binding UnitSettings.Wind, Converter={StaticResource StringToBoolConverter}, ConverterParameter=ms, Mode=TwoWay} ">ms</RadioButton>
-              <RadioButton GroupName="wiater" Content="kmh"
-               IsChecked="{Binding UnitSettings.Wind, Converter={StaticResource StringToBoolConverter}, ConverterParameter=kmh ,Mode=TwoWay} ">kmh</RadioButton>
-              <RadioButton GroupName="wiater" Content="kt" 
-               IsChecked="{Binding UnitSettings.Wind, Converter={StaticResource StringToBoolConverter}, ConverterParameter=kt ,Mode=TwoWay} ">kt</RadioButton>
-            </StackPanel>
-            <StackPanel>
-              <RadioButton GroupName="temp" Content="°C"
-               IsChecked="{Binding UnitSettings.Temp, Converter={StaticResource StringToBoolConverter}, ConverterParameter=°C, Mode=TwoWay} ">°C</RadioButton>
-              <RadioButton GroupName="temp" Content="°F"
-               IsChecked="{Binding UnitSettings.Temp, Converter={StaticResource StringToBoolConverter}, ConverterParameter=°F ,Mode=TwoWay} ">°F</RadioButton>
-            
-            </StackPanel>
-         
-            
-            <Expander Width="210" Margin="10,0,0,0" VerticalAlignment="Top"   >
-              <Expander.Header >
-                <TextBlock HorizontalAlignment="Center">PREDKOSC WIATRU</TextBlock>
-              </Expander.Header>
-              <StackPanel>
-                <RadioButton Content="M/S"        GroupName="WindGroup"  IsChecked="{Binding MSelected}"></RadioButton>
-                <RadioButton Content="KM/H"       GroupName="WindGroup"  IsChecked="{Binding KmSelected}"></RadioButton>
-                <RadioButton Content="Węzły (kt)" GroupName="WindGroup"  IsChecked="{Binding KtSelected}"></RadioButton>
+            <Border Background="{DynamicResource OptionBackGround}"
+                    BorderBrush="{DynamicResource OptionBackGround}"
+                    BorderThickness="4"
+                    CornerRadius="5">
+              <StackPanel Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <RadioButton GroupName="wiater" Content="ms"
+                 IsChecked="{Binding UnitSettings.Wind, Converter={StaticResource StringToBoolConverter}, ConverterParameter=m/s, Mode=TwoWay} ">m/s</RadioButton>
+                <RadioButton GroupName="wiater" Content="kmh"
+                 IsChecked="{Binding UnitSettings.Wind, Converter={StaticResource StringToBoolConverter}, ConverterParameter=km/h ,Mode=TwoWay} ">km/h</RadioButton>
+                <RadioButton GroupName="wiater" Content="kt"
+                 IsChecked="{Binding UnitSettings.Wind, Converter={StaticResource StringToBoolConverter}, ConverterParameter=kt ,Mode=TwoWay} ">kt</RadioButton>
               </StackPanel>
-            </Expander>
-            
-            <Expander Width="150" Margin="10,0,0,0" VerticalAlignment="Top"   >
-              <Expander.Header >
-                <TextBlock HorizontalAlignment="Center">OPADY</TextBlock>
-              </Expander.Header>
-              <StackPanel>
-                <RadioButton Content="mm"      ></RadioButton>
-                <RadioButton Content="litry"      ></RadioButton>
+
+            </Border>
+
+            <Border
+              Background="{DynamicResource OptionBackGround}"
+              BorderBrush="{DynamicResource OptionBackGround}"
+              BorderThickness="4"
+              CornerRadius="5"      
+              >
+              <StackPanel Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <RadioButton GroupName="temp" Content="°C"
+                 IsChecked="{Binding UnitSettings.Temp, Converter={StaticResource StringToBoolConverter}, ConverterParameter=°C, Mode=TwoWay} ">°C</RadioButton>
+                <RadioButton GroupName="temp" Content="°F"
+                 IsChecked="{Binding UnitSettings.Temp, Converter={StaticResource StringToBoolConverter}, ConverterParameter=°F ,Mode=TwoWay} ">°F</RadioButton>
               </StackPanel>
-            </Expander>
+            </Border>
+            <Border
+                    Background="{DynamicResource OptionBackGround}"
+                    BorderBrush="{DynamicResource OptionBackGround}"
+                    BorderThickness="4"
+                    CornerRadius="5"
+                    >            
+              <StackPanel Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center">
+              <RadioButton 
+                 IsChecked="{Binding UnitSettings.Rain, Converter={StaticResource StringToBoolConverter}, ConverterParameter=mm, Mode=TwoWay} "
+                GroupName="rain" Content="mm"></RadioButton>
+              <RadioButton GroupName="rain" Content="litry"
+                           IsChecked="{Binding UnitSettings.Rain, Converter={StaticResource StringToBoolConverter}, ConverterParameter=l, Mode=TwoWay} "
+                           ></RadioButton>
+            </StackPanel>
+            </Border>
+
           </StackPanel>
         </StackPanel>
-        <!--<Rectangle Margin="-320,5,0,5" Width="700" Height="2" Fill="{DynamicResource BorderColor}"></Rectangle>-->
-        <StackPanel>
-          <StackPanel Margin="10,0,0,0">
-          <TextBlock FontWeight="DemiBold" FontSize="20" Margin="20,10,0,0">MOTYW </TextBlock>
-          <!--<Line StartPoint="-10,0" EndPoint="700,0" Margin="0,15,0,15" Stroke="{DynamicResource LightBorderColor}" StrokeThickness="2" StrokeDashArray="3"/>-->
-          <TextBlock>Pokaż przycisk zmiany</TextBlock>
-          <ToggleSwitch  IsChecked="{Binding ApperanceSettings.ThemeButtonVis, Mode=TwoWay}" Command="{Binding ThemeButtonVisSwitch}" OnContent="Wł" OffContent="Wył"/>
+          <!--KONIEC JEDNOSTKI-->
+
+          <Rectangle Margin="0,5,0,5" HorizontalAlignment="Left" Width="700" Height="2" Fill="{DynamicResource BorderColor}"></Rectangle>
+
+          
+          <!--MOTYW-->
+          <StackPanel>
+            <TextBlock FontWeight="DemiBold" FontSize="20" Margin="20,10,0,0">MOTYW</TextBlock>
+            <Line StartPoint="0,0" EndPoint="700,0" Margin="0,15,0,15" Stroke="{DynamicResource LightBorderColor}" StrokeThickness="2" StrokeDashArray="3"/>
+            <TextBlock>Pokaż przycisk zmiany</TextBlock>
+            <Border Width="150" HorizontalAlignment="Left"
+  Background="{DynamicResource OptionBackGround}"
+  BorderBrush="{DynamicResource OptionBackGround}"
+  BorderThickness="4"
+  CornerRadius="5"
+                     Margin="0,6,0,15"
+              >
+              <ToggleSwitch  IsChecked="{Binding ApperanceSettings.ThemeButtonVis, Mode=TwoWay}" Command="{Binding ThemeButtonVisSwitch}" OnContent="Wł" OffContent="Wył"/>
+            </Border>
+
             <TextBlock>
               <TextBlock.Text>
                 <MultiBinding StringFormat="Harmonogram: {0:hh\:mm} - {1:hh\:mm}">
@@ -75,115 +97,160 @@
                 </MultiBinding>
               </TextBlock.Text>
             </TextBlock>
+            <Border Width="150" HorizontalAlignment="Left" Margin="0,6,0,0"
+  Background="{DynamicResource OptionBackGround}"
+  BorderBrush="{DynamicResource OptionBackGround}"
+  BorderThickness="4"
+  CornerRadius="5"
+              >
             <ToggleSwitch  Command="{Binding AutoThemeSwitchCommand}" IsChecked="{Binding ApperanceSettings.UseSchduleThemeChange}" OnContent="Wł" OffContent="Wył"/>
-            <StackPanel Name="ScheduleGroup" IsVisible="{Binding ApperanceSettings.UseSchduleThemeChange}">
-            <RadioButton Command="{Binding AutoThemeCommand}" IsChecked="{Binding !ApperanceSettings.CustomTimeThemeChange}" GroupName="SchduleThemeGroup" Name="AutoTheme">Od zmroku do świtu</RadioButton>
-              <RadioButton Command="{Binding CustomThemeCommand}" IsChecked="{Binding ApperanceSettings.CustomTimeThemeChange}" GroupName="SchduleThemeGroup"  Name="ScheduleTheme">Harmonogram własny</RadioButton>
- 
+           </Border>
+
+              <StackPanel Name="ScheduleGroup" IsVisible="{Binding ApperanceSettings.UseSchduleThemeChange}">
+                <Border Width="200" HorizontalAlignment="Left" Margin="0,8,0,0"
+                  Background="{DynamicResource OptionBackGround}"
+                  BorderBrush="{DynamicResource OptionBackGround}"
+                  BorderThickness="4"
+                  CornerRadius="5">
+                  <StackPanel>
+                    <RadioButton Command="{Binding AutoThemeCommand}" IsChecked="{Binding !ApperanceSettings.CustomTimeThemeChange}" GroupName="SchduleThemeGroup" Name="AutoTheme">Od zmroku do świtu</RadioButton>
+                    <RadioButton Command="{Binding CustomThemeCommand}" IsChecked="{Binding ApperanceSettings.CustomTimeThemeChange}" GroupName="SchduleThemeGroup"  Name="ScheduleTheme">Harmonogram własny</RadioButton>
+                  </StackPanel>
+                </Border>
               <StackPanel Orientation="Horizontal" Spacing="5" Name="CustomScheduleGroup"  IsVisible="{Binding ApperanceSettings.CustomTimeThemeChange}">
+                <Border  
+                   Margin="0,5,9,0"
+                   Background="{DynamicResource OptionBackGround}"
+                  BorderBrush="{DynamicResource OptionBackGround}"
+                  BorderThickness="4"
+                  CornerRadius="5">
+                  <StackPanel>
                 <Label VerticalAlignment="Center" Name="LightLabel" Content="Jasny"/>
-                <TimePicker 
-                  MinuteIncrement="1" 
-                  Name="LightPicker" 
-                  ClockIdentifier="24HourClock" 
+                <TimePicker
+                  MinuteIncrement="1"
+                  Name="LightPicker"
+                  ClockIdentifier="24HourClock"
                   
                   SelectedTime="{Binding ApperanceSettings.CustomLightThemeTime, Mode=TwoWay}" />
-                <Label VerticalAlignment="Center" Name="DarkLabel" Content="Ciemny" Margin="25,0,0,0"/>
-                <TimePicker 
+                  </StackPanel>
+                  </Border>
+              <Border 
+                 Margin="0,5,0,0"
+                Background="{DynamicResource OptionBackGround}"
+                  BorderBrush="{DynamicResource OptionBackGround}"
+                  BorderThickness="4"
+                  CornerRadius="5">
+              <StackPanel>
+                <Label VerticalAlignment="Center" Name="DarkLabel" Content="Ciemny"/>
+                <TimePicker
                   MinuteIncrement="1"
                   Name="DarkPicker"
-                  ClockIdentifier="24HourClock" 
+                  ClockIdentifier="24HourClock"
                   SelectedTime="{Binding ApperanceSettings.CustomDarkThemeTime, Mode=TwoWay}"/>
-                <Button Command="{Binding SaveThemeScheduleCommand}"  Background="{DynamicResource MainButton}" Width="70" Height="35" Margin="40,0,0,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" >Zapisz</Button>
+              </StackPanel>
+              </Border>
+              </StackPanel>
+                
+            </StackPanel>
+       
+          </StackPanel>
+          <!--KONIEC MOTYW-->
+          
+          
+          <Rectangle Margin="0,10,0,5" Width="700" HorizontalAlignment="Left" Height="2" Fill="{DynamicResource BorderColor}"></Rectangle>
 
+          <!--POGODA-->
+          <StackPanel>
+            <StackPanel Margin="10,0,0,0" Name="CityListStack">
+              <StackPanel Orientation="Horizontal">
+                <TextBlock FontWeight="DemiBold" FontSize="20" Margin="20,10,0,0">INTERNETOWA PROGNOZA POGODY </TextBlock>
+                <TextBlock FontWeight="DemiBold" FontSize="18" Margin="30,10,0,0" VerticalAlignment="Center"
+                           IsVisible="{Binding !WeatherController.HttpSucces}"
+                           Foreground="Red">Błędny klucz API </TextBlock>
               </StackPanel>
 
 
-            </StackPanel>
-          <!--<Rectangle Margin="-330,5,0,5" Width="700" Height="2" Fill="{DynamicResource BorderColor}"></Rectangle>-->
-          </StackPanel>
-          
-          <StackPanel Margin="10,0,0,0" Name="CityListStack">
-            <StackPanel Orientation="Horizontal">
-              <TextBlock FontWeight="DemiBold" FontSize="20" Margin="20,10,0,0">INTERNETOWA PROGNOZA POGODY </TextBlock>
-              <TextBlock FontWeight="DemiBold" FontSize="18" Margin="30,10,0,0" VerticalAlignment="Center" 
-                         IsVisible="{Binding !WeatherController.HttpSucces}"
-                         Foreground="Red">Błędny klucz API </TextBlock>
-            </StackPanel>
-
-
-            <!--<Line StartPoint="-10,0" EndPoint="700,0" Margin="0,15,0,15" Stroke="{DynamicResource LightBorderColor}" StrokeThickness="2" StrokeDashArray="3"/>-->
-            <TextBlock Margin="0,2,0,2">Aktualizacja:</TextBlock>
-            <StackPanel Orientation="Horizontal">
-              <TextBlock VerticalAlignment="Center" Margin="0,0,10,1">Ręcznie</TextBlock>
-              <ToggleSwitch IsChecked="{Binding WeatherController.AutoWeatherRefresh}"  VerticalAlignment="Center" OnContent="" OffContent=""/>
-              <TextBlock VerticalAlignment="Center" Margin="0,0,0,1">Automatycznie</TextBlock>
-            </StackPanel>
-            <TextBlock Margin="0,6,0,4">Częstotliwość (min):</TextBlock>
-            <NumericUpDown 
-              IsEnabled="{Binding WeatherController.AutoWeatherRefresh}"
-              HorizontalAlignment="Left" Width="120" 
-                           HorizontalContentAlignment="Center"
-                           Minimum="15"
-                            Maximum="90"
-                            FormatString="0"
-                            Increment="15"
-                            Value="{Binding WeatherUpdateInterval}"
+              <Line StartPoint="-10,0" EndPoint="700,0" Margin="0,15,0,15" Stroke="{DynamicResource LightBorderColor}" StrokeThickness="2" StrokeDashArray="3"/>
+              <TextBlock Margin="0,2,0,2">Aktualizacja:</TextBlock>
+              <Border
+                HorizontalAlignment="Left"
+                Width="220"
+                Margin="0,5,0,10"
+                Background="{DynamicResource OptionBackGround}"
+                BorderBrush="{DynamicResource OptionBackGround}"
+                BorderThickness="4"
+                CornerRadius="5">
+              <StackPanel Orientation="Horizontal">
+                <TextBlock VerticalAlignment="Center" Margin="0,0,10,1">Ręcznie</TextBlock>
+                <ToggleSwitch IsChecked="{Binding WeatherController.AutoWeatherRefresh}"  VerticalAlignment="Center" OnContent="" OffContent=""/>
+                <TextBlock VerticalAlignment="Center" Margin="0,0,0,1">Automatycznie</TextBlock>
+              </StackPanel>
+              </Border>
+              <TextBlock Margin="0,6,0,4">Częstotliwość (min):</TextBlock>
+              <Border           
+                HorizontalAlignment="Left"
+                Margin="0,5,0,0"
+                Background="{DynamicResource OptionBackGround}"
+                BorderBrush="{DynamicResource OptionBackGround}"
+                BorderThickness="4"
+                CornerRadius="5">
+              <NumericUpDown
+                IsEnabled="{Binding WeatherController.AutoWeatherRefresh}"
+                HorizontalAlignment="Left" Width="120"
+                             HorizontalContentAlignment="Center"
+                             Minimum="15"
+                              Maximum="90"
+                              FormatString="0"
+                              Increment="15"
+                              Value="{Binding WeatherUpdateInterval}"
                            >
-             
-              
-            </NumericUpDown >
-            <StackPanel IsEnabled="{Binding WeatherController.HttpSucces}">
-            <TextBlock  Margin="0,20,0,0">
-              <TextBlock.Inlines>
-                <Run Text="Aktualnie wybrana miejscowość: " />
-                <Run Text="{Binding WeatherController.City}" />
-              </TextBlock.Inlines>
-            </TextBlock>
-            <StackPanel Orientation="Horizontal" Spacing="30" Margin="10" Name="SearchCityStack">
-              <TextBox
-               Name="CityInputBox"
-               GotFocus="CityInputBox_GotFocus"
-                Text="{Binding CitySearchText}"
-                Watermark="Wprowadź nazwę (min. 3 znaki)" 
-                Width="600"
-                local:OnScreenKeyboardBehavior.IsKeyboardEnabled="True"
-                local:OnScreenKeyboardBehavior.EnterButton="{Binding ElementName=SearchCityButton}"
+              </NumericUpDown >
+              </Border>
+              <StackPanel IsEnabled="{Binding WeatherController.HttpSucces}">
+                <TextBlock  Margin="0,20,0,0">
+                  <TextBlock.Inlines>
+                    <Run Text="Aktualnie wybrana miejscowość: " />
+                    <Run Text="{Binding WeatherController.City}" />
+                  </TextBlock.Inlines>
+                </TextBlock>
+                <StackPanel Orientation="Horizontal" Spacing="30" Margin="10" Name="SearchCityStack">
+                  <TextBox
+                   Name="CityInputBox"
+                   GotFocus="CityInputBox_GotFocus"
+                    Text="{Binding CitySearchText}"
+                    Watermark="Wprowadź nazwę (min. 3 znaki)"
+                    Width="600"
+                    local:OnScreenKeyboardBehavior.IsKeyboardEnabled="True"
+                    local:OnScreenKeyboardBehavior.EnterButton="{Binding ElementName=SearchCityButton}"
                 ></TextBox>
-              <Button 
-                Command="{Binding SearchCityButtonCommand}"
-                Name="SearchCityButton" Width="70" Height="35" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"  Background="{DynamicResource MainButton}">Szukaj</Button>
+                  <Button
+                    Command="{Binding SearchCityButtonCommand}"
+                    Name="SearchCityButton" Width="70" Height="35" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"  Background="{DynamicResource MainButton}">Szukaj</Button>
+                </StackPanel>
+                <ScrollViewer MaxHeight="220">
+                  <ListBox CornerRadius="10"
+           ItemsSource="{Binding CityList}" SelectedItem="{Binding SelectedCity}" Background="{DynamicResource BackGroundDark}">
+                    <ListBox.ItemTemplate>
+                      <DataTemplate DataType="{x:Type vm:CitySearchListTemplate}">
+                        <StackPanel Orientation="Horizontal" Spacing="10" Height="50">
+                          <TextBlock Text="{Binding Name}" FontSize="17" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                          <TextBlock Text="{Binding City}, " FontSize="17" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                          <TextBlock Text="{Binding State},sd " FontSize="17" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                          <TextBlock Text="{Binding Postcode}, " FontSize="17" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                          <TextBlock Text="{Binding Country}" FontSize="17" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </StackPanel>
+                      </DataTemplate>
+                    </ListBox.ItemTemplate>
+                  </ListBox>
+                </ScrollViewer>
+              </StackPanel>
             </StackPanel>
-            <ScrollViewer MaxHeight="220">
-            <ListBox CornerRadius="10"
-     ItemsSource="{Binding CityList}" SelectedItem="{Binding SelectedCity}" Background="{DynamicResource BackGroundDark}">
-              <ListBox.ItemTemplate>
-                <DataTemplate DataType="{x:Type vm:CitySearchListTemplate}">
-                  <StackPanel Orientation="Horizontal" Spacing="10" Height="50">
-                    <TextBlock Text="{Binding Name}" FontSize="17" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock Text="{Binding City}, " FontSize="17" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock Text="{Binding State},sd " FontSize="17" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock Text="{Binding Postcode}, " FontSize="17" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock Text="{Binding Country}" FontSize="17" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                  </StackPanel>
-                </DataTemplate>
-              </ListBox.ItemTemplate>
-            </ListBox>
-            </ScrollViewer>
           </StackPanel>
-        </StackPanel>
-        </StackPanel>
-
+          <!--KONIEC POGODA-->    
         <!--Spacer zeby mozna było przeskolowac do samej gory ostatni element -> mozna przeskorolowac tak ze napis "INTERNETOWA PROGNOZA POGODY jest na samej gorze-->
-        
         <StackPanel Height="{Binding SpacerHeight}"></StackPanel>
-
-
-       
       </StackPanel>
-        
       </ScrollViewer>
-  
   </Border>
 
 </UserControl>

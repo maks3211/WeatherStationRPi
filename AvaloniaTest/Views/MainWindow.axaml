@@ -58,7 +58,7 @@
           </TextBlock.Styles>
         </TextBlock>
 
-        <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Spacing="20">
+        <StackPanel Margin="0,0,16,0" HorizontalAlignment="Right" Orientation="Horizontal" Spacing="70">
           <StackPanel IsVisible="{Binding !EspNet.Connected}">
             <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center">ESP:</TextBlock>
             <TextBlock Text="Brak połączenia" VerticalAlignment="Center"></TextBlock>
@@ -69,8 +69,8 @@
             <PathIcon Data="{Binding  EspNet.StrenghIcon}  "></PathIcon>
           </StackPanel>
           <StackPanel>
-            <TextBlock Text="TP-link Z45"  HorizontalAlignment="Center"></TextBlock>
-            <TextBlock Text="70%"  HorizontalAlignment="Center"></TextBlock>
+            <TextBlock Text="{Binding NetworkManager.CurrentSsid}"  HorizontalAlignment="Center"></TextBlock>
+            <PathIcon Data="{Binding  NetworkManager.StrenghIcon}  "></PathIcon>
           </StackPanel>
         </StackPanel>
       </Panel>
@@ -132,6 +132,7 @@
         
         
         <Button Height="40" HorizontalAlignment="Right"  Click="ButtonOnClick" HorizontalContentAlignment="Center" Background="{DynamicResource MainButton}" VerticalContentAlignment="Center">ZAMKNIJ</Button>
+
       </WrapPanel>
     </Border>
 
@@ -141,18 +142,18 @@
 
 
 
-      <!--KLAWIATURA-->
+     
 
    
      
  
   </DockPanel>
+      <!--KLAWIATURA-->
       <Viewbox  MaxWidth="980">
       <StackPanel ZIndex="1"  Opacity="0" 
                   Name="KeyboardFrame"
                   Margin="40,180,0,0"  
                   Height="345" 
-                 
                   Background="{DynamicResource KeyboardBackground}">
       </StackPanel>
       </Viewbox>

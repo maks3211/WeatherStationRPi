@@ -67,7 +67,7 @@ namespace AvaloniaTest.Models
                 ()=>Unit.Temp,
                 Converter.CalculateTemp
             );
-
+            Temperature.Value = ErrorValues.DoubleError;
             Humidity = new SensorInfo<double>
                 (
                 "indoorhumidity",
@@ -111,6 +111,8 @@ namespace AvaloniaTest.Models
             SetMinMaxTemp();
             SetLastTemp();
             Unit.PropertyChanged += Unit_PropertyChanged;
+
+            
         }
 
         private void Unit_PropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -161,12 +163,12 @@ namespace AvaloniaTest.Models
                 }
             else
             {
-                if (min > Temperature.Value)
+                if (min > Temperature.Value && Temperature.Value != ErrorValues.DoubleError)
                 {
                     min = Temperature.Value;
                 }
                     MinTemp.Value = min;
-                }
+            }
 
 
             if (max == ErrorValues.GetErrorValue<double>())
@@ -175,7 +177,7 @@ namespace AvaloniaTest.Models
             }
             else
             {
-                if (max < Temperature.Value)
+                if (max < Temperature.Value && Temperature.Value != ErrorValues.DoubleError)
                 {
                     max = Temperature.Value;
                 }

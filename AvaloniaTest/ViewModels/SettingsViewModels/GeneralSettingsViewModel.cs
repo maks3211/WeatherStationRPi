@@ -59,11 +59,11 @@ public partial class GeneralSettingsViewModel : ViewModelBase
 
         WeakReferenceMessenger.Default.Register<SettingsViewActivatedMessages>(this, (r, m) =>
         {
-            if (m.Value == GetType().FullName)
+            //przy wejsciu do widoku
+            if (m.Value == GetType().FullName) 
             {
-
-
             }
+            //przy wyjsciu
             else
             {
                 SaveSettings();
@@ -131,7 +131,7 @@ private CitySearchListTemplate? _selectedCity;
             Console.WriteLine("Nie udało się przekonwertować stringa na float.");
         }
        // WeatherController.SetNewCity(longitude, latitude);
-        WeatherController.SetNewCitys(longitude, latitude);
+        WeatherController.SetNewerCitys(longitude, latitude);
 
     }
 
@@ -188,12 +188,7 @@ private CitySearchListTemplate? _selectedCity;
         Console.WriteLine("sssss");
     }
 
-    private async void LoadSettings()
-    {
-        Console.WriteLine( $"TO WCZYTANO: {ApperanceSettings.CustomDarkThemeTime} od godzinei:  {ApperanceSettings.CustomLightThemeTime}");
-        await settingsManager.LoadSettingsAsync("Appearance", ApperanceSettings);
-        // await settingsManager.SaveSettingsAsync("Appearance", ApperanceSettings.Instance);
-    }
+
 
 
 
@@ -204,24 +199,7 @@ private CitySearchListTemplate? _selectedCity;
     [ObservableProperty]
     public bool _autoThemeSwitchState;
 
-    [RelayCommand]
-    public async void SaveThemeScheduleCommand()
-    {
 
-     //   ApperanceSettings Apperance = ApperanceSettings;
-       // Apperance.UseSchduleThemeChange = AutoThemeSwitchState;
-      //  Apperance.CustomTimeThemeChange = CustomThemeSelected;
-      //  Apperance.CustomLightThemeTime = LightThemeTime;
-     //   Apperance.CustomDarkThemeTime = DarkThemeTime;
-      //  Console.WriteLine($"Zapisane info po kliknięciu zapisz:\n Od zmroku do świtu {AutoThemeSelected}" +
-     //       $"\n Reczny wybór czasu: {CustomThemeSelected}" +
-      //      $"\n Czasy {LightThemeTime}  {DarkThemeTime}");
-
-      //  await settingsManager.SaveSettingsAsync("Appearance", Apperance);
-
-       // CustomThemeTime = LightThemeTime.ToString(@"hh\:mm") + " - " + DarkThemeTime.ToString(@"hh\:mm");
-       // WeakReferenceMessenger.Default.Send(new AutoThemeMessage(true, LightThemeTime, DarkThemeTime)); 
-    }
 
     [RelayCommand]
     public void AutoThemeSwitchCommand()
@@ -232,11 +210,6 @@ private CitySearchListTemplate? _selectedCity;
         }
     }
 
-    [RelayCommand]
-    public void TemperatureChoiceCommand()
-    {
-       // Units.GetInstance().SetCelsius(UnitSettings.Celsius);
-    }
 
     [RelayCommand]
     public async Task SearchCityButtonCommand()
@@ -254,31 +227,24 @@ private CitySearchListTemplate? _selectedCity;
                     SpacerHeight = 150;
                 else
                     SpacerHeight = 90;
-
-
                 foreach (var a in resuts)
-                {
-                    Console.WriteLine("no cos jest!!!!");
+                { 
                     CityList.Add(new CitySearchListTemplate(
-        a.address.name.AddComma(),
-        a.address.city.AddComma(),
-        a.address.county.AddComma(),
-        a.address.state.AddComma(),
-        a.address.postcode.AddComma(),
-        a.address.country,
-        a.lat, a.lon)
-    );
-
+                    a.address.name.AddComma(),
+                    a.address.city.AddComma(),
+                    a.address.county.AddComma(),
+                    a.address.state.AddComma(),
+                    a.address.postcode.AddComma(),
+                    a.address.country,
+                    a.lat, a.lon));
                 }
                 CitySearchText = "";
             }
             else
             {
-                Console.WriteLine("NULLLL");
                 SpacerHeight = 310;
             }
         }
-
     }
 
 
@@ -290,13 +256,6 @@ private CitySearchListTemplate? _selectedCity;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
-
-    private bool _mSelected = (Units.GetInstance().GetWindUnit() == "m/s") ? true : false;
-    private bool _kmSelected = (Units.GetInstance().GetWindUnit() == "km/h") ? true : false;
-    private bool _ktSelected = (Units.GetInstance().GetWindUnit() == "kt") ? true : false;
-
-   // private bool _celsiusSelected = (Units.GetInstance().GetTempUnit() == "°C") ? true : false;
-   // private bool _fahrenheitSelected = (Units.GetInstance().GetTempUnit() == "°F") ? true : false;
 
 
     [ObservableProperty]
@@ -368,70 +327,6 @@ private CitySearchListTemplate? _selectedCity;
      //   Apperance.ThemeButtonVis = ThemeButtonVis;
         //Console.WriteLine($"Zapis widocznosci guzika {ThemeButtonVis}");
        // await settingsManager.SaveSettingsAsync("Appearance", Apperance);
-    }
-
-
-
-    
-
-
-
-
-   
-
-    private bool MSelected
-    {
-        get => _mSelected;
-        set
-        {
-            if (_mSelected != value)
-            {
-                _mSelected = value;
-                OnPropertyChanged(nameof(MSelected));          
-                if (value == true)
-                {
-                    Console.WriteLine("m");
-                    Units.GetInstance().ChangeWindUnit("m");
-                }  
-            }
-        }
-    }
-
-    public bool KmSelected
-    {
-        get => _kmSelected;
-        set
-        {
-            if (_kmSelected != value)
-            {
-                _kmSelected = value;
-                OnPropertyChanged(nameof(KmSelected));              
-                if (value == true)
-                {
-                    Console.WriteLine("km");
-                    Units.GetInstance().ChangeWindUnit("km");
-                }
-               
-            }
-        }
-    }
-    public bool KtSelected
-    {
-        get => _ktSelected;
-        set
-        {
-            if (_ktSelected != value)
-            {
-                _ktSelected = value;
-                OnPropertyChanged(nameof(KtSelected));            
-                if (value == true)
-                {
-                    Console.WriteLine("kt");
-                    Units.GetInstance().ChangeWindUnit("kt");
-                }
-
-            }
-        }
     }
 
     private bool _celsiusSelected = true;

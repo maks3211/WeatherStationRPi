@@ -1,7 +1,9 @@
-﻿using System;
+﻿using AvaloniaTest.Helpers;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -25,28 +27,13 @@ namespace AvaloniaTest.Services.AppSettings
             try
             {
                 var json = File.Exists(_settingsFilePath) ? await File.ReadAllTextAsync(_settingsFilePath) : "{}";
-             
                 var settingsDict = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(json) ?? [];
-
-                /*  if (!settingsDict.ContainsKey(sectionName))
-                  {
-                      settingsDict[sectionName] = JsonSerializer.SerializeToElement(settings);
-                  }
-                  else
-                  {
-                      settingsDict[sectionName] = JsonSerializer.SerializeToElement(settings);
-                  }
-
-                  // Zapisz zmieniony JSON
-                  json = JsonSerializer.Serialize(settingsDict, new JsonSerializerOptions { WriteIndented = true });
-                  await File.WriteAllTextAsync(_settingsFilePath, json);*/
-
                 var updatedSettingsJson = JsonSerializer.Serialize(settings, new JsonSerializerOptions { WriteIndented = true });
                 settingsDict[sectionName] = JsonSerializer.Deserialize<JsonElement>(updatedSettingsJson);
 
                 // Zapisz zmieniony JSON
                 var updatedJson = JsonSerializer.Serialize(settingsDict, new JsonSerializerOptions { WriteIndented = true });
-                await File.WriteAllTextAsync(_settingsFilePath, updatedJson);
+                await File.WriteAllTextAsync(_settingsFilePath, updatedJson);       //automatyczne zamykanie pliku 
             
 
             }
@@ -78,8 +65,22 @@ namespace AvaloniaTest.Services.AppSettings
                         var properties = typeof(T).GetProperties();
                         foreach (var property in properties)
                         {
-                            var newValue = property.GetValue(updatedSettings);
-                            property.SetValue(settings, newValue);
+                            var ignoreAttribute = property.GetCustomAttribute<IgnoreDuringSerializationAttribute>();
+                            //var newValue = property.GetValue(updatedSettings);
+                            //property.SetValue(settings, newValue);
+                            if (ignoreAttribute == null || !ignoreAttribute.Ignore)
+                            {
+                                //ZMIENNE PRZYCHOWUJACE PREV TO ZMIENNE TYPU FIELD A NIE PROPERTIES 
+                                var newValue = property.GetValue(updatedSettings);
+                                property.SetValue(settings, newValue);
+
+                                // Sprawdź, czy pole ma tę samą nazwę, ale z "prev" na początku
+                                var prevProperty = properties.FirstOrDefault(p => p.Name == "prev" + property.Name);
+                                if (prevProperty != null)
+                                {
+                                    prevProperty.SetValue(settings, newValue);
+                                }
+                            }
                         }
                     }
                 }

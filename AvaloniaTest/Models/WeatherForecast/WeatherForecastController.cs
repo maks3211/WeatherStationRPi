@@ -174,7 +174,7 @@ namespace AvaloniaTest.Models.WeatherForecast
         private async Task LoadAllData()
         {
             await LoadSettings();
-            await SetNewCitys(Settings.Longitude, Settings.Latitude);
+            await SetNewerCitys(Settings.Longitude, Settings.Latitude);
             isFirstLoad = false;
         }
 
@@ -254,6 +254,7 @@ namespace AvaloniaTest.Models.WeatherForecast
 
         public async Task SetNewCitys(float lon, float lat)
         {
+           
             string url = string.Format("https://api.openweathermap.org/data/2.5/weather?lat={0}&lon={1}&lang=pl&units=metric&APPID={2}", lat, lon, Settings.ApiKey);
 
            
@@ -290,7 +291,64 @@ namespace AvaloniaTest.Models.WeatherForecast
    
         }
 
+        public async Task SetNewerCitys(float lon, float lat)
+        {
+            int maxRetryAttempts = 5; // Maksymalna liczba prób
+            int retryDelayInSeconds = 5; // Opóźnienie między próbami
+            int attempt = 0;
+            while (attempt < maxRetryAttempts)
+            {
+                attempt++;
+                string url = string.Format("https://api.openweathermap.org/data/2.5/weather?lat={0}&lon={1}&lang=pl&units=metric&APPID={2}", lat, lon, Settings.ApiKey);
 
+                // Utworzenie żądania
+                var request = new HttpRequestMessage(HttpMethod.Get, url);
+                var response = await web.SendAsync(request);
+                HttpSucces = response.IsSuccessStatusCode;
+
+                // Sprawdzenie, czy odpowiedź jest sukcesem
+                if (!HttpSucces)
+                {
+                    string errorContent = await response.Content.ReadAsStringAsync();
+                    JObject errorObject = JObject.Parse(errorContent);
+                    string errorMessage = errorObject["message"]?.ToString();
+                    int cod = (int)errorObject["cod"];
+                    Console.WriteLine($"Błąd API: {cod} - {errorMessage}");
+
+                    // Jeśli kod to 401 (błędny klucz API), poczekaj i ponów próbę
+                    if (cod == 401)
+                    {
+                        City = "Błędny kod API";
+                        if (attempt < maxRetryAttempts)
+                        {
+                            Console.WriteLine("Ponawianie próby za kilka sekund...");
+                            await Task.Delay(retryDelayInSeconds * 1000); // Opóźnienie przed kolejną próbą
+                            continue; // Powrót do początku pętli
+                        }
+                        else
+                        {
+                            Console.WriteLine("Osiągnięto maksymalną liczbę prób. Przerywanie...");
+                            return; // Przerywamy, jeśli osiągnięto maksymalną liczbę prób
+                        }
+                    }
+                }
+                else { 
+                // Jeśli odpowiedź jest sukcesem, odczytaj zawartość
+                var json = await response.Content.ReadAsStringAsync();
+                JObject jsonObject = JObject.Parse(json);
+
+                string cityName = jsonObject["name"]?.ToString();
+                if (cityName is null) return;
+
+                City = cityName;
+                Settings.Latitude = lat;
+                Settings.Longitude = lon;
+                await SaveSettings();
+
+                break; // Wychodzimy z pętli, jeśli operacja zakończyła się sukcesem
+                }
+            }
+        }
 
         public async Task GetCurrentWeather()
         {
@@ -362,9 +420,9 @@ namespace AvaloniaTest.Models.WeatherForecast
             {
                 TimeZone = Forecast1h.city.timezone;    
             }
+
             foreach (var a in Forecast1h.list)
-            {
-              
+            {           
                 a.dayTime = TimeConverters.ConvertDateTimeToHour(a.dt,TimeZone);
             }
 

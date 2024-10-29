@@ -23,9 +23,13 @@ namespace AvaloniaTest.Models.ObservablesProperties
         public string Name { get; set; }
         public bool ConvertToInt;
 
+        private bool DisplayUnit;
 
         [ObservableProperty]
         public string _displayName = "-";
+
+        [ObservableProperty]
+        public string _unit = "";
 
         private bool IsValueSet = false;
         private T _unitValue { get; set; }
@@ -54,7 +58,11 @@ namespace AvaloniaTest.Models.ObservablesProperties
                 {
                     if (GetUnit != null)
                     {
-                        format = format + GetUnit();
+                        if (DisplayUnit)
+                        {
+                            format = format + GetUnit();
+                        } 
+                        Unit = GetUnit();
                     }
                     // Zamiana przecinka na kropkę
                     DisplayName = format.Replace(',', '.');
@@ -94,30 +102,19 @@ namespace AvaloniaTest.Models.ObservablesProperties
             // W przypadku niepowodzenia zwróć pusty string lub obsłuż błąd
             return "";
         }
-        public SensorInfo(string name, bool toInt = false ,Func<string> getUnit = null, Func<T, T> calculateValue = null)
+        public SensorInfo(string name, bool toInt = false ,Func<string> getUnit = null, Func<T, T> calculateValue = null, bool displayUnit = true)
         {
             Name = name;
             ConvertToInt = toInt;
-            //  FormatDisplayName = formatDisplayName;
             GetUnit = getUnit;
             CalculateValue = calculateValue;
+            DisplayUnit = displayUnit;
 
-
-
-            //to juz nie potrzebne jest 
-/*            if (calculateValue != null)
+            if (getUnit == null)
             {
-                WeakReferenceMessenger.Default.Register<UnitChangedMessage>(this, (r, m) =>
-                {
-                    if (m.Value == true)
-                    {
-                        Console.WriteLine("otrzymano wiodmosc w mqqt topic");
-                        Recalculate();
-                    }
-
-                });
-            }*/
-
+                DisplayUnit = false;
+            }
+   
         }
 
     }

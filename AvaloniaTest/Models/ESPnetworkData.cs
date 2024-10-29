@@ -36,7 +36,7 @@ namespace AvaloniaTest.Models
 
         private ESPnetworkData() {
             _timer = new DispatcherTimer();
-            _timer.Interval = TimeSpan.FromSeconds(10);
+            _timer.Interval = TimeSpan.FromSeconds(40);
             _timer.Tick += CheckConnectionStatus;
             _timer.Start();
         }
@@ -57,7 +57,7 @@ namespace AvaloniaTest.Models
         private void CheckConnectionStatus(object? sender, EventArgs e)
         {
             // Sprawdź, czy od ostatniej wiadomości minęła 1 minuta
-            if (DateTime.Now - _lastMessageTime > TimeSpan.FromSeconds(5))
+            if (DateTime.Now - _lastMessageTime > TimeSpan.FromSeconds(40))
             {
                 Connected = false;
                 OnPropertyChanged(nameof(Connected));  // Powiadomienie o zmianie statusu

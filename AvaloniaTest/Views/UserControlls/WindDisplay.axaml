@@ -33,35 +33,36 @@
           <TextBlock Canvas.Top="91.5" Canvas.Left="93.5" FontWeight="DemiBold">W</TextBlock>
 
           <StackPanel Orientation="Vertical" Canvas.Left="2" Canvas.Top="2">
-            <TextBlock Text="{Binding WindSpeed}" FontSize="32" FontWeight="DemiBold"/>
-            <TextBlock Text="{Binding WindUnit}" FontSize="18" Margin="5,-3,0,0"/>
+            <!--<TextBlock Text="{Binding WindSpeed}" FontSize="32" FontWeight="DemiBold"/>-->
+            <TextBlock Text="{Binding OutdoorSensorsProp.Wind.WindSpeed.DisplayName}" FontSize="32" FontWeight="DemiBold"/>
+            <TextBlock Text="{Binding OutdoorSensorsProp.Wind.WindSpeed.Unit}" FontSize="18" Margin="5,-3,0,0"/>
           </StackPanel>
 
 
           <TextBlock Canvas.Left="5" Canvas.Top="140" FontSize="15">Porywy</TextBlock>
           <StackPanel Orientation="Horizontal" Canvas.Left="5" Canvas.Top="155">
             <TextBlock>
-              <Run Text="{Binding WindGust}" FontSize="25" FontWeight="DemiBold"/>
-              <Run Text="{Binding WindUnit}" FontSize="14"/>
+              <Run Text="{Binding OutdoorSensorsProp.Wind.Gust.DisplayName}" FontSize="25" FontWeight="DemiBold"/>
+              <Run Text="{Binding OutdoorSensorsProp.Wind.WindSpeed.Unit}" FontSize="14"/>
             </TextBlock>
           </StackPanel>
 
           <Ellipse Width="55" Height="55" Fill="Transparent" Stroke="{DynamicResource FontBlue}" StrokeThickness="2"  StrokeDashArray="" Canvas.Left="122.5" Canvas.Top="72.5" />
           <StackPanel  Canvas.Left="127.5" Canvas.Top="84" Width="45">
-            <TextBlock Text="{Binding WindDirection}" HorizontalAlignment="Center" FontSize="25" FontWeight="DemiBold"></TextBlock>
+            <TextBlock Text="{Binding OutdoorSensorsProp.Wind.Direction}" HorizontalAlignment="Center" FontSize="25" FontWeight="DemiBold"></TextBlock>
           </StackPanel>
 
-          <Path Stroke="Yellow" StrokeThickness="3" Fill="Transparent" Canvas.Top="{Binding Arrowy}" Canvas.Left="{Binding Arrowx}">
+          <Path Stroke="Yellow" StrokeThickness="3" Fill="Transparent" Canvas.Top="{Binding OutdoorSensorsProp.Wind.Arrowy}" Canvas.Left="{Binding OutdoorSensorsProp.Wind.Arrowx}">
             <Path.Data>
               <PathGeometry Figures="M0,0 L0,10 L20,5 Z"/>
             </Path.Data>
             <Path.RenderTransform>
               <TransformGroup>
-                <RotateTransform Angle="{Binding Angle}"/>
+                <RotateTransform Angle="{Binding OutdoorSensorsProp.Wind.ArrowAngle}"/>
               </TransformGroup>
             </Path.RenderTransform>
           </Path>
-          <Path Stroke="Yellow" StrokeThickness="3" Fill="Transparent" Canvas.Top="{Binding Circley}" Canvas.Left="{Binding Circlex}">
+          <Path Stroke="Yellow" StrokeThickness="3" Fill="Transparent" Canvas.Top="{Binding OutdoorSensorsProp.Wind.Circley}" Canvas.Left="{Binding OutdoorSensorsProp.Wind.Circlex}">
             <Path.Data>
               <PathGeometry Figures="M 10 0 A 1 1 0 0 0 10 20 A 1 1 0 0 0 10 0"/>
             </Path.Data>

@@ -17,28 +17,43 @@
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="*"/>
 				<ColumnDefinition Width="Auto"/>
-
 			</Grid.ColumnDefinitions>
-
 			<UniformGrid Rows="8" Margin="50" HorizontalAlignment="Center">
-				<Button Command="{Binding AltitudeHandlerCommand}"
+				<Button
+          Background="{DynamicResource MainButton}"
+          Command="{Binding AltitudeHandlerCommand}"
                         HorizontalContentAlignment="Center">Wysokosc</Button>
-				<Button Command="{Binding LuminanceHandlerCommand}"
+				<Button
+          Background="{DynamicResource MainButton}"
+          Command="{Binding LuminanceHandlerCommand}"
                         HorizontalContentAlignment="Center">Luminacja</Button>
-				<Button Command="{Binding outerTempHandlerCommand}"
+				<Button
+          Background="{DynamicResource MainButton}"
+          Command="{Binding outerTempHandlerCommand}"
                         HorizontalContentAlignment="Center">Temperatura</Button>
-				<Button Command="{Binding preasureHandlerCommand}"
+				<Button 
+          Background="{DynamicResource MainButton}"
+          Command="{Binding preasureHandlerCommand}"
                         HorizontalContentAlignment="Center">Cisnienie atmosferyczne</Button>
-				<Button Command="{Binding humidityHandlerCommand}"
+				<Button
+          Background="{DynamicResource MainButton}"
+          Command="{Binding humidityHandlerCommand}"
                         HorizontalContentAlignment="Center">Wilgotnosc</Button>
-				<Button Command="{Binding COHandlerCommand}"
+				<Button
+          Background="{DynamicResource MainButton}"
+          Command="{Binding COHandlerCommand}"
                         HorizontalContentAlignment="Center">Stezenie CO</Button>
-				<Button Command="{Binding NO2HandlerCommand}"
+				<Button 
+          Background="{DynamicResource MainButton}"
+          Command="{Binding NO2HandlerCommand}"
                         HorizontalContentAlignment="Center">Stezenie NO2</Button>
-				<Button Command="{Binding NH3HandlerCommand}"
+				<Button
+          Background="{DynamicResource MainButton}"
+          Command="{Binding NH3HandlerCommand}"
                         HorizontalContentAlignment="Center">Stezenie NH3</Button>
 			</UniformGrid>
 			<lvc:CartesianChart
+        
                 Grid.Column="1"
                 Width="700"
                 Height="470"
@@ -51,15 +66,7 @@
 				YAxes="{Binding YAxes}"
 				LegendPosition="Right"
 				>
-
 			</lvc:CartesianChart>
-
 		</Grid>
 	</StackPanel>
-
-
-
-
-
-
 </UserControl>

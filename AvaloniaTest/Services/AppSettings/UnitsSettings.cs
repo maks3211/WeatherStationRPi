@@ -32,7 +32,7 @@ namespace AvaloniaTest.Services.AppSettings
         public string _temp;
 
         [ObservableProperty]
-        public string _wind = "kt";
+        public string _wind;
 
         [ObservableProperty]
         public string _rain;

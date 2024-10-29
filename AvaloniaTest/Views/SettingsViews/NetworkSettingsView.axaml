@@ -6,6 +6,7 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="470"
              x:Class="AvaloniaTest.Views.NetworkSettingsView"
              xmlns:vm="using:AvaloniaTest.ViewModels"
+             xmlns:vm2 ="using:AvaloniaTest.Services"
                xmlns:local="clr-namespace:AvaloniaTest.Views"
               x:DataType="vm:NetworkSettingsViewModel">
 
@@ -50,9 +51,44 @@
         <StackPanel>
           <StackPanel>
             <TextBlock FontWeight="DemiBold" FontSize="20" Margin="20,10,0,0">Dostepne sieci WI-FI</TextBlock>
-            <!--<Line StartPoint="0,0" EndPoint="800,0" Margin="0,15,0,15" Stroke="{DynamicResource LightBorderColor}" StrokeThickness="2" StrokeDashArray="3"/>-->
-            <TextBlock Text="{Binding Connectedssid}" FontSize="17"></TextBlock>
+            <Line StartPoint="0,0" EndPoint="700,0" Margin="0,15,0,15" Stroke="{DynamicResource LightBorderColor}" StrokeThickness="2" StrokeDashArray="3"/>
+            <TextBlock
+           VerticalAlignment="Center"
+         HorizontalAlignment="Left"
+           Opacity="0" FontSize="18"
+           MaxWidth="300"
+           TextWrapping="Wrap"
+        Name="Napis"
+        Text ="{Binding NetMan.Message}"
+        Classes.triggered="{Binding NetMan.MessageActivator}">
+              <TextBlock.Styles>
+                <Style Selector="TextBlock.triggered">
+                  <Style.Animations>
+                    <Animation Duration="0:0:2" IterationCount="1">
+                      <KeyFrame Cue="0%">
+                        <Setter Property="Opacity" Value="0.0"/>
+                      </KeyFrame>
+                      <KeyFrame Cue="35%">
+                        <Setter Property="Opacity" Value="1.0"/>
+                      </KeyFrame>
+                      <KeyFrame Cue="65%">
+                        <Setter Property="Opacity" Value="1.0"/>
+                      </KeyFrame>
+                      <KeyFrame Cue="100%">
+                        <Setter Property="Opacity" Value="0.0"/>
+                      </KeyFrame>
+                    </Animation>
+                  </Style.Animations>
+                </Style>
+              </TextBlock.Styles>
+            </TextBlock>
             <TextBlock Text="{Binding ToConnectssid}" FontSize="15"></TextBlock>
+
+
+          
+            <TextBlock  FontSize="18" Text="Aktualna siec:"></TextBlock>
+            <TextBlock  FontSize="18" Text="{Binding NetMan.CurrentSsid}"></TextBlock>
+            
             <StackPanel Orientation="Horizontal">
               <StackPanel Orientation="Vertical">
                 <TextBox
@@ -67,25 +103,13 @@
                   HorizontalAlignment="Left"
                   Margin="10,10,0,0">
                 </TextBox>
-                <TextBox
-                PointerPressed="Passwordbox_PointerPressed"
-local:OnScreenKeyboardBehavior.IsKeyboardEnabled="True"
-                local:OnScreenKeyboardBehavior.EnterButton="{Binding ElementName=ConnectButton}"
-                Name="Passwordboxs"
-                Text="{Binding Passwordbox}"
-                IsVisible="{Binding Passwordboxvis}"
-                Watermark="Inny tekst"
-                Width="500"
-                HorizontalAlignment="Left"
-                Margin="10,10,0,0">
-                </TextBox>
               </StackPanel>
               <Button Name="ConnectButton" Command="{Binding ConnectButtonCommand}" IsVisible="{Binding Connectbuttonvis}" Width="100" Height="35" Margin="10,10,0,0" FontSize="20" HorizontalContentAlignment="Center">Połącz</Button>
             </StackPanel>
             <ListBox CornerRadius="10" Margin="5,10,5,10"
-                ItemsSource="{Binding Items}" SelectedItem="{Binding Selectedwifilist}" Background="{DynamicResource BackGroundDark}">
+                ItemsSource="{Binding NetMan.WifiList}" SelectedItem="{Binding NetMan.SelectedWifiFromList}" Background="{DynamicResource BackGroundDark}">
               <ListBox.ItemTemplate>
-                <DataTemplate DataType="{x:Type vm:WifiListTemplate}">
+                <DataTemplate DataType="{x:Type vm2:WifiListTemplate}">
                   <StackPanel Orientation="Horizontal" Spacing="10" Height="50">
                     <TextBlock Text="{Binding Label}" FontSize="17" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     <TextBlock Text="{Binding Power}" FontSize="17" HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -97,20 +121,7 @@ local:OnScreenKeyboardBehavior.IsKeyboardEnabled="True"
             
           </StackPanel>
           <!--<Rectangle Margin="0,5,0,5" Width="1024" Height="2" Fill="{DynamicResource BorderColor}"></Rectangle>-->
-          <StackPanel>
-            <Button Command="{Binding GetEspwifi}">Pokaz sieci esp- TEST</Button>
-            <ListBox CornerRadius="10" 
-     ItemsSource="{Binding EspwifiList}" SelectedItem="{Binding EspWifiList}" Background="{DynamicResource BackGroundDark}">
-              <ListBox.ItemTemplate>
-                <DataTemplate DataType="{x:Type vm:WifiListTemplate}">
-                  <StackPanel Orientation="Horizontal" Spacing="10" Height="50">
-                    <TextBlock Text="{Binding Label}" FontSize="17" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock Text="{Binding Power}" FontSize="17" HorizontalAlignment="Center" VerticalAlignment="Center"/>    
-                  </StackPanel>
-                </DataTemplate>
-              </ListBox.ItemTemplate>
-            </ListBox>
-          </StackPanel>
+
         </StackPanel>   
       </ScrollViewer>
 

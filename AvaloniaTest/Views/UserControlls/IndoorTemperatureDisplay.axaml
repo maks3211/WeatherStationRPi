@@ -26,7 +26,7 @@
         <Rectangle Height="2" Width="243.5" Fill="{DynamicResource BorderColor}" Margin="0,10,0,0"></Rectangle>
         <StackPanel Orientation="Horizontal">
           <Image Source="avares://AvaloniaTest/Assets/Images/thermometer.png" Width="50" Height="50" Margin="0,10,0,0" ></Image>
-          <TextBlock Text="{Binding Indoortemperature}" FontWeight="DemiBold" FontSize="35"
+          <TextBlock Text="{Binding IndoorSensorsProp.Temperature.DisplayName}" FontWeight="DemiBold" FontSize="35"
                      TextAlignment="Center"
                      Width="145"
                      VerticalAlignment="Center"

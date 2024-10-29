@@ -25,7 +25,7 @@
       <Canvas>
         <Image Canvas.Left="-12.5" Canvas.Top="6" Source="avares://AvaloniaTest/Assets/Images/indoor.png" Width="40" Height="40" ></Image>
         <TextBlock Text="CO" Canvas.Top="5" Canvas.Left="20"></TextBlock>
-        <TextBlock Text="{Binding Indoorco}" Canvas.Top="25" Canvas.Left="20"></TextBlock>
+        <TextBlock Text="{Binding IndoorSensorsProp.Co.DisplayName}" Canvas.Top="25" Canvas.Left="20"></TextBlock>
         <Image Canvas.Left="15" Canvas.Top="5" Source="avares://AvaloniaTest/Assets/Images/starp.png"  Width="150" Height="100" ></Image>
         <Ellipse Canvas.Left="{Binding Indoorcocircle}" Canvas.Top="47" Width="16" Height="16"  Stroke="{DynamicResource BackGroundLight}" StrokeThickness="4" Fill="White" />
 

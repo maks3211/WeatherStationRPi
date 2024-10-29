@@ -34,7 +34,7 @@
           <Rectangle Canvas.Top="104" Canvas.Left="77.5"  Height="7"   Width="85"  Fill="{DynamicResource FontBlue}" ></Rectangle>
           <Rectangle Canvas.Top="130" Canvas.Left="47.5"  Height="7"   Width="145" Fill="{DynamicResource FontBlue}" ></Rectangle>
           <Rectangle Canvas.Top="158" Canvas.Left="77.5"  Height="7"   Width="85"  Fill="{DynamicResource FontBlue}" ></Rectangle>
-          <TextBlock Text="{Binding Indooraltitude}" Canvas.Top="70" Canvas.Left="195" FontSize="18" >1255</TextBlock>
+          <TextBlock Text="{Binding IndoorSensorsProp.Altitude.DisplayName}" Canvas.Top="70" Canvas.Left="195" FontSize="18" >1255</TextBlock>
           <TextBlock Text="{Binding OutdoorSensorsProp.OutdoorAltitude.DisplayName}" Canvas.Top="70" Canvas.Left="3"   FontSize="18" >1255</TextBlock>
         </Canvas>
       </StackPanel>

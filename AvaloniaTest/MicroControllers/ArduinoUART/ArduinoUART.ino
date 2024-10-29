@@ -26,7 +26,7 @@ class MQ7 {
 
 MQ7 mq7(A0,5.0);
 
-//int sensor_co_indoor; 
+int sensor_co_indoor; 
 bool aht20Work = true;
 bool bmpWork = true;
 //char dataString[50] = {0};
@@ -61,11 +61,11 @@ void setup() {
                   Adafruit_BMP280::FILTER_X16,      /* Filtering. */
                   Adafruit_BMP280::STANDBY_MS_500); /* Standby time. */
  Serial.println("BMP280 acknowledged.");
- // pinMode(INDOOR_CO_SENSOR, INPUT);
+  pinMode(INDOOR_CO_SENSOR, INPUT);
 
    
-  // sensor_co_indoor = analogRead(INDOOR_CO_SENSOR);
-   //pinMode(INDOOR_CO_SENSOR_OUTPUT, OUTPUT);
+   sensor_co_indoor = analogRead(INDOOR_CO_SENSOR);
+  // pinMode(INDOOR_CO_SENSOR_OUTPUT, OUTPUT);
 
 }
 
@@ -75,6 +75,7 @@ float bmeTemperature = 0.0;
 float humidity = 0.0;
 float preassure = 0.0;
 float altitude = 0.0;
+float co = 0.0;
   if (aht20.available() == true)
   {
   aht20temperature = aht20.getTemperature();
@@ -82,12 +83,13 @@ float altitude = 0.0;
   humidity = aht20.getHumidity();
   preassure = bmp.readPressure()/100.00;
   altitude = bmp.readAltitude(1013.25);
+  co = mq7.getPPM();
   float avgTemperature = (aht20temperature + bmeTemperature)/2;  
   String temperatureString =String(avgTemperature) + "-C";
-  Serial.println(temperatureString +"<"+ String(humidity)+"-%<" + String(preassure)+"-hPa<" + String(altitude)+"-m");
+  Serial.println(temperatureString +"<"+ String(humidity)+"-%<" + String(preassure)+"-hPa<" + String(altitude)+"-m<" + String(co)+"-ppm");
   }
   // put your main code here, to run repeatedly:
-  //sensor_co_indoor = analogRead(INDOOR_CO_SENSOR);
+  sensor_co_indoor = analogRead(INDOOR_CO_SENSOR);
  // Serial.println("");
    //Serial.println("Czujnik: 32.0C");
  //Serial.print(sensor_co_indoor);

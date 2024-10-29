@@ -58,6 +58,8 @@ namespace AvaloniaTest.Models
         public double OutDoorCO =  ErrorValues.GetErrorValue<double>();
         public double OutDoorNH3 = ErrorValues.GetErrorValue<double>();
 
+        public double OutDoorWind = ErrorValues.GetErrorValue<double>();
+        public double OutDoorWindAngle = ErrorValues.GetErrorValue<double>();
 
         DateTime currentDateTime;
         MySqlConnection con;
@@ -151,6 +153,8 @@ namespace AvaloniaTest.Models
             var oNo = await mqttClient.SubscribeAsync("outdoorno2");
             var oNh = await mqttClient.SubscribeAsync("outdoornh3");
             var oCo = await mqttClient.SubscribeAsync("outdoorco");
+            var wind = await mqttClient.SubscribeAsync("outdoorwind");
+            var windangle = await mqttClient.SubscribeAsync("outdoorwindangle");
             await mqttClient.SubscribeAsync("espSsid");
             await mqttClient.SubscribeAsync("espStrength");
 
@@ -192,6 +196,8 @@ namespace AvaloniaTest.Models
                         var oNo = await mqttClient.SubscribeAsync("outdoorno2");
                         var oNh = await mqttClient.SubscribeAsync("outdoornh3");
                         var oCo = await mqttClient.SubscribeAsync("outdoorco");
+                        var wind = await mqttClient.SubscribeAsync("outdoorwind");
+                        var windangle = await mqttClient.SubscribeAsync("outdoorwindangle");
                         await mqttClient.SubscribeAsync("espSsid");
                         await mqttClient.SubscribeAsync("espStrength");
                     }
@@ -267,6 +273,15 @@ namespace AvaloniaTest.Models
                         sensory.OutdoorNH3.Value = OutDoorNH3;    
                         InsertDataIntoTable("outerNh3", currentDateTime, OutDoorNH3);
                         break;
+                    case "outdoorwind":
+                        OutDoorWind = ConvertToDouble(e.ApplicationMessage.PayloadSegment);
+                        sensory.Wind.WindSpeed.Value = OutDoorWind;
+                        break;
+                    case "outdoorwindangle":
+                        OutDoorWindAngle = ConvertToDouble(e.ApplicationMessage.PayloadSegment);
+                        sensory.Wind.Angle = OutDoorWindAngle;
+                        break;
+
                     case "espSsid":
                         ESPnetworkData.GetInstance().Ssid = Encoding.UTF8.GetString(e.ApplicationMessage.PayloadSegment);
                         ESPnetworkData.GetInstance().UpdateLastMessageTime();

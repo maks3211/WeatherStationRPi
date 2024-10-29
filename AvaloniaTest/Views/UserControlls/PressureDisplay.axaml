@@ -22,7 +22,7 @@
           <PathIcon Data="{StaticResource HomeRegular}" VerticalAlignment="Top" Margin="10,8,0,8"></PathIcon>
           <PathIcon Data="{StaticResource ArrrowLeft}" Height="10" Margin="-4,8,10,8" VerticalAlignment="Top" ></PathIcon>
           <PathIcon Data="{StaticResource ArrowRight}" Height="10" Margin="-28,18,10,8" VerticalAlignment="Top" ></PathIcon>
-          <TextBlock VerticalAlignment="Center"  FontWeight="DemiBold" Margin="30,5,0,0">CISNIENIE</TextBlock>
+          <TextBlock VerticalAlignment="Center"  FontWeight="DemiBold" Margin="30,5,0,0">CIŚNIENIE</TextBlock>
         </StackPanel>
         <Rectangle Height="2" Width="243.5" Fill="{DynamicResource BorderColor}" Margin="0,10,0,5"></Rectangle>
 
@@ -85,7 +85,7 @@ Height="15" Width="45"
   Fill="{Binding Indoorpreasurecolors[6]}"
 Margin="10,10,0,0"
                 ></Rectangle>
-            <TextBlock Text="{Binding Indoorpreasure}" Margin="68,-169,0,0" FontSize="20">1000</TextBlock>
+            <TextBlock HorizontalAlignment="Center" TextAlignment="Center" Width="50"  Text="{Binding IndoorSensorsProp.Pressure.DisplayName}" Margin="58,-169,0,0" FontSize="20">1000</TextBlock>
             <Image Source="avares://AvaloniaTest/Assets/Images/indoor.png" Margin="15,-160,0,10" Width="45" Height="45" ></Image>
 
           </StackPanel>
@@ -148,7 +148,7 @@ Height="15" Width="45"
   Fill="{Binding Outdoorpreasurecolors[6]}"
 Margin="0,10,10,0"
                 ></Rectangle>
-            <TextBlock Text="{Binding OutdoorSensorsProp.OutdoorPressure.DisplayName}" Margin="5,-169,0,0" FontSize="20">1000</TextBlock>
+            <TextBlock  HorizontalAlignment="Left" TextAlignment="Center" Width="50" Text="{Binding OutdoorSensorsProp.OutdoorPressure.DisplayName}" Margin="10,-169,0,0" FontSize="20">1000</TextBlock>
             <Image Source="avares://AvaloniaTest/Assets/Images/outdoor.png" Margin="0,-110,45,80" Width="45" Height="45" ></Image>
             <TextBlock Margin="-15,-165,0,0" FontSize="15">hPa</TextBlock>
           </StackPanel>

@@ -14,8 +14,6 @@ namespace AvaloniaTest.Helpers
 {
     public class Animator
     {
-
-
         public Control TargetElement { get; set; }
 
 

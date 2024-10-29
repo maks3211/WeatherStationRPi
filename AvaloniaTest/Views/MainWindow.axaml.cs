@@ -136,13 +136,13 @@ namespace AvaloniaTest.Views
 
         private bool IsClickInsideElement(Avalonia.Controls.StackPanel element, PointerPressedEventArgs e)
         {
-           // if (keyboard.GetIsVisable())
-          //  {
-                var position = e.GetPosition(element);
-                return position.X >= 0 && position.X <= element.Bounds.Width &&
-                       position.Y >= 0 && position.Y <= element.Bounds.Height;
-           // }
-           // return true;      
+           if (keyboard.GetIsVisable())
+           {
+             var position = e.GetPosition(element);
+             return position.X >= 0 && position.X <= element.Bounds.Width &&
+                    position.Y >= 0 && position.Y <= element.Bounds.Height;
+           }
+            return true;      
         }
 
     }

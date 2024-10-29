@@ -24,12 +24,14 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Security.AccessControl;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Xml.Linq;
@@ -49,7 +51,7 @@ namespace AvaloniaTest.ViewModels
 
 
 
-     private ViewModelFactory vMf = new ViewModelFactory();
+        private ViewModelFactory vMf = new ViewModelFactory();
         private DataBaseService DataBaseService;
 
         [ObservableProperty]
@@ -62,20 +64,24 @@ namespace AvaloniaTest.ViewModels
         [ObservableProperty]
         private WeatherSettings _weatherSettings = new WeatherSettings();
 
-  
+
+        [ObservableProperty]
+        private NetworkManager _networkManager;
+
 
         private WeatherForecastController WeatherForecastController;
         public static event EventHandler<string> CurrentPageOpened;
         public static string CurrentPageSub = "";
         public static InDoorSensor inDoorSens = new InDoorSensor();
         public static MQTTcommunication mqqt = new MQTTcommunication();
+        public static UARTcommunication uart;
         public static string lastPage = "";
-        public static Network siec = new Network();
+       
 
-     
-        private readonly List <ViewModelBase>pages;
-        
-        
+
+        private readonly List<ViewModelBase> pages;
+
+
 
 
         [ObservableProperty]
@@ -84,7 +90,7 @@ namespace AvaloniaTest.ViewModels
 
         [ObservableProperty]
         public ViewModelBase _currentPage;
-        
+
         [ObservableProperty]
         private ListItemTemplate? _selectedListItem;
 
@@ -97,7 +103,7 @@ namespace AvaloniaTest.ViewModels
         /// <summary>
         /// List of navigation items.
         /// </summary>
-            public ObservableCollection<ListItemTemplate> Items { get; } = new()
+        public ObservableCollection<ListItemTemplate> Items { get; } = new()
             {
                 new ListItemTemplate(typeof(HomePageViewModel),"HomeRegular", "Strona Główna"),
                 new ListItemTemplate(typeof(SettingsViewModel),"SettingsRegular","Ustawienia"),
@@ -107,7 +113,7 @@ namespace AvaloniaTest.ViewModels
 
 
 
-        private readonly SettingsManager settingsManager;      
+        private readonly SettingsManager settingsManager;
         private TimeSpan LightThemeTime;
         private TimeSpan DarkThemeTime;
 
@@ -120,18 +126,14 @@ namespace AvaloniaTest.ViewModels
         {
             await settingsManager.LoadSettingsAsync("Appearance", ApperanceSettings);
             await settingsManager.LoadSettingsAsync("Units", UnitSettings);
-
-
-         //   await settingsManager.LoadSettingsAsync("Units", UnitSettings);
-
             ThemeBtnVis = ApperanceSettings.ThemeButtonVis;
-            
-
             SetThemeSchedule(ApperanceSettings.UseSchduleThemeChange);
+          
             (ApperanceSettings.LightTheme ? (Action)SetLightTheme : SetDarkTheme)();
-  
+            Console.WriteLine($"ZMIENNA PREVIOUS:  {ApperanceSettings.prevLightTheme}");
+            Console.WriteLine(ApperanceSettings.LightTheme);
 
-            
+
         }
 
 
@@ -139,8 +141,8 @@ namespace AvaloniaTest.ViewModels
 
 
         [ObservableProperty]
-        public OutdoorSensors _outdoorSens; 
-        
+        public OutdoorSensors _outdoorSens;
+
         [ObservableProperty]
         public IndoorSensors _indoorSens;
 
@@ -148,10 +150,14 @@ namespace AvaloniaTest.ViewModels
         public ESPnetworkData _espNet;
 
 
-  
+
 
         public MainWindowViewModel()
         {
+            _networkManager = new NetworkManager();
+
+
+
             settingsManager = new SettingsManager("ustawienia.json");
             LoadSettings();
             DataBaseService = new DataBaseService();
@@ -163,13 +169,13 @@ namespace AvaloniaTest.ViewModels
 
 
             WeatherForecastController = new WeatherForecastController(WeatherSettings, settingsManager, UnitsCon, UnitSettings);
-
-
+            uart = new UARTcommunication(IndoorSens, "/dev/ttyS0");
+            StartUART();
             vMf.DataBaseService = DataBaseService;
             vMf.WeatherController = WeatherForecastController;
             vMf.Settings = settingsManager;
             vMf.ApperanceSettings = ApperanceSettings;
-  
+
             vMf.UnitSettings = UnitSettings;
 
             Units.GetInstance().Ustaw = UnitSettings;
@@ -177,20 +183,21 @@ namespace AvaloniaTest.ViewModels
             vMf.TimeProperties = TimeProp;
             vMf.OutdoorSensors = _outdoorSens;
             vMf.IndoorSensors = _indoorSens;
+            vMf.NetworkManager = NetworkManager;
 
-             
+
             WeakReferenceMessenger.Default.Register<ThemeBtnVisMessage>(this, (r, m) =>
             {
                 ThemeBtnVis = m.Value;
             });
             WeakReferenceMessenger.Default.Register<AutoThemeMessage>(this, (r, m) =>
-            {    
-              SetThemeSchedule(m.Value);
+            {
+                SetThemeSchedule(m.Value);
             });
 
 
             EspNet = ESPnetworkData.GetInstance();
-         
+
             //timer = new DispatcherTimer();
             //timer.Interval = TimeSpan.FromSeconds(1);
             //timer.Start();
@@ -198,24 +205,85 @@ namespace AvaloniaTest.ViewModels
 
             CurrentPageSub = "AvaloniaTest.ViewModels.HomePageViewModel";
             CurrentPageOpened?.Invoke(this, CurrentPageSub ?? "");
-         
+
             StartDataReading();
             mqqt.Start_Server();
-           if (Items.Any())
-           {  
+            if (Items.Any())
+            {
                 SelectedListItem = Items.First();
-           }
+            }
 
             Clock.Instance.AddTask("Clock", UpdateClock, TimeSpan.FromSeconds(1));
-           
+            Clock.Instance.AddTask("CurrentWifiData", RefreshCurrentNetData, TimeSpan.FromSeconds(20));
+
             mqqt.AddSensros(OutdoorSens);
             SubESPwifiStrength();
-           
+            NetworkManager.GetCurrentNetworkInfo();
+
+            NetworkManager.PropertyChanged += NetMan_PropertyChanged;
+
+            NetworkManager.StrenghIcon = GetNetworkStrengthIcon(0);
+            NetworkManager.NetworkConnected += OnInternetConnected;
+        }
+
+        private void OnInternetConnected(object sender, EventArgs e)
+        {
+            Console.WriteLine("Polaczono z netem");
+            WeatherForecastController.SetNewerCitys(WeatherSettings.Longitude, WeatherSettings.Latitude);
 
         }
 
 
-        
+
+        private void NetMan_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            Console.WriteLine("jakas zmina w sieci ");
+            Console.WriteLine(e.PropertyName);
+            if (e.PropertyName == nameof(NetworkManager.SignalStrength))
+            {
+                Console.WriteLine("zmiana sygnalu");
+                NetworkManager.StrenghIcon = GetNetworkStrengthIcon(NetworkManager.SignalStrength);
+            }
+
+        }
+        public async void RefreshCurrentNetData()
+        {
+            Console.WriteLine("cykliczne pobieranie danych o aktualnej siecii");
+            var (currentSsid, currentSignalStrength) = await NetworkManager.GetCurrentNetworkInfo();
+            Console.WriteLine($"SSID: {currentSsid}, Siła sygnału: {currentSignalStrength}");
+        }
+
+      
+
+        [RelayCommand]
+        public void Getssidrpi()
+        {
+            Console.WriteLine("KILK pobieranie aktualnej nazwy sieci");
+            string nazwa = NetworkManager.GetCurrentSsidRPI();
+            Console.WriteLine($"Odczytana nazwa:{nazwa}");
+        }
+        [RelayCommand]
+        public async void Getpassword()
+        {
+            Console.WriteLine("KILK pobieranie aktualnej nazwy sieci i sily sygnalu");
+            var (currentSsid, currentSignalStrength) = await NetworkManager.GetCurrentNetworkInfo();
+            Console.WriteLine($"SSID: {currentSsid}, Siła sygnału: {currentSignalStrength}");
+        }
+        [RelayCommand]
+        public async void Getlist()
+        {
+            Console.WriteLine("GUZIK KKLIKKKKKKKKKKKKKKK");
+                    await NetworkManager.GetListRPI();
+
+        }
+        [RelayCommand]
+        public async void Connection()
+        {
+            Console.WriteLine("Klik laczenie");
+            NetworkManager.ConnectRPI("a", "8310R939V");
+            
+        }
+
 
         private void SubESPwifiStrength()
         {
@@ -226,31 +294,50 @@ namespace AvaloniaTest.ViewModels
         }
 
 
+
+
+
+        private StreamGeometry GetNetworkStrengthIcon(double strength)
+        {
+
+            if (strength == 0)
+            {
+                Console.WriteLine("wifi0");
+                return (StreamGeometry)Application.Current.FindResource("NoWifi");
+            }
+            if (strength <= -70)
+            {
+                Console.WriteLine("wifi3");
+               // Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() =>
+               // {
+                    return (StreamGeometry)Application.Current.FindResource("Wifi3");
+              //  });
+            }
+            else if (strength > -70 & strength <= -50)
+            {
+                Console.WriteLine("wifi2");
+                //Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() =>
+               // {
+                    return (StreamGeometry)Application.Current.FindResource("Wifi2");
+               // });
+            }
+            else 
+            {
+                Console.WriteLine("wifi1");
+             //   Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() =>
+               // {
+                    return (StreamGeometry)Application.Current.FindResource("Wifi1");
+                //});
+            }
+
+        }
+
     
         private void OnSubESPwifiStrengthChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (EspNet.Strength <= -70)
-            {
-                Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() =>
-                {
-                    EspNet.StrenghIcon = (StreamGeometry)Application.Current.FindResource("Wifi3");
-                });
-            }
-           else if (EspNet.Strength > -70 & EspNet.Strength <= -50)
-            {
-                Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() =>
-                {
-                    EspNet.StrenghIcon = (StreamGeometry)Application.Current.FindResource("Wifi2");
-                });
-            }
-           else 
-            {
-                Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() =>
-                {
-                    EspNet.StrenghIcon = (StreamGeometry)Application.Current.FindResource("Wifi1");
-                });
-            }
-
+            Console.WriteLine("sila sygnalu");
+            Console.WriteLine(EspNet.Strength);
+            EspNet.StrenghIcon = GetNetworkStrengthIcon(EspNet.Strength);
 
         }
 
@@ -312,6 +399,15 @@ namespace AvaloniaTest.ViewModels
             }
         }
 
+
+
+        private async Task StartUART()
+        {      
+            Task task1 = uart.ReadDataAsync();
+            await Task.WhenAll(task1);
+
+        }
+
         private async void SetLightTheme()
         {
             Console.WriteLine("Motyw jasny");
@@ -348,8 +444,8 @@ namespace AvaloniaTest.ViewModels
         /// </summary>
         public async Task StartDataReading()
         {            
-            Task task1 = inDoorSens.RunReadData();
-            await Task.WhenAll(task1);
+            //Task task1 = inDoorSens.RunReadData();
+            //await Task.WhenAll(task1);
         }
 
 
@@ -389,13 +485,7 @@ namespace AvaloniaTest.ViewModels
             Clock.Instance.UpdateTaskInterval("Clocker", TimeSpan.FromSeconds(1));
         }
 
-        /// <summary>
-        /// Method to start reading WIFI data.
-        /// </summary>
-        public async Task StartWifiReading() {
-            Task t1 = siec.GetWifiList();      
-            await Task.WhenAll(t1);
-        }
+
 
         /// <summary>
         /// Method to change the application theme.
