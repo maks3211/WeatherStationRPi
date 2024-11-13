@@ -297,6 +297,9 @@ private CitySearchListTemplate? _selectedCity;
     {
         WeakReferenceMessenger.Default.Send(new AutoThemeMessage(ApperanceSettings.UseSchduleThemeChange));
         await settingsManager.SaveSettingsAsync("Appearance", ApperanceSettings);
+        Console.WriteLine($"W pogodzie: {WeatherController.UpdateIntervalMinuts}");
+        Console.WriteLine($"W ustawieniach: {WeatherUpdateInterval}");
+        Console.WriteLine(WeatherController.AutoWeatherRefresh);
         if (!WeatherController.AutoWeatherRefresh)
         {
             WeatherController.UpdateIntervalMinuts = 0;
@@ -305,8 +308,10 @@ private CitySearchListTemplate? _selectedCity;
         {
             WeatherController.UpdateIntervalMinuts = WeatherUpdateInterval;
         }
-
+        Console.WriteLine(WeatherController.UpdateIntervalMinuts);
+        Console.WriteLine(!WeatherController.AutoWeatherRefresh);
         await settingsManager.SaveSettingsAsync("Units", UnitSettings);
+        await WeatherController.SaveSettings();
 
     }
    

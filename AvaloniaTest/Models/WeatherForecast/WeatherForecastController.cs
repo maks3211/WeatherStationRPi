@@ -190,7 +190,6 @@ namespace AvaloniaTest.Models.WeatherForecast
           //  APIkey = Settings.ApiKey;
         }
 
-        
 
         public async Task SaveSettings()
         {
@@ -357,16 +356,24 @@ namespace AvaloniaTest.Models.WeatherForecast
             //    string url = string.Format("https://api.openweathermap.org/data/2.5/weather?q=Pszczyna,pl&APPID=13740c980d70f1a49a62b027708cb097");
            // string url = "https://api.openweathermap.org/data/2.5/weather?q=Pszczyna,pl&lang=pl&APPID=13740c980d70f1a49a62b027708cb097";
             string url = string.Format("https://api.openweathermap.org/data/2.5/weather?q={0}&lang=pl&units=metric&APPID={1}",City , Settings.ApiKey);
-            var json = await web.GetStringAsync(url);
-            if (json is  null)
+            try
             {
-                return;
+                var json = await web.GetStringAsync(url);
+                if (json is null)
+                {
+                    return;
+                }
+                CurrentWeather = JsonConvert.DeserializeObject<WeatherForecast.WeatherInfo>(json);
+                TimeZone = CurrentWeather.timezone;
+                CurrentTemperature = (int)Math.Round(UnitsConverter.CalculateTemp(CurrentWeather.main.temp));
+                WeatherDesc = CurrentWeather.weather[0].description.FirstCharToUpper();
+                CurrentIcon = await GetIcon();
             }
-            CurrentWeather = JsonConvert.DeserializeObject<WeatherForecast.WeatherInfo>(json);        
-            TimeZone = CurrentWeather.timezone;
-            CurrentTemperature = (int)Math.Round(UnitsConverter.CalculateTemp(CurrentWeather.main.temp));
-            WeatherDesc = CurrentWeather.weather[0].description.FirstCharToUpper();
-            CurrentIcon = await GetIcon();
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
         }
 
 
@@ -374,30 +381,39 @@ namespace AvaloniaTest.Models.WeatherForecast
         {
             if (City == "") return;
             string url = string.Format("https://api.openweathermap.org/data/2.5/forecast/daily?q={0}&lang=pl&units=metric&APPID={1}", City, Settings.ApiKey);
-            var json = await web.GetStringAsync(url);
-            if (json is null)
+            try
             {
-                return;
-            }
-        //    DailyForecsastInfo i = new DailyForecsastInfo();
-            DailyForecsast = JsonConvert.DeserializeObject<DailyForecsastInfo>(json);
-            bool isRain = false;
-            DailyForecastItems.Clear();
-            foreach (var a in DailyForecsast.list)
-            {
-                var nazwaDzien = TimeConverters.ConvertDayOfWeekToShort(TimeConverters.ConvertDateTimeToDayOfWeek(a.dt, TimeZone));
-                Bitmap icon = await GetBetterIcon(a);
-                int prob = (int)(a.pop * 100);
-                double vol = a.rain ?? 0.0;
-                string day = a.dt.ToString();
-                if (a.pop > 0)
+                var json = await web.GetStringAsync(url);
+                if (json is null)
                 {
-                    isRain = true;
+                    return;
                 }
-                else
-                    isRain = false;
-                DailyForecastItems.Add(new DailyForecastTemplate(nazwaDzien, icon, (int)Math.Round(UnitsConverter.CalculateTemp(a.temp.min)), (int)Math.Round(UnitsConverter.CalculateTemp(a.temp.max)), isRain, prob, vol));
+                //    DailyForecsastInfo i = new DailyForecsastInfo();
+                DailyForecsast = JsonConvert.DeserializeObject<DailyForecsastInfo>(json);
+                bool isRain = false;
+                DailyForecastItems.Clear();
+                foreach (var a in DailyForecsast.list)
+                {
+                    var nazwaDzien = TimeConverters.ConvertDayOfWeekToShort(TimeConverters.ConvertDateTimeToDayOfWeek(a.dt, TimeZone));
+                    Bitmap icon = await GetBetterIcon(a);
+                    int prob = (int)(a.pop * 100);
+                    double vol = a.rain ?? 0.0;
+                    string day = a.dt.ToString();
+                    if (a.pop > 0)
+                    {
+                        isRain = true;
+                    }
+                    else
+                        isRain = false;
+                    DailyForecastItems.Add(new DailyForecastTemplate(nazwaDzien, icon, (int)Math.Round(UnitsConverter.CalculateTemp(a.temp.min)), (int)Math.Round(UnitsConverter.CalculateTemp(a.temp.max)), isRain, prob, vol));
+                }
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+           
 
 
 
@@ -409,48 +425,53 @@ namespace AvaloniaTest.Models.WeatherForecast
             if (City == "") return;
             string w = "https://pro.openweathermap.org/data/2.5/forecast/hourly?q=Pszczyna,pl&lang=pl&appid=13740c980d70f1a49a62b027708cb097";
             string url = string.Format("https://pro.openweathermap.org/data/2.5/forecast/hourly?q={0}&lang=pl&units=metric&APPID={1}", City, Settings.ApiKey);
-          
-            var jsonPogoda = await web.GetStringAsync(url);
-            if (jsonPogoda is null)
-            {
-                return;
-            }
-            Forecast1h = JsonConvert.DeserializeObject<WeatherForecast.HourlyForecastInfo>(jsonPogoda);
-            if (TimeZone == 0)
-            {
-                TimeZone = Forecast1h.city.timezone;    
-            }
-
-            foreach (var a in Forecast1h.list)
-            {           
-                a.dayTime = TimeConverters.ConvertDateTimeToHour(a.dt,TimeZone);
-            }
-
-            bool isRain = false;
-            bool isNextDay = false;
-            HourlyForecastItems.Clear();
-            foreach (var a in Forecast1h.list)
-            {
-                Bitmap icon = await GetBetterIcon(a);
-                if (a.pop > 0)
+            try {
+                var jsonPogoda = await web.GetStringAsync(url);
+                if (jsonPogoda is null)
                 {
-                    isRain = true;
+                    return;
                 }
-                else
-                    isRain = false;
-                if (a.dayTime == "23")
+                Forecast1h = JsonConvert.DeserializeObject<WeatherForecast.HourlyForecastInfo>(jsonPogoda);
+                if (TimeZone == 0)
                 {
-                    isNextDay = true;
-
+                    TimeZone = Forecast1h.city.timezone;
                 }
-                else
-                    isNextDay = false;
-                // a.dt + 86400 -> go to next day 
-                string Currentday = _currentDate.Split('-')[0];
-                MinTemperature = (int)Math.Round(UnitsConverter.CalculateTemp(Forecast1h.GetDailyMinTemp(Currentday)));
-                MaxTemperature = (int)Math.Round(UnitsConverter.CalculateTemp(Forecast1h.GetDailyMaxTemp(Currentday)));
-                HourlyForecastItems.Add(new HourlyForecastTemplate(a.dayTime, icon, (int)Math.Round(UnitsConverter.CalculateTemp(a.main.temp)), (int)(a.pop * 100), 2.0, isRain, isNextDay, TimeConverters.ConvertDayOfWeekToShort(TimeConverters.ConvertDateTimeToDayOfWeek(a.dt + 86400,Forecast1h.city.timezone))));
+
+                foreach (var a in Forecast1h.list)
+                {
+                    a.dayTime = TimeConverters.ConvertDateTimeToHour(a.dt, TimeZone);
+                }
+
+                bool isRain = false;
+                bool isNextDay = false;
+                HourlyForecastItems.Clear();
+                foreach (var a in Forecast1h.list)
+                {
+                    Bitmap icon = await GetBetterIcon(a);
+                    if (a.pop > 0)
+                    {
+                        isRain = true;
+                    }
+                    else
+                        isRain = false;
+                    if (a.dayTime == "23")
+                    {
+                        isNextDay = true;
+
+                    }
+                    else
+                        isNextDay = false;
+                    // a.dt + 86400 -> go to next day 
+                    string Currentday = _currentDate.Split('-')[0];
+                    MinTemperature = (int)Math.Round(UnitsConverter.CalculateTemp(Forecast1h.GetDailyMinTemp(Currentday)));
+                    MaxTemperature = (int)Math.Round(UnitsConverter.CalculateTemp(Forecast1h.GetDailyMaxTemp(Currentday)));
+                    HourlyForecastItems.Add(new HourlyForecastTemplate(a.dayTime, icon, (int)Math.Round(UnitsConverter.CalculateTemp(a.main.temp)), (int)(a.pop * 100), 2.0, isRain, isNextDay, TimeConverters.ConvertDayOfWeekToShort(TimeConverters.ConvertDateTimeToDayOfWeek(a.dt + 86400, Forecast1h.city.timezone))));
+                }
             }
+            catch(Exception ex) {
+                Console.WriteLine(ex.Message);
+            }
+            
         }
 
 
@@ -511,16 +532,24 @@ namespace AvaloniaTest.Models.WeatherForecast
             if (City == "")
                 return;
             string url = string.Format("https://api.openweathermap.org/data/2.5/forecast?q={0}&lang=pl&units=metric&APPID={1}", City, Settings.ApiKey);
-            var jsonPogoda = await web.GetStringAsync(url);
-            if (jsonPogoda is null)
-            {
-                return;
+
+            try {
+                var jsonPogoda = await web.GetStringAsync(url);
+                if (jsonPogoda is null)
+                {
+                    return;
+                }
+                Forecast3h = JsonConvert.DeserializeObject<WeatherForecast.HourlyForecastInfo>(jsonPogoda);
+                // ConvertDateTime(Pogoda.list[0].dt);
+
+
+                //Console.WriteLine("temperatura pogoda: " + Forecast3h.list[0].main.temp);
             }
-             Forecast3h = JsonConvert.DeserializeObject<WeatherForecast.HourlyForecastInfo>(jsonPogoda);
-            // ConvertDateTime(Pogoda.list[0].dt);
-            
-           
-            //Console.WriteLine("temperatura pogoda: " + Forecast3h.list[0].main.temp);
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
         }
 
 
