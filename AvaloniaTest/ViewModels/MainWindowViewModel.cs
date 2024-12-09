@@ -47,56 +47,42 @@ namespace AvaloniaTest.ViewModels
 
         [ObservableProperty]
         public TimeProperties _timeProp = new TimeProperties();
-
-
-
-
-        private ViewModelFactory vMf = new ViewModelFactory();
-        private DataBaseService DataBaseService;
-
         [ObservableProperty]
         private ApperanceSettings _apperanceSettings = new ApperanceSettings();
-
         [ObservableProperty]
         private UnitsSettings _unitSettings = new UnitsSettings();
-
-        private UnitsConverter UnitsCon;
         [ObservableProperty]
         private WeatherSettings _weatherSettings = new WeatherSettings();
-
-
         [ObservableProperty]
         private NetworkManager _networkManager;
 
-
+        private ViewModelFactory vMf = new ViewModelFactory();
+        private DataBaseService DataBaseService;
+        private UnitsConverter UnitsCon;
         private WeatherForecastController WeatherForecastController;
-        public static event EventHandler<string> CurrentPageOpened;
-        public static string CurrentPageSub = "";
-        public static InDoorSensor inDoorSens = new InDoorSensor();
-        public static MQTTcommunication mqqt = new MQTTcommunication();
-        public static UARTcommunication uart;
-        public static string lastPage = "";
-       
-
-
-        private readonly List<ViewModelBase> pages;
-
-
-
+        private readonly SettingsManager settingsManager;
 
         [ObservableProperty]
-        public string _currentPageName = "abc";
-
-
+        public string _currentPageName = "";
         [ObservableProperty]
         public ViewModelBase _currentPage;
+        [ObservableProperty]
+        public OutdoorSensors _outdoorSens;
+        [ObservableProperty]
+        public IndoorSensors _indoorSens;
+        [ObservableProperty]
+        public ESPnetworkData _espNet;
 
+
+        public static string CurrentPageSub = "";
+        public static MQTTcommunication mqqt;
+        public static UARTcommunication uart;
+      
+       
         [ObservableProperty]
         private ListItemTemplate? _selectedListItem;
-
         [ObservableProperty]
         public bool _animationOn = false;
-
         [ObservableProperty]
         public bool _themeBtnVis;
 
@@ -111,12 +97,6 @@ namespace AvaloniaTest.ViewModels
             };
 
 
-
-
-        private readonly SettingsManager settingsManager;
-        private TimeSpan LightThemeTime;
-        private TimeSpan DarkThemeTime;
-
         /// <summary>
         /// Constructor for the MainWindowViewModel class.
         /// </summary>
@@ -128,58 +108,31 @@ namespace AvaloniaTest.ViewModels
             await settingsManager.LoadSettingsAsync("Units", UnitSettings);
             ThemeBtnVis = ApperanceSettings.ThemeButtonVis;
             SetThemeSchedule(ApperanceSettings.UseSchduleThemeChange);
-          
             (ApperanceSettings.LightTheme ? (Action)SetLightTheme : SetDarkTheme)();
-            Console.WriteLine($"ZMIENNA PREVIOUS:  {ApperanceSettings.prevLightTheme}");
-            Console.WriteLine(ApperanceSettings.LightTheme);
-
-
         }
-
-
-
-
-
-        [ObservableProperty]
-        public OutdoorSensors _outdoorSens;
-
-        [ObservableProperty]
-        public IndoorSensors _indoorSens;
-
-        [ObservableProperty]
-        public ESPnetworkData _espNet;
-
 
 
 
         public MainWindowViewModel()
         {
-            _networkManager = new NetworkManager();
-
-
-
+            _networkManager = new NetworkManager();         
             settingsManager = new SettingsManager("ustawienia.json");
             LoadSettings();
             DataBaseService = new DataBaseService();
-
+            mqqt = new MQTTcommunication(DataBaseService);
             UnitsCon = new UnitsConverter(UnitSettings);
 
             OutdoorSens = new OutdoorSensors(DataBaseService, UnitSettings, UnitsCon);
             IndoorSens = new IndoorSensors(DataBaseService, UnitSettings, UnitsCon);
-
-
             WeatherForecastController = new WeatherForecastController(WeatherSettings, settingsManager, UnitsCon, UnitSettings);
-            uart = new UARTcommunication(IndoorSens, "/dev/ttyS0");
+            uart = new UARTcommunication(IndoorSens, "/dev/ttyS0", DataBaseService);
             StartUART();
+
             vMf.DataBaseService = DataBaseService;
             vMf.WeatherController = WeatherForecastController;
             vMf.Settings = settingsManager;
             vMf.ApperanceSettings = ApperanceSettings;
-
             vMf.UnitSettings = UnitSettings;
-
-            Units.GetInstance().Ustaw = UnitSettings;
-            Units.GetInstance().SetSub();
             vMf.TimeProperties = TimeProp;
             vMf.OutdoorSensors = _outdoorSens;
             vMf.IndoorSensors = _indoorSens;
@@ -197,16 +150,7 @@ namespace AvaloniaTest.ViewModels
 
 
             EspNet = ESPnetworkData.GetInstance();
-
-            //timer = new DispatcherTimer();
-            //timer.Interval = TimeSpan.FromSeconds(1);
-            //timer.Start();
-            //StartClock();
-
             CurrentPageSub = "AvaloniaTest.ViewModels.HomePageViewModel";
-            CurrentPageOpened?.Invoke(this, CurrentPageSub ?? "");
-
-            StartDataReading();
             mqqt.Start_Server();
             if (Items.Any())
             {
@@ -219,9 +163,7 @@ namespace AvaloniaTest.ViewModels
             mqqt.AddSensros(OutdoorSens);
             SubESPwifiStrength();
             NetworkManager.GetCurrentNetworkInfo();
-
             NetworkManager.PropertyChanged += NetMan_PropertyChanged;
-
             NetworkManager.StrenghIcon = GetNetworkStrengthIcon(0);
             NetworkManager.NetworkConnected += OnInternetConnected;
         }
@@ -254,37 +196,6 @@ namespace AvaloniaTest.ViewModels
         }
 
       
-
-        [RelayCommand]
-        public void Getssidrpi()
-        {
-            Console.WriteLine("KILK pobieranie aktualnej nazwy sieci");
-            string nazwa = NetworkManager.GetCurrentSsidRPI();
-            Console.WriteLine($"Odczytana nazwa:{nazwa}");
-        }
-        [RelayCommand]
-        public async void Getpassword()
-        {
-            Console.WriteLine("KILK pobieranie aktualnej nazwy sieci i sily sygnalu");
-            var (currentSsid, currentSignalStrength) = await NetworkManager.GetCurrentNetworkInfo();
-            Console.WriteLine($"SSID: {currentSsid}, Siła sygnału: {currentSignalStrength}");
-        }
-        [RelayCommand]
-        public async void Getlist()
-        {
-            Console.WriteLine("GUZIK KKLIKKKKKKKKKKKKKKK");
-                    await NetworkManager.GetListRPI();
-
-        }
-        [RelayCommand]
-        public async void Connection()
-        {
-            Console.WriteLine("Klik laczenie");
-            NetworkManager.ConnectRPI("a", "8310R939V");
-            
-        }
-
-
         private void SubESPwifiStrength()
         {
             if (EspNet.Strength != null)
@@ -294,12 +205,8 @@ namespace AvaloniaTest.ViewModels
         }
 
 
-
-
-
         private StreamGeometry GetNetworkStrengthIcon(double strength)
         {
-
             if (strength == 0)
             {
                 Console.WriteLine("wifi0");
@@ -308,28 +215,19 @@ namespace AvaloniaTest.ViewModels
             if (strength <= -70)
             {
                 Console.WriteLine("wifi3");
-               // Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() =>
-               // {
-                    return (StreamGeometry)Application.Current.FindResource("Wifi3");
-              //  });
+                return (StreamGeometry)Application.Current.FindResource("Wifi3");
+
             }
             else if (strength > -70 & strength <= -50)
             {
                 Console.WriteLine("wifi2");
-                //Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() =>
-               // {
-                    return (StreamGeometry)Application.Current.FindResource("Wifi2");
-               // });
+                return (StreamGeometry)Application.Current.FindResource("Wifi2");
             }
             else 
             {
                 Console.WriteLine("wifi1");
-             //   Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() =>
-               // {
-                    return (StreamGeometry)Application.Current.FindResource("Wifi1");
-                //});
+                return (StreamGeometry)Application.Current.FindResource("Wifi1");
             }
-
         }
 
     
@@ -339,29 +237,6 @@ namespace AvaloniaTest.ViewModels
             Console.WriteLine(EspNet.Strength);
             EspNet.StrenghIcon = GetNetworkStrengthIcon(EspNet.Strength);
 
-        }
-
-
-        //zmiany wszystkich doubli
-        private void SubscribeToPropertyChanges()
-        {
-            // Używamy reflection, aby subskrybować zmiany właściwości we wszystkich obiektach MqttTopic
-            foreach (var property in typeof(OutdoorSensors).GetProperties())
-            {
-                if (property.GetValue(OutdoorSens) is SensorInfo<double> topic)
-                {
-                    topic.PropertyChanged += OnMqttTopicPropertyChanged;
-                }
-            }
-        }
-        //co sie dzieje przy zmianie wszystkich doubli
-        private void OnMqttTopicPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(SensorInfo<string>.DisplayName))
-            {
-                // Odpowiednia reakcja na zmianę wartości
-                Console.WriteLine($"{((SensorInfo<double>)sender).Name} zmieniło się na {((SensorInfo<double>)sender).DisplayName}");
-            }
         }
 
 
@@ -380,13 +255,6 @@ namespace AvaloniaTest.ViewModels
             //
             if (auto)
             {
-                //  TimeOnly l = new(LightThemeTime.Hours, LightThemeTime.Minutes);
-                //  Clock.Instance.AddSpecificTimeTask("AutoLightThemeChange", SetLightTheme, new List<TimeOnly> { l });
-                //
-                //  TimeOnly d = new(DarkThemeTime.Hours, DarkThemeTime.Minutes);
-                //  Clock.Instance.AddSpecificTimeTask("AutoDarkThemeChange", SetDarkTheme, new List<TimeOnly> { d });
-
-
                 TimeOnly moring = new(ApperanceSettings.CustomLightThemeTime?.Hours ?? 6, ApperanceSettings.CustomLightThemeTime?.Minutes ?? 0);
                 TimeOnly night = new(ApperanceSettings.CustomDarkThemeTime?.Hours ?? 20, ApperanceSettings.CustomDarkThemeTime?.Minutes ?? 0);
                 Clock.Instance.AddSpecificTimeTask("AutoLightThemeChange", SetLightTheme, new List<TimeOnly> { moring });
@@ -439,14 +307,7 @@ namespace AvaloniaTest.ViewModels
             await mqqt.Start_Server();
         }
 
-        /// <summary>
-        /// Method to start reading data.
-        /// </summary>
-        public async Task StartDataReading()
-        {            
-            //Task task1 = inDoorSens.RunReadData();
-            //await Task.WhenAll(task1);
-        }
+
 
 
         private readonly Dictionary<Type, ViewModelBase> _viewModelCache = new();
@@ -465,27 +326,11 @@ namespace AvaloniaTest.ViewModels
 
             CurrentPage = instance;
             CurrentPageSub = CurrentPage.ToString();
-
-
-            //CurrentPageOpened?.Invoke(this, CurrentPageSub ?? "");      
-
-
             CurrentPageName = value.Label;
             AnimationOn = true;
-
-
             WeakReferenceMessenger.Default.Send(new ViewActivatedMessages(CurrentPageSub));
         }
        
-
-        [RelayCommand]
-        public void Odczyt()
-        {
-            Console.WriteLine($"Odczyt:");
-            Clock.Instance.UpdateTaskInterval("Clocker", TimeSpan.FromSeconds(1));
-        }
-
-
 
         /// <summary>
         /// Method to change the application theme.
@@ -493,31 +338,27 @@ namespace AvaloniaTest.ViewModels
         [RelayCommand]
         public void ChangeTheme()
         {
+
+            IndoorSens.Humidity.Value = 80;
+            IndoorSens.Pressure.Value = 1001;
+            IndoorSens.CO.Value = 11;
+            IndoorSens.Temperature.Value = 21.23;
+
             App app = (App)Application.Current;
             app.ChangeTheme();
             ApperanceSettings.LightTheme = app.ActualThemeVariant == ThemeVariant.Light;
             Console.WriteLine(ApperanceSettings.LightTheme);
         }
 
-        /// <summary>
-        /// Method to set the default list item.
-        /// </summary>
-        public void SetDefaultItem()
-        {
-            SelectedListItem = Items[0];
-            if (SelectedListItem is not null)
-            {
-                OnSelectedListItemChanged(SelectedListItem);
-            }
-           
-        }
+
 
         /// <summary>
         /// Method to navigate to the settings view.
         /// </summary>
         //KOMENTARZ DO FUNKCJI NAPRAEWIC
         public void handleGoToSettgins()
-        {        
+        {
+            
             var settingsItem = Items.FirstOrDefault(item => item.ModelType == typeof(SettingsViewModel));
             if (settingsItem != null)
             {
@@ -526,9 +367,6 @@ namespace AvaloniaTest.ViewModels
                 {
                     SelectedListItem = Items[index];
                     OnSelectedListItemChanged(SelectedListItem);
-                }
-                else {
-                    Console.WriteLine("juz jest");
                 }
             }
         }

@@ -35,7 +35,7 @@ namespace AvaloniaTest.Views
     {
 
         private HomePageViewModel ViewModel => DataContext as HomePageViewModel;
-        public WeatherForecastViewModel weatherModel;
+      //  public WeatherForecastViewModel weatherModel;
         //private HomePageViewModel viewModel;
 
 

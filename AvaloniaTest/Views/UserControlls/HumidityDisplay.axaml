@@ -32,7 +32,7 @@
                   Stroke="{DynamicResource GreenBorder}"
                   StrokeThickness="9"
                   StrokeDashArray="60"
-                  StrokeDashOffset="{Binding Outdoorhumiditycircle}"
+                  StrokeDashOffset="{Binding OutdoorSensorsProp.Humiditycircle}"
                       >
             <Ellipse.RenderTransform>
               <RotateTransform Angle="270" />
@@ -46,7 +46,7 @@
     Stroke="{DynamicResource FontBlue}"
     StrokeThickness="8.9"
     StrokeDashArray="54"
-    StrokeDashOffset="{Binding Indoorhumiditycircle}"
+    StrokeDashOffset="{Binding IndoorSensorsProp.Humiditycircle}"
                       >
             <Ellipse.RenderTransform>
               <RotateTransform Angle="270" />
@@ -56,7 +56,7 @@
 
           <Image Source="avares://AvaloniaTest/Assets/Images/hygrometer.png" Width="45" Height="45" Margin="-100,-190,0,0" ></Image>
           <StackPanel Margin="100,-155,0,0">
-            <TextBlock Width="65"  Margin="-120,0,0,0" TextAlignment="Right"   Text="{Binding OutdoorSensorsProp.OutdoorHumidity.DisplayName}" FontWeight="DemiBold" FontSize="35" VerticalAlignment="Center">10</TextBlock>
+            <TextBlock Width="65"  Margin="-120,0,0,0" TextAlignment="Right"   Text="{Binding OutdoorSensorsProp.Humidity.DisplayName}" FontWeight="DemiBold" FontSize="35" VerticalAlignment="Center">10</TextBlock>
             <Image Source="avares://AvaloniaTest/Assets/Images/outdoor.png" Margin="-30,-41,0,0" Width="40" Height="40" ></Image>
             <TextBlock   Margin="4,0,0,0" FontWeight="DemiBold" FontSize="35" VerticalAlignment="Center">%</TextBlock>
             <TextBlock Width="65" TextAlignment="Right"  Margin="-120,0,0,0" Text="{Binding IndoorSensorsProp.Humidity.DisplayName}" FontWeight="DemiBold" FontSize="35" VerticalAlignment="Center">100</TextBlock>

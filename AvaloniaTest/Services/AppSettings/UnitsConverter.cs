@@ -27,7 +27,7 @@ namespace AvaloniaTest.Services.AppSettings
 
         public double CalculateTemp(double temp)
         {
-            if (Settings.Temp  == Unit.Fahrenheit)
+            if (Settings.Temp == Unit.Fahrenheit)
             {
                 return Math.Round(temp * 1.8 + 32, 2);
             }
@@ -36,9 +36,6 @@ namespace AvaloniaTest.Services.AppSettings
 
         public double CalculateWind(double speed)
         {
-
-
-
             if (Settings.Wind == Unit.MS)
             {
 

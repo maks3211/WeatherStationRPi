@@ -10,6 +10,7 @@ using AvaloniaTest.ViewModels;
 using CommunityToolkit.Mvvm.ComponentModel;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
@@ -20,44 +21,28 @@ namespace AvaloniaTest.Models
     public partial class OutdoorSensors : ObservableObject
     {
         [ObservableProperty]
-        public SensorInfo<double> _outdoorTemperature;
+        public SensorInfo<double> _temperature;
         [ObservableProperty]
-        public SensorInfo<double> _outdoorPressure;
+        public SensorInfo<double> _pressure;
         [ObservableProperty]
-        public SensorInfo<int> _outdoorAltitude;
+        public SensorInfo<int> _altitude;
         [ObservableProperty]
-        public SensorInfo<double> _outdoorHumidity;
+        public SensorInfo<double> _humidity;
         [ObservableProperty]
-        public SensorInfo<double> _outdoorIlluminance;
+        public SensorInfo<double> _illuminance;
         [ObservableProperty]
-        public SensorInfo<double> _outdoorNO2;
+        public SensorInfo<double> _NO2;
         [ObservableProperty]
-        public SensorInfo<double> _outdoorNH3;
+        public SensorInfo<double> _NH3;
         [ObservableProperty]
-        public SensorInfo<double> _outdoorCO;
-
-        /*  [ObservableProperty]
-          public SensorInfo<double> _wind;
-          [ObservableProperty]
-          public SensorInfo<double> _gust;
-
-          private Queue<double> WindSpeeds = new Queue<double>();
-
-
-          private int GustCounter = 0;*/
-
+        public SensorInfo<double> _CO;
+        [ObservableProperty]
+        public SensorInfo<double> _rain;
         [ObservableProperty]
         public Wind _wind;
-
-
         [ObservableProperty]
         public StreamGeometry _temperatureicon;
-      
-
-
         private double lastTemp;
-
-
         [ObservableProperty]
         public SensorInfo<double> _minTemp;
         [ObservableProperty]
@@ -66,6 +51,24 @@ namespace AvaloniaTest.Models
         public SensorInfo<double> _lastTemp;
 
 
+        [ObservableProperty]
+        public double _humiditycircle = 0;
+
+        public ObservableCollection<string> Preasurecolors { get; } = new()
+        {
+            "#2b2727", "#2d3029", "#2f372b", "#31402d", "#334a30","#355132", "#4dba50"
+        };
+        public ObservableCollection<string> Iluminancecolors { get; } = new()
+        {
+               "#2b2727", "#2d3029", "#2f372b", "#31402d", "#334a30","#355132", "#4dba50"
+        };
+
+        [ObservableProperty]
+        public int _coPosition;
+        [ObservableProperty]
+        public int _no2Position;
+        [ObservableProperty]
+        public int _nh3Position;
 
         private DataBaseService DataBaseService;
 
@@ -81,41 +84,49 @@ namespace AvaloniaTest.Models
             DataBaseService = dataBase;
             Unit = units;
             Converter = convert;
-            OutdoorTemperature = new SensorInfo<double>(
+            Temperature = new SensorInfo<double>(
                 "outdoortemperature",
                 false,
                  () => Unit.Temp,
                 Converter.CalculateTemp
                 );
-            OutdoorTemperature.Value = ErrorValues.DoubleError;
-            OutdoorPressure = new SensorInfo<double>(
+            Temperature.Value = ErrorValues.DoubleError;
+            Pressure = new SensorInfo<double>(
                 "outdoorpressure",
                 true
                 );
 
-            OutdoorHumidity = new SensorInfo<double>("outdoorhumidity",
+            Humidity = new SensorInfo<double>("outdoorhumidity",
                 true
                 );
 
 
-            OutdoorIlluminance = new SensorInfo<double>("outdoorilluminance",true);
-            OutdoorAltitude = new SensorInfo<int>("outdooraltitude");
-            OutdoorCO = new SensorInfo<double>("outdoorCO", true);
-            OutdoorNH3 = new SensorInfo<double>("outdoorNH3", true);
-            OutdoorNO2 = new SensorInfo<double>("outdoorNO2",true);
+            Illuminance = new SensorInfo<double>("outdoorilluminance",true);
+            Altitude = new SensorInfo<int>("outdooraltitude");
+            CO = new SensorInfo<double>("outdoorCO", true);
+            NH3 = new SensorInfo<double>("outdoorNH3", true);
+            NO2 = new SensorInfo<double>("outdoorNO2",true);
             Wind = new Wind(Unit, Converter);
 
-          /*  Wind = new SensorInfo<double>("outdoorwind",
+            Rain = new SensorInfo<double>(
+                "outdoorrain",
                 false,
-                () =>Unit.Wind,
-                Converter.CalculateWind,
-                false);
+                () =>Unit.Rain,
+                null,
+                true
+                );
 
-            Gust = new SensorInfo<double>("outdoorwindgust", false,()=> Unit.Wind, Converter.CalculateWind,false);*/
+            /*  Wind = new SensorInfo<double>("outdoorwind",
+                  false,
+                  () =>Unit.Wind,
+                  Converter.CalculateWind,
+                  false);
 
-           // Wind.PropertyChanged += OnOutdoorWindChanged;
-            OutdoorTemperature.PropertyChanged += OnOutdoorTemperatureChanged;
-           
+              Gust = new SensorInfo<double>("outdoorwindgust", false,()=> Unit.Wind, Converter.CalculateWind,false);*/
+
+            // Wind.PropertyChanged += OnOutdoorWindChanged;
+            Temperature.PropertyChanged += OnOutdoorTemperatureChanged;
+            
 
             MinTemp = new SensorInfo<double>
             (
@@ -144,7 +155,12 @@ namespace AvaloniaTest.Models
 
             Unit.PropertyChanged += Unit_PropertyChanged;
 
-
+            Humidity.PropertyChanged += OnHumidityChanged;
+            Pressure.PropertyChanged += OnPressureChanged;
+            Illuminance.PropertyChanged += OnIlluminanceChanged;
+            CO.PropertyChanged += OnCOChanged;
+            NH3.PropertyChanged += OnNH3Changed;
+            NO2.PropertyChanged += OnNO2Changed;
         }
 
 
@@ -154,7 +170,7 @@ namespace AvaloniaTest.Models
             if (e.PropertyName == nameof(Unit.Temp))
             {
                 Console.WriteLine("Zmieniono jednostkę - wiem o tym w outdoorsensors");
-                OutdoorTemperature.Recalculate();
+                Temperature.Recalculate();
                 MinTemp.Recalculate();
                 MaxTemp.Recalculate();
                 LastTemp.Recalculate();
@@ -164,49 +180,77 @@ namespace AvaloniaTest.Models
                //WindSpeed.Recalculate();
                //Gust.Recalculate();
                 Console.WriteLine("Zmieniono wiatr- odczytano to w klasie OutdoorSensors");
+                
+            }
+            else if (e.PropertyName == nameof(Unit.Rain))
+            {
+                Rain.Recalculate(); 
+            }
+
+        }
+
+        private void OnCOChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(CO.Value)) 
+            { 
+                CoPosition = GraphicsGauges.GetPointPosition(5, 0, 250, CO.Value);
+            }
+        }
+        private void OnNO2Changed(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(NO2.Value))
+            {
+                No2Position = GraphicsGauges.GetPointPosition(15, 0, 10, NO2.Value);
+            }
+        }
+        private void OnNH3Changed(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(NH3.Value))
+            {
+               Nh3Position = GraphicsGauges.GetPointPosition(15, 0, 180, NH3.Value);
+            }
+        }
+        private void OnPressureChanged(object sender, PropertyChangedEventArgs e)
+        {
+         
+            if (e.PropertyName == nameof(Pressure.Value))
+            {
+                  GraphicsGauges.SetBarColors(Pressure.Value, 1054, 960, "out", Preasurecolors);
+            }
+        }
+
+
+        private void OnIlluminanceChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(Illuminance.Value))
+            {
+                GraphicsGauges.SetBarColors(Illuminance.Value, 2000, 0, "out", Iluminancecolors);
+            }
+        }
+
+
+        private void OnHumidityChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(Humidity.Value))
+            {
+                Humiditycircle = GraphicsGauges.GetCircleGaugeValue(Humidity.Value);
             }
         }
 
         private void OnOutdoorTemperatureChanged(object sender, PropertyChangedEventArgs e)
         {
             // Sprawdź, czy zmiana dotyczy wartości
-            if (e.PropertyName == nameof(OutdoorTemperature.Value))
+            if (e.PropertyName == nameof(Temperature.Value))
             {
                 // Tutaj dodaj kod, który ma reagować na zmianę wartości
                //Co robić jeżeli przyjdzie nowa wartość - ustaw co było 24h temu, ikona, ustaw min max
                 SetLastTemp();
-                SetIcon(Temperatureicon, lastTemp, OutdoorTemperature.Value);
+                SetIcon(Temperatureicon, lastTemp, Temperature.Value);
                 SetMinMaxTemp();
             }
         }
 
-/*        private void OnOutdoorWindChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(Wind.Value))
-            {
-                WindSpeeds.Enqueue(Wind.Value);
 
-                if (WindSpeeds.Count > 5)
-                {
-                    WindSpeeds.Dequeue();   
-                }
-                double average = WindSpeeds.Average();
-               
-                if (average + 2 < Wind.Value)
-                {
-                    Gust.Value = Wind.Value;
-                    GustCounter = 0;
-                }
-                
-                else {
-                    GustCounter++;
-                }
-                if (GustCounter == 5) //Jezeli nie ma podmochow od 5 odczytow to 'reset'
-                {
-                    Gust.DisplayName = "-";
-                }
-            }
-        }*/
 
         private void SetLastTemp()
         {
@@ -238,9 +282,9 @@ namespace AvaloniaTest.Models
             }
             else
             {
-                if (min > OutdoorTemperature.Value && OutdoorTemperature.Value != ErrorValues.DoubleError)
+                if (min > Temperature.Value && Temperature.Value != ErrorValues.DoubleError)
                 {
-                    min = OutdoorTemperature.Value;
+                    min = Temperature.Value;
                 }
                 MinTemp.Value = min;
               //  MinTemperature = Converter.CalculateTemp(min).ToString().Replace(",", ".");
@@ -253,9 +297,9 @@ namespace AvaloniaTest.Models
             }
             else
             {
-                if (max < OutdoorTemperature.Value && OutdoorTemperature.Value != ErrorValues.DoubleError)
+                if (max < Temperature.Value && Temperature.Value != ErrorValues.DoubleError)
                 {
-                    max = OutdoorTemperature.Value;
+                    max = Temperature.Value;
                 }
                 MaxTemp.Value = max;
                // MaxTemperature = Converter.CalculateTemp(max).ToString().Replace(",", ".");

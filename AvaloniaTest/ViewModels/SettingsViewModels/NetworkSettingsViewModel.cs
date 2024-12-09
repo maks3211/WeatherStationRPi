@@ -40,8 +40,7 @@ public partial class NetworkSettingsViewModel : ViewModelBase
             if (_passwordbox != value)
             {
                 _passwordbox = value;
-                RaisePropertyChanged(nameof(Passwordbox));
-                // Wywołaj swoją metodę tutaj za każdym razem, gdy zmienia się wartość _passwordbox
+                RaisePropertyChanged(nameof(Passwordbox));           
                 if (value == "")
                 {
                     Connectbuttonvis = false;
@@ -68,7 +67,6 @@ public partial class NetworkSettingsViewModel : ViewModelBase
     [ObservableProperty]
     private NetworkManager _netMan;
     private bool isOpen;
-
 
     public NetworkSettingsViewModel(NetworkManager networkManager)
     {

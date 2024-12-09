@@ -2,11 +2,13 @@
 using AvaloniaTest.Helpers;
 using Google.Protobuf.WellKnownTypes;
 using LiveChartsCore.Defaults;
+using LiveChartsCore.SkiaSharpView.Painting;
 using MySql.Data.MySqlClient;
 using ScottPlot.TickGenerators.TimeUnits;
 using SkiaSharp;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,23 +21,32 @@ namespace AvaloniaTest.Services
         private string connString = "server=sql7.freesqldatabase.com ; uid=sql7733142 ; pwd=BANKMcx6Gt ; database=sql7733142";
         private readonly MySqlConnection connection;
         private MySqlCommand cmd;
-        private  MySqlDataReader reader;
+        //private  MySqlDataReader reader;
         public DataBaseService()
         {
             connection = new MySqlConnection(connString);
-            try
-            {
-                connection.Open();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error connecting to the database: " + ex.Message);
-            }
+           Connect();
         }
 
 
+        public void Connect()
+        {
+            if (connection.State != System.Data.ConnectionState.Open)
+            {
+                try
+                {
+                    connection.Open();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error connecting to the database: " + ex.Message);
+                }
+            }
+        }
+
         public void InsertDataIntoTable(string tableName, DateTime date, double value)
         {
+            Connect();
             try
             {
                 string insertQuery = $"INSERT INTO {tableName} (date, {tableName}) VALUES (@date, @value)";
@@ -52,6 +63,7 @@ namespace AvaloniaTest.Services
 
         public T GetValueFrom24HoursAgo<T>(string tableName)
         {
+            Connect();
             try
             {
                 DateTime targetDateTime = DateTime.Now.AddHours(-24);
@@ -93,6 +105,7 @@ namespace AvaloniaTest.Services
         /// <returns></returns>
         public (T? MinValue, T? MaxValue)  GetTodayMinMaxValue<T>(string tableName)
         {
+            Connect();
             try
             {
                 DateTime today = DateTime.Today; // Początek aktualnego dnia (00:00:00)
@@ -147,6 +160,31 @@ namespace AvaloniaTest.Services
 
         }
 
+
+
+        public void ReadDataFromTable(string location, string tableName, ObservableCollection<DateTimePoint> obs1, ObservableCollection<DateTimePoint> obs2)
+        {
+           Connect();
+           var sensorName = location + tableName;
+            try
+            {
+                string sql = $"SELECT * FROM {sensorName} ORDER BY date ASC";
+                using var cmd = new MySqlCommand(sql, connection);
+                using var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    if (location == "inner")
+                        obs1.Add(new DateTimePoint((DateTime)reader["date"], (double)reader[sensorName]));
+                    else
+                        obs2.Add(new DateTimePoint((DateTime)reader["date"], (double)reader[sensorName]));
+                }
+               
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error while handling with database: " + ex.Message);
+            }
+        }
 
 
 

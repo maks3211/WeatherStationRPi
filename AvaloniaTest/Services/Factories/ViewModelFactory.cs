@@ -36,7 +36,7 @@ namespace AvaloniaTest.Services.Factories
             }
             else if (viewModelType == typeof(ChartViewModel))
             {
-                return new ChartViewModel();
+                return new ChartViewModel(DataBaseService);
             }
             else if (viewModelType == typeof(GeneralSettingsViewModel))
             {

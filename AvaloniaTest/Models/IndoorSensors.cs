@@ -12,6 +12,7 @@ using System.ComponentModel;
 using AvaloniaTest.Services.Enums;
 using Avalonia.Controls;
 using AvaloniaTest.Helpers;
+using System.Collections.ObjectModel;
 
 namespace AvaloniaTest.Models
 {
@@ -33,7 +34,7 @@ namespace AvaloniaTest.Models
         public SensorInfo<double> _illuminance;
 
         [ObservableProperty]
-        public SensorInfo<double> _co;
+        public SensorInfo<double> _CO;
 
         [ObservableProperty]
         public StreamGeometry _tempIcon;
@@ -46,6 +47,21 @@ namespace AvaloniaTest.Models
         [ObservableProperty]
         public SensorInfo<double> _lastTemp;
         private double lastTemp;
+
+        [ObservableProperty]
+        public double _humiditycircle = 0;
+
+        public ObservableCollection<string> Preasurecolors { get; } = new()
+        {
+            "#322c19", "#3d341a", "#534317", "#675114", "#795d12", "#8f6d0f", "#ffbc00"
+        };
+        public ObservableCollection<string> Iluminancecolors { get; } = new()
+        {
+             "#322c19", "#3d341a", "#534317", "#675114", "#795d12", "#8f6d0f", "#ffbc00"
+        };
+
+        [ObservableProperty]
+        public int _coPosition;
 
 
         private DataBaseService DataBaseService;
@@ -81,7 +97,7 @@ namespace AvaloniaTest.Models
                 );
             Altitude = new SensorInfo<int>("indooraltitude");
             Illuminance = new SensorInfo<double>("indoorilluminance");
-            Co = new SensorInfo<double>("indoorCO", true);
+            CO = new SensorInfo<double>("indoorCO", true);
 
 
             MinTemp = new SensorInfo<double>
@@ -111,9 +127,51 @@ namespace AvaloniaTest.Models
             SetMinMaxTemp();
             SetLastTemp();
             Unit.PropertyChanged += Unit_PropertyChanged;
+            Humidity.PropertyChanged += OnHumidityChanged;
+            Pressure.PropertyChanged += OnPressureChanged;
+            Illuminance.PropertyChanged += OnIlluminanceChanged;
+            CO.PropertyChanged += OnCOChanged;
 
-            
         }
+
+        private void OnCOChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(CO.Value))
+            {
+                CoPosition = GraphicsGauges.GetPointPosition(5, 0, 250, CO.Value);
+            }
+        }
+
+
+        private void OnPressureChanged(object sender, PropertyChangedEventArgs e)
+        {
+
+            if (e.PropertyName == nameof(Pressure.Value))
+            {
+                GraphicsGauges.SetBarColors(Pressure.Value, 1054, 960, "in", Preasurecolors);
+            }
+        }
+
+
+        private void OnIlluminanceChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(Illuminance.Value))
+            {
+                GraphicsGauges.SetBarColors(Illuminance.Value, 2000, 0, "in", Iluminancecolors);
+            }
+        }
+
+
+        private void OnHumidityChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(Humidity.Value))
+            {
+                Humiditycircle = GraphicsGauges.GetCircleGaugeValue(Humidity.Value);
+            }
+        }
+
+
+
 
         private void Unit_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {

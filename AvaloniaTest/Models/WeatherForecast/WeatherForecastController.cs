@@ -39,9 +39,6 @@ namespace AvaloniaTest.Models.WeatherForecast
         [ObservableProperty]
         public string _city;
 
-      //  private float lon;
-     //   private float lat;
-
         [ObservableProperty]
         private Bitmap _currentIcon;
 
@@ -75,6 +72,8 @@ namespace AvaloniaTest.Models.WeatherForecast
         public bool _httpSucces;
 
         private UnitsConverter UnitsConverter;
+
+       
         private UnitsSettings Units;
        // private static WeatherForecastController _instance;
 
@@ -86,26 +85,14 @@ namespace AvaloniaTest.Models.WeatherForecast
 
         partial void OnCityChanged(string? value)
         {
-            Console.WriteLine("Zmieniono miasto!!");
             GetAllData();
-
         }
 
 
         private HttpClient web;
-        // private readonly string APIkey = "13740c980d70f1a49a62b027708cb097";
-
-
-       // [ObservableProperty]
-      //  private string _aPIkey;
-
-
         //private readonly string APIkey = "18dede3a5891aa7f0c4f991203e451c0"; kod z neta
 
-     
-        //
 
-       // public string city = "Pszczyna";
         public WeatherInfo CurrentWeather;
         public HourlyForecastInfo Forecast3h;
         public HourlyForecastInfo Forecast1h;
@@ -115,19 +102,7 @@ namespace AvaloniaTest.Models.WeatherForecast
         private Dictionary<string, Bitmap> _iconCache = new Dictionary<string, Bitmap>();
         public long TimeZone;
 
-     /*   public static WeatherForecastController GetInstance()
-        {
-            if (_instance == null)
-            {
-                _instance = new WeatherForecastController();
-            }
-            return _instance;
-        }*/
-
-
-
-        
-
+       
         public DailyForecsastInfo GetDailyForecastdwa()
         {
             if (DailyForecsast == null)
@@ -143,30 +118,24 @@ namespace AvaloniaTest.Models.WeatherForecast
             SettingsMan = settingsManager;
             UnitsConverter = unitConverter;
             Units = units;
-
-      
-
-
             web = new HttpClient();
-/*            WeakReferenceMessenger.Default.Register<UnitChangedMessage>(this, (r, m) =>
-            {
-                UpdateUnits();
-            });*/
 
             LoadAllData();
-
-
             Clock.Instance.AddTask("autoWeather",GetAllData,TimeSpan.FromMinutes(Settings.RefreshInterval));
             Units.PropertyChanged += Units_PropertyChanged;
         }
 
         private void Units_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {   
-            if (e.PropertyName == nameof(Units.Temp))
-            {
-                if (!isFirstLoad)
+        {
+            if (!isFirstLoad)
+            { 
+                if (e.PropertyName == nameof(Units.Temp) || e.PropertyName == nameof(Units.Rain) )
                 {
-                    UpdateUnits();
+                    UpdateTempUnits();  
+                }
+                if (e.PropertyName == nameof(Units.Rain))
+                {
+                    UpdateRainUnit();
                 }
             }
         }
@@ -183,11 +152,7 @@ namespace AvaloniaTest.Models.WeatherForecast
         {
             await SettingsMan.LoadSettingsAsync("Weather", Settings);
             UpdateIntervalMinuts = Settings.RefreshInterval;
-
             AutoWeatherRefresh = !(UpdateIntervalMinuts == 0);
-          //  lat = Settings.Latitude;
-          //  lon = Settings.Longitude;
-          //  APIkey = Settings.ApiKey;
         }
 
 
@@ -217,7 +182,22 @@ namespace AvaloniaTest.Models.WeatherForecast
             await Get1hForecast();
             await GetDailyhForecast();
         }
-        private void UpdateUnits()
+
+        private void UpdateRainUnit()
+        {
+            foreach (var a in HourlyForecastItems)
+            {
+                a.RainUnit = Units.Rain;
+            }           
+            foreach (var a in DailyForecastItems)
+            {
+                a.RainUnit = Units.Rain;
+            }
+        }
+
+
+
+        private void UpdateTempUnits()
         {
             if (UnitsConverter == null)
                 return;
@@ -235,7 +215,6 @@ namespace AvaloniaTest.Models.WeatherForecast
             i = 0;
             foreach (var a in DailyForecsast.list)
             {
-
                 DailyForecastItems[i].MinTemp = (int)Math.Round(UnitsConverter.CalculateTemp(a.temp.min));
                 DailyForecastItems[i].MaxTemp = (int)Math.Round(UnitsConverter.CalculateTemp(a.temp.max));
                 i++;
@@ -246,48 +225,6 @@ namespace AvaloniaTest.Models.WeatherForecast
         public async Task CheckAPIkey()
         {
             
-        }
-
-   
-
-
-        public async Task SetNewCitys(float lon, float lat)
-        {
-           
-            string url = string.Format("https://api.openweathermap.org/data/2.5/weather?lat={0}&lon={1}&lang=pl&units=metric&APPID={2}", lat, lon, Settings.ApiKey);
-
-           
-                // Utworzenie żądania
-                var request = new HttpRequestMessage(HttpMethod.Get, url);
-                var response = await web.SendAsync(request);
-                    HttpSucces = response.IsSuccessStatusCode;
-                // Sprawdzenie, czy odpowiedź jest sukcesem
-                if (!HttpSucces)
-                {
-                    string errorContent = await response.Content.ReadAsStringAsync();
-                    JObject errorObject = JObject.Parse(errorContent);
-                    string errorMessage = errorObject["message"]?.ToString();
-                    int cod = (int)errorObject["cod"];
-                    Console.WriteLine($"Błąd API: {cod} - {errorMessage}");
-                if (cod == 401)
-                {
-                    City = "Błędny kod API";
-                }
-                    return;
-                }
-
-                // Jeśli odpowiedź jest sukcesem, odczytaj zawartość
-                var json = await response.Content.ReadAsStringAsync();
-                JObject jsonObject = JObject.Parse(json);
-
-                string cityName = jsonObject["name"]?.ToString();
-                if (cityName is null) return;
-
-                City = cityName;
-                Settings.Latitude = lat;
-                Settings.Longitude = lon;
-                await SaveSettings();
-   
         }
 
         public async Task SetNewerCitys(float lon, float lat)
@@ -398,25 +335,24 @@ namespace AvaloniaTest.Models.WeatherForecast
                     Bitmap icon = await GetBetterIcon(a);
                     int prob = (int)(a.pop * 100);
                     double vol = a.rain ?? 0.0;
+                  
                     string day = a.dt.ToString();
                     if (a.pop > 0)
                     {
                         isRain = true;
                     }
                     else
-                        isRain = false;
-                    DailyForecastItems.Add(new DailyForecastTemplate(nazwaDzien, icon, (int)Math.Round(UnitsConverter.CalculateTemp(a.temp.min)), (int)Math.Round(UnitsConverter.CalculateTemp(a.temp.max)), isRain, prob, vol));
+                    {
+                        isRain = false; 
+                    }
+
+                    DailyForecastItems.Add(new DailyForecastTemplate(nazwaDzien, icon, (int)Math.Round(UnitsConverter.CalculateTemp(a.temp.min)), (int)Math.Round(UnitsConverter.CalculateTemp(a.temp.max)), isRain, prob, vol,Units.Rain));
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
             }
-
-           
-
-
-
         }
 
 
@@ -465,7 +401,8 @@ namespace AvaloniaTest.Models.WeatherForecast
                     string Currentday = _currentDate.Split('-')[0];
                     MinTemperature = (int)Math.Round(UnitsConverter.CalculateTemp(Forecast1h.GetDailyMinTemp(Currentday)));
                     MaxTemperature = (int)Math.Round(UnitsConverter.CalculateTemp(Forecast1h.GetDailyMaxTemp(Currentday)));
-                    HourlyForecastItems.Add(new HourlyForecastTemplate(a.dayTime, icon, (int)Math.Round(UnitsConverter.CalculateTemp(a.main.temp)), (int)(a.pop * 100), 2.0, isRain, isNextDay, TimeConverters.ConvertDayOfWeekToShort(TimeConverters.ConvertDateTimeToDayOfWeek(a.dt + 86400, Forecast1h.city.timezone))));
+                   
+                    HourlyForecastItems.Add(new HourlyForecastTemplate(a.dayTime, icon, (int)Math.Round(UnitsConverter.CalculateTemp(a.main.temp)), (int)(a.pop * 100), 2.0, Units.Rain, isRain, isNextDay, TimeConverters.ConvertDayOfWeekToShort(TimeConverters.ConvertDateTimeToDayOfWeek(a.dt + 86400, Forecast1h.city.timezone))));
                 }
             }
             catch(Exception ex) {
@@ -578,24 +515,37 @@ namespace AvaloniaTest.Models.WeatherForecast
         {
             if (list.weather.Count() == 0)
                 return null;
+
             var name = list.weather[0].icon;
+
             if (_iconCache.ContainsKey(name))
             {
                 return _iconCache[name];
             }
+
             try
             {
                 using (HttpClient client = new HttpClient())
-                {          
-                    var imageStream = await client.GetStreamAsync($"https://openweathermap.org/img/wn/{name}@2x.png");
+                {
+                    var response = await client.GetAsync($"https://openweathermap.org/img/wn/{name}@2x.png");
+
+                    // Sprawdzenie, czy odpowiedź była pomyślna
+                    if (!response.IsSuccessStatusCode)
+                    {
+                       // Console.WriteLine($"nie udało sieFailed to load image, status code: {response.StatusCode}");
+                        return null;
+                    }
+
+                    var imageStream = await response.Content.ReadAsStreamAsync();
+
                     using (MemoryStream ms = new MemoryStream())
                     {
                         await imageStream.CopyToAsync(ms);
                         ms.Position = 0;
-                      
+
                         Bitmap bitmap = new Bitmap(ms);
                         _iconCache[name] = bitmap;
-                    
+
                         return bitmap;
                     }
                 }
@@ -605,7 +555,6 @@ namespace AvaloniaTest.Models.WeatherForecast
                 Console.WriteLine($"Failed to load image from URL: {ex.Message}");
                 return null;
             }
-
         }
 
 
@@ -645,13 +594,17 @@ namespace AvaloniaTest.Models.WeatherForecast
         public bool IsRain { get; }
         public int PrecipitationProb { get; }
         public double RainVol { get; }
+        public string RainUnit{ get; set; }
 
-        protected ForecastBase(Bitmap icon, bool isRain, int precipitationProb, double rainVol)
+
+
+        protected ForecastBase(Bitmap icon, bool isRain, int precipitationProb, double rainVol, string rainUnit)
         {
             Icon = icon;
             IsRain = isRain;
             PrecipitationProb = precipitationProb;
             RainVol = rainVol;
+            RainUnit = rainUnit;
         }
     }
 
@@ -668,15 +621,17 @@ namespace AvaloniaTest.Models.WeatherForecast
             int temperature,
             int precipitationProb,
             double rainVol,
+            string rainUnit,
             bool isRain,
             bool isNextDay,
             string nextDay)
-            : base(icon, isRain, precipitationProb, rainVol)
+            : base(icon, isRain, precipitationProb, rainVol, rainUnit)
         {
             HourTime = hourTime;
             Temperature = temperature;
             IsNextDay = isNextDay;
             NextDay = nextDay;
+           
         }
     }
 
@@ -693,8 +648,9 @@ namespace AvaloniaTest.Models.WeatherForecast
             int maxTemp,
             bool isRain,
             int precipitationProb,
-            double rainVol)
-            : base(icon, isRain, precipitationProb, rainVol)
+            double rainVol,
+            string rainUnit)
+            : base(icon, isRain, precipitationProb, rainVol,rainUnit)
         {
             Day = day;
             MinTemp = minTemp;

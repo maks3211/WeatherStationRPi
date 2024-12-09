@@ -40,9 +40,9 @@
          HorizontalAlignment="Center"
          Width="1024"
          Height="470">
-        <local:AltitudeDisplay    Canvas.Top="10" Canvas.Left="10"/>
-        <local:IlluminanceDisplay Canvas.Top="10" Canvas.Left="263.5"/>
-        <local:GasesDisplay       Canvas.Top="10" Canvas.Left="517"/>
+          <!-- <local:AltitudeDisplay    Canvas.Top="10" Canvas.Left="10"/> -->
+        <local:IlluminanceDisplay Canvas.Top="10" Canvas.Left="10"/> <!--bylo left na 236.5-->
+        <local:GasesDisplay       Canvas.Top="10" Canvas.Left="290.5"/> <!--bylo left na 517-->
         </Canvas>
       </Viewbox>
     </Carousel>

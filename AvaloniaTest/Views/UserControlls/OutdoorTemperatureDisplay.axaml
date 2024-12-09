@@ -27,7 +27,7 @@
         <Rectangle Height="2" Width="243.5" Fill="{DynamicResource BorderColor}" Margin="0,10,0,0"></Rectangle>
         <StackPanel Orientation="Horizontal">
           <Image Source="avares://AvaloniaTest/Assets/Images/temperatureOut.png" Width="50" Height="50" Margin="-6,10,0,0" ></Image>
-          <TextBlock  Width="145" Text="{Binding OutdoorSensorsProp.OutdoorTemperature.DisplayName}"
+          <TextBlock  Width="145" Text="{Binding OutdoorSensorsProp.Temperature.DisplayName}"
                      FontWeight="DemiBold"
                      FontSize="35"
                      VerticalAlignment="Center"

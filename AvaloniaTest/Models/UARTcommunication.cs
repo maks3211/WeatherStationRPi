@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AvaloniaTest.Services;
+using System;
 using System.Collections.Generic;
 using System.IO.Ports;
 using System.Linq;
@@ -14,11 +15,13 @@ namespace AvaloniaTest.Models
         private SerialPort serialPort;
         private const int baudRate = 9600;
         private bool isOpen = false;
-
-        public UARTcommunication(IndoorSensors indoorSensors, string portName)
+        private DataBaseService dataBase;
+        private DateTime currentDateTime;
+        public UARTcommunication(IndoorSensors indoorSensors, string portName, DataBaseService database)
         {
             sensors = indoorSensors;
             serialPort = new SerialPort(portName, baudRate);
+            dataBase = database;
         }
 
 
@@ -46,7 +49,7 @@ namespace AvaloniaTest.Models
 
         public async Task ReadDataAsync()
         {
-
+         
             try
             {
                Open();
@@ -54,6 +57,7 @@ namespace AvaloniaTest.Models
             catch (Exception ex)
             {
                 Console.WriteLine($"{ex.Message}");
+
             }
             while (isOpen)
             {
@@ -64,11 +68,13 @@ namespace AvaloniaTest.Models
                         string line = serialPort.ReadLine(); // Odczyt jednej linii z portu szeregowego
                         string secondLine = line.Trim(); // Usunięcie znaków końca linii
                         string[] parts = line.Split('<');
+                        currentDateTime = DateTime.Now;
                         if (parts.Length >= 5)
                         {
                             if (double.TryParse(parts[0].Replace("-C", ""), out double temperature))
                             {
                                 sensors.Temperature.Value = temperature;
+                                dataBase.InsertDataIntoTable("innerTemperature", currentDateTime, temperature);
                             }
 
                             // Odczytanie i aktualizacja wilgotności
@@ -90,7 +96,7 @@ namespace AvaloniaTest.Models
                             }
                             if (int.TryParse(parts[4].Replace("-ppm", ""), out int co))
                             {
-                                sensors.Co.Value = co;
+                                sensors.CO.Value = co;
                             }
 
                         }

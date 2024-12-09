@@ -30,7 +30,7 @@
         <Image Source="avares://AvaloniaTest/Assets/Images/raingauge.png" Margin="0,-40,190,-55" Width="55" Height="55" ></Image>
         <StackPanel Spacing="-6">
           <TextBlock Margin="0,6,0,0" FontSize="18" HorizontalAlignment="Center">Chwilowo:</TextBlock>
-          <TextBlock  FontWeight="DemiBold" HorizontalAlignment="Center" FontSize="30">1mm</TextBlock>
+          <TextBlock  FontWeight="DemiBold" HorizontalAlignment="Center" FontSize="30" Text="{Binding OutdoorSensorsProp.Rain.DisplayName}"></TextBlock>
         </StackPanel>
 
       </StackPanel>

@@ -103,7 +103,7 @@
   BorderThickness="4"
   CornerRadius="5"
               >
-            <ToggleSwitch  Command="{Binding AutoThemeSwitchCommand}" IsChecked="{Binding ApperanceSettings.UseSchduleThemeChange}" OnContent="Wł" OffContent="Wył"/>
+            <ToggleSwitch  IsChecked="{Binding ApperanceSettings.UseSchduleThemeChange}" OnContent="Wł" OffContent="Wył"/>
            </Border>
 
               <StackPanel Name="ScheduleGroup" IsVisible="{Binding ApperanceSettings.UseSchduleThemeChange}">
@@ -113,8 +113,8 @@
                   BorderThickness="4"
                   CornerRadius="5">
                   <StackPanel>
-                    <RadioButton Command="{Binding AutoThemeCommand}" IsChecked="{Binding !ApperanceSettings.CustomTimeThemeChange}" GroupName="SchduleThemeGroup" Name="AutoTheme">Od zmroku do świtu</RadioButton>
-                    <RadioButton Command="{Binding CustomThemeCommand}" IsChecked="{Binding ApperanceSettings.CustomTimeThemeChange}" GroupName="SchduleThemeGroup"  Name="ScheduleTheme">Harmonogram własny</RadioButton>
+                    <RadioButton  Command="{Binding AutoThemeCommand}" IsChecked="{Binding !ApperanceSettings.CustomTimeThemeChange}" GroupName="SchduleThemeGroup" Name="AutoTheme">Od zmroku do świtu</RadioButton>
+                    <RadioButton  IsChecked="{Binding ApperanceSettings.CustomTimeThemeChange}" GroupName="SchduleThemeGroup"  Name="ScheduleTheme">Harmonogram własny</RadioButton>
                   </StackPanel>
                 </Border>
               <StackPanel Orientation="Horizontal" Spacing="5" Name="CustomScheduleGroup"  IsVisible="{Binding ApperanceSettings.CustomTimeThemeChange}">

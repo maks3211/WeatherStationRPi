@@ -24,8 +24,6 @@ public partial class SettingsViewModel : ViewModelBase
 {
     private ViewModelFactory vMf;
     private readonly Dictionary<Type, ViewModelBase> _viewModelCache = new();
-
-
     public static event EventHandler<string> CurrentSettingsOpen;
     public static string CurrentSettingsSub = "";
 
@@ -34,12 +32,6 @@ public partial class SettingsViewModel : ViewModelBase
     
     [ObservableProperty]
     private SettingsListTemplate? _selectedSettings;
-
-
-
-
-
-  
 
     /// <summary>
     /// Constructor for the SettingsViewModel class.
@@ -77,14 +69,9 @@ public partial class SettingsViewModel : ViewModelBase
      
         if (MainWindowViewModel.CurrentPageSub == "AvaloniaTest.ViewModels.SettingsViewModel")
         {
-            Console.WriteLine("-----------WSZYSKTIE USTAWIENIA---------------");
             CurrentSettingsSub = Currentsettingspage?.ToString() ?? "AvaloniaTest.ViewModels.GeneralSettingsViewModel";
-
-           // Currentsettingspage ??= new GeneralSettingsViewModel();
-
             CurrentSettingsOpen?.Invoke(this, CurrentSettingsSub ?? "");
-
-            
+         
         }
         else
         {
@@ -92,7 +79,7 @@ public partial class SettingsViewModel : ViewModelBase
             CurrentSettingsSub = "AvaloniaTest.ViewModels";
              CurrentSettingsOpen?.Invoke(this, CurrentSettingsSub ?? "");
            // CurrentSettingsOpen?.Invoke(this, "");
-            MainWindowViewModel.CurrentPageOpened -= ViewModel_Activated;
+         
         }
 
     }

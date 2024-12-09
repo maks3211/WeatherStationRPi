@@ -23,6 +23,7 @@ using System.Collections.ObjectModel;
 using System.Xml.Linq;
 using LiveChartsCore.SkiaSharpView.Painting.Effects;
 using ScottPlot.Statistics;
+using AvaloniaTest.Services;
 
 
 
@@ -39,9 +40,44 @@ namespace AvaloniaTest.ViewModels
         MySqlCommand cmd;
         MySqlDataReader reader;
         string sensorName;
-
         private readonly ObservableCollection<DateTimePoint> observableValues;
         private readonly ObservableCollection<DateTimePoint> observableValues2;
+        DataBaseService dataBase;
+
+        /// <summary>
+        /// Constructor for ChartViewModel.
+        /// </summary>
+        public ChartViewModel(DataBaseService database)
+        {
+            observableValues = new ObservableCollection<DateTimePoint> { };
+            observableValues2 = new ObservableCollection<DateTimePoint> { };
+            dataBase = database;
+            Series = new ObservableCollection<ISeries>
+            {
+                new LineSeries<DateTimePoint>
+                {
+                    Name = "czujnik wewnętrzny",
+                    Values = observableValues,
+                    Fill = null,
+                    LineSmoothness = 1,
+                    Stroke = new SolidColorPaint(SKColors.Blue, 6),
+                    GeometrySize = 0,
+                    GeometryStroke = null
+                },
+                new LineSeries<DateTimePoint>
+                {
+                    Name = "czujnik zewnętrzny",
+                    Values = observableValues2,
+                    Fill = null,
+                    LineSmoothness = 1,
+                    Stroke = new SolidColorPaint(SKColors.CornflowerBlue, 6),
+                    GeometrySize = 0,
+                    GeometryStroke = null
+                }
+            };
+        }
+
+
         /// <summary>
         /// Collection of trends to be displayed on the chart.
         /// </summary>
@@ -158,54 +194,7 @@ namespace AvaloniaTest.ViewModels
         }
 
 
-        /// <summary>
-        /// Constructor for ChartViewModel.
-        /// Creating object we connect with database.
-        /// </summary>
-        public ChartViewModel()
-        {
-            observableValues = new ObservableCollection<DateTimePoint> {};
-            observableValues2 = new ObservableCollection<DateTimePoint> { };
 
-            Series = new ObservableCollection<ISeries>
-            {
-                new LineSeries<DateTimePoint>
-                {
-                    Name = "czujnik wewnętrzny",
-                    Values = observableValues,
-                    Fill = null,
-                    LineSmoothness = 1,
-                    Stroke = new SolidColorPaint(SKColors.Blue, 6),
-                    GeometrySize = 0,
-                    GeometryStroke = null
-                },
-                new LineSeries<DateTimePoint>
-                {
-                    Name = "czujnik zewnętrzny",
-                    Values = observableValues2,
-                    Fill = null,
-                    LineSmoothness = 1,
-                    Stroke = new SolidColorPaint(SKColors.CornflowerBlue, 6),
-                    GeometrySize = 0,
-                    GeometryStroke = null
-               
-                }
-            };
-
-            try
-            {
-               // string connString = "server=sql11.freesqldatabase.com ; uid=sql11704729 ; pwd=89jVjCtqzd ; database=sql11704729";
-                string connString = "server=sql7.freesqldatabase.com ; uid=sql7733142 ; pwd=BANKMcx6Gt ; database=sql7733142";
-                con = new MySqlConnection();
-                con.ConnectionString = connString;
-                con.Open();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error connecting to the database: " + ex.Message);
-            }
-
-        }
 
         /// <summary>
         /// Reads data from the specified table and updates the chart.
@@ -223,44 +212,7 @@ namespace AvaloniaTest.ViewModels
                 axis.Name = axisName;
                 axis.NamePaint = new SolidColorPaint(SKColors.Black);
             }
-            sensorName = location + tableName;
-            if (con.State != System.Data.ConnectionState.Open)
-            {
-                try
-                {
-                    //  string connString = "server=sql11.freesqldatabase.com ; uid=sql11704729 ; pwd=89jVjCtqzd ; database=sql11704729";
-                    string connString = "server=sql7.freesqldatabase.com ; uid=sql7733142 ; pwd=BANKMcx6Gt ; database=sql7733142";
-                    con = new MySqlConnection();
-                    con.ConnectionString = connString;
-                    con.Open();
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Error connecting to the database: " + ex.Message);
-                }
-            }
-            else
-            {
-                try
-                {
-                    string sql = $"SELECT * FROM {sensorName} ORDER BY date ASC";
-                    cmd = new MySqlCommand(sql, con);
-                    reader = cmd.ExecuteReader();
-                    while (reader.Read())
-                    {
-                        if (location == "inner")
-                            observableValues.Add(new DateTimePoint((DateTime)reader["date"], (double)reader[sensorName]));
-                        else
-                            observableValues2.Add(new DateTimePoint((DateTime)reader["date"], (double)reader[sensorName]));
-                    }
-                    reader.Close();
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Error while handling with database: " + ex.Message);
-                }
-
-            }
+            dataBase.ReadDataFromTable(location, tableName, observableValues, observableValues2);
         }
 
 

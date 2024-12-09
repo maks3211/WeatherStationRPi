@@ -17,7 +17,7 @@ using Avalonia.Controls;
 //using System.Device.Gpio;
 
 
-//DODAC ODCZYTYWANIE Z ARDUINO JASNOSCI ORAZ CO!!!!!!!!!!
+//KLASA DO USUNIECIA - TERAZ PODZIELONE JEST NA UARTCOM I INDOORSENSORS
 
 
 namespace AvaloniaTest.Models

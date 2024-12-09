@@ -132,7 +132,7 @@ namespace AvaloniaTest.Services
                     // Użycie wyrażenia regularnego do dopasowania dokładnego SSID
                     if (Regex.IsMatch(line, $@"ssid=""{Regex.Escape(ssid)}"""))
                     {
-                        inNetworkBlock = true; // Zaczynamy blok sieci
+                        inNetworkBlock = true; 
                     }
                     else if (inNetworkBlock && line.Trim().StartsWith("psk="))
                     {

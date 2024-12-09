@@ -25,9 +25,9 @@
       <Canvas>
         <Image Canvas.Left="-12.5" Canvas.Top="6" Source="avares://AvaloniaTest/Assets/Images/indoor.png" Width="40" Height="40" ></Image>
         <TextBlock Text="CO" Canvas.Top="5" Canvas.Left="20"></TextBlock>
-        <TextBlock Text="{Binding IndoorSensorsProp.Co.DisplayName}" Canvas.Top="25" Canvas.Left="20"></TextBlock>
+        <TextBlock Text="{Binding IndoorSensorsProp.CO.DisplayName}" Canvas.Top="25" Canvas.Left="20"></TextBlock>
         <Image Canvas.Left="15" Canvas.Top="5" Source="avares://AvaloniaTest/Assets/Images/starp.png"  Width="150" Height="100" ></Image>
-        <Ellipse Canvas.Left="{Binding Indoorcocircle}" Canvas.Top="47" Width="16" Height="16"  Stroke="{DynamicResource BackGroundLight}" StrokeThickness="4" Fill="White" />
+        <Ellipse Canvas.Left="{Binding IndoorSensorsProp.CoPosition}" Canvas.Top="47" Width="16" Height="16"  Stroke="{DynamicResource BackGroundLight}" StrokeThickness="4" Fill="White" />
 
 
         <Line Canvas.Top="1" Canvas.Left="190" StartPoint="0,0" EndPoint="0,78"  Stroke="{DynamicResource LightBorderColor}" StrokeThickness="2" StrokeDashArray="3"/>
@@ -35,29 +35,29 @@
 
 
         <TextBlock Text="CO" Canvas.Top="85" Canvas.Left="20"></TextBlock>
-        <TextBlock Text="{Binding OutdoorSensorsProp.OutdoorCO.DisplayName}" Canvas.Top="105" Canvas.Left="20"></TextBlock>
+        <TextBlock Text="{Binding OutdoorSensorsProp.CO.DisplayName}" Canvas.Top="105" Canvas.Left="20"></TextBlock>
         <Image Canvas.Left="15" Canvas.Top="85" Source="avares://AvaloniaTest/Assets/Images/starp.png"  Width="150" Height="100" ></Image>
-        <Ellipse Canvas.Left="{Binding Outdoorcocircle}" Canvas.Top="127" Width="16" Height="16"  Stroke="{DynamicResource BackGroundLight}" StrokeThickness="4" Fill="White" />
+        <Ellipse Canvas.Left="{Binding OutdoorSensorsProp.CoPosition}" Canvas.Top="127" Width="16" Height="16"  Stroke="{DynamicResource BackGroundLight}" StrokeThickness="4" Fill="White" />
 
 
         <TextBlock Text="NH3" Canvas.Top="5" Canvas.Left="215"></TextBlock>
-        <TextBlock Text="{Binding OutdoorSensorsProp.OutdoorNH3.DisplayName}" Canvas.Top="20" Canvas.Left="210"></TextBlock>
+        <TextBlock Text="{Binding OutdoorSensorsProp.NH3.DisplayName}" Canvas.Top="20" Canvas.Left="210"></TextBlock>
         <Image Canvas.Left="186" Canvas.Top="35" Source="avares://AvaloniaTest/Assets/Images/starp.png"  Width="150" Height="100" >
           <Image.RenderTransform>
             <RotateTransform Angle="90"/>
           </Image.RenderTransform>
         </Image>
-        <Ellipse Canvas.Left="253" Canvas.Top="{Binding Outdoornh3circle}" Width="16" Height="16"  Stroke="{DynamicResource BackGroundLight}" StrokeThickness="4" Fill="White" />
+        <Ellipse Canvas.Left="253" Canvas.Top="{Binding OutdoorSensorsProp.Nh3Position}" Width="16" Height="16"  Stroke="{DynamicResource BackGroundLight}" StrokeThickness="4" Fill="White" />
 
 
         <TextBlock Text="NO2" Canvas.Top="5" Canvas.Left="355"></TextBlock>
-        <TextBlock Text="{Binding OutdoorSensorsProp.OutdoorNO2.DisplayName}" Canvas.Top="20" Canvas.Left="350"></TextBlock>
+        <TextBlock Text="{Binding OutdoorSensorsProp.NO2.DisplayName}" Canvas.Top="20" Canvas.Left="350"></TextBlock>
         <Image Canvas.Left="325" Canvas.Top="35" Source="avares://AvaloniaTest/Assets/Images/starp.png"  Width="150" Height="100" >
           <Image.RenderTransform>
             <RotateTransform Angle="90"/>
           </Image.RenderTransform>
         </Image>
-        <Ellipse Canvas.Left="392" Canvas.Top="{Binding Outdoorno2circle}" Width="16" Height="16"  Stroke="{DynamicResource BackGroundLight}" StrokeThickness="4" Fill="White" />
+        <Ellipse Canvas.Left="392" Canvas.Top="{Binding OutdoorSensorsProp.No2Position}" Width="16" Height="16"  Stroke="{DynamicResource BackGroundLight}" StrokeThickness="4" Fill="White" />
 
       </Canvas>
     </StackPanel>

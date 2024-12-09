@@ -11,7 +11,7 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Google.Protobuf.WellKnownTypes;
 using Mysqlx.Notice;
-using Newtonsoft.Json.Linq;
+//using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -27,17 +27,21 @@ namespace AvaloniaTest.ViewModels;
 
 public partial class GeneralSettingsViewModel : ViewModelBase
 {
+    private SettingsManager settingsManager;
+    [ObservableProperty]
+    public ApperanceSettings _apperanceSettings;
+    [ObservableProperty]
+    public UnitsSettings _unitSettings;
+    [ObservableProperty]
+    private WeatherForecastController _weatherController;
     public GeneralSettingsViewModel(SettingsManager settings, ApperanceSettings apperanceSettings, UnitsSettings unitsSettings, WeatherForecastController weatherContoller)
     {
         CitySuggestion = new ObservableCollection<string>();
         settingsManager = settings;
         this.ApperanceSettings = apperanceSettings;
-      
         UnitSettings = unitsSettings;
+
         WeatherController = weatherContoller;
-
-
-
         if (WeatherController.AutoWeatherRefresh)
         {
             WeatherUpdateInterval = WeatherController.UpdateIntervalMinuts;
@@ -47,71 +51,53 @@ public partial class GeneralSettingsViewModel : ViewModelBase
             WeatherUpdateInterval = 15;
         }
 
-
-        WeakReferenceMessenger.Default.Register<UnitChangedMessage>(this, (r, m) =>
-        {
-            if (m.Value == true)
-            {
-
-            }
-
-        });
-
+        //Rejestrowanie otwarca/ zamkniecia widoku
         WeakReferenceMessenger.Default.Register<SettingsViewActivatedMessages>(this, (r, m) =>
         {
-            //przy wejsciu do widoku
             if (m.Value == GetType().FullName) 
             {
             }
-            //przy wyjsciu
             else
             {
                 SaveSettings();
             }
         });
+
         var morning = ApperanceSettings.CustomLightThemeTime ?? TimeSpan.FromHours(6);
         var night = ApperanceSettings.CustomDarkThemeTime ?? TimeSpan.FromHours(20);
-        CustomThemeTime = morning.ToString(@"hh\:mm") + " - " + night.ToString(@"hh\:mm");
     }
 
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    protected void OnPropertyChanged(string propertyName)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+    /*private void RaisePropertyChanged(string propertyName)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }*/
 
 
-    private SettingsManager settingsManager;
-    private OutdoorSensors outdoorSensors;
-    [ObservableProperty]
-    private WeatherForecastController _weatherController;
-    public bool isPageOpen = false;
-
-
-
+    AddressSearchController AddressSearchController = new AddressSearchController();
     [ObservableProperty]
     private int _spacerHeight = 310;
-
-
     [ObservableProperty]
     private int _weatherUpdateInterval;
-
     [ObservableProperty]
-    private bool _autoWeatherRefresh;
+    private CitySearchListTemplate? _selectedCity;
+    [ObservableProperty]
+    public string _citySearchText;
+
     public ObservableCollection<CitySearchListTemplate> CityList { get; } = new();
   
-   [ObservableProperty]
-private CitySearchListTemplate? _selectedCity;
-
-
-
     partial void OnSelectedCityChanged(CitySearchListTemplate? value)
     {
 
         if (value is null)
         {
-            //Passwordboxvis = false;
             return;
         }
-        Console.WriteLine(value.City);
-     //   WeatherForecastController.GetInstance().City = "Olsztyn";
-        Console.WriteLine(value.Lon);
-        Console.WriteLine(value.Lat);
         float longitude = 0.0F;
         float latitude = 0.0F;
         if (float.TryParse(value.Lon, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out longitude))
@@ -135,11 +121,7 @@ private CitySearchListTemplate? _selectedCity;
 
     }
 
-    [ObservableProperty]
-    public bool _zmiana;
 
-    [ObservableProperty]
-    private bool _autoBoxVisibility = false;
 
     private ObservableCollection<string> _citySuggestion;
     public ObservableCollection<string> CitySuggestion
@@ -154,61 +136,6 @@ private CitySearchListTemplate? _selectedCity;
 
     // private bool _celsiusSelected = (Units.GetInstance().GetTempUnit() == "°C") ? true : false;
     // private bool _fahrenheitSelected = (Units.GetInstance().GetTempUnit() == "°F") ? true : false;
-
-
-    [ObservableProperty]
-    public ApperanceSettings _apperanceSettings;
-
-
-    [ObservableProperty]
-    public UnitsSettings _unitSettings;
-
-
-    [ObservableProperty]
-    public TimeSpan _lightThemeTime;
-
-    [ObservableProperty]
-    public string _customThemeTime = "";
-
-    [ObservableProperty]
-    public TimeSpan _darkThemeTime;
-
-
-    [ObservableProperty]
-    public bool _celsius;
-
-
-
-
-
-
-    [RelayCommand]
-    public void CustomThemeTimeChangedCommand()
-    {
-        Console.WriteLine("sssss");
-    }
-
-
-
-
-
-
-
-
-
-    [ObservableProperty]
-    public bool _autoThemeSwitchState;
-
-
-
-    [RelayCommand]
-    public void AutoThemeSwitchCommand()
-    {
-        if (!AutoThemeSwitchState) {
-          //  WeakReferenceMessenger.Default.Send(new AutoThemeMessage(false, LightThemeTime, DarkThemeTime));
-
-        }
-    }
 
 
     [RelayCommand]
@@ -248,23 +175,9 @@ private CitySearchListTemplate? _selectedCity;
     }
 
 
-
-    public event PropertyChangedEventHandler PropertyChanged;
-
-    protected void OnPropertyChanged(string propertyName)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
-
-
-
-    [ObservableProperty]
-    public bool _autoThemeSelected;
-
     [RelayCommand]
     public async void AutoThemeCommand()
     {
-        Console.WriteLine($"zapis od zmorku do świetu {AutoThemeSelected}  reczny wybor: {CustomThemeSelected}");
         var set = WeatherController.GetDailyForecastdwa().list[0].sunset;
         var rise = WeatherController.GetDailyForecastdwa().list[0].sunrise;
         var timeZone = WeatherController.TimeZone;
@@ -276,21 +189,31 @@ private CitySearchListTemplate? _selectedCity;
 
 
        // WeakReferenceMessenger.Default.Send(new AutoThemeMessage(true, morning, night));
-        CustomThemeTime = morning.ToString(@"hh\:mm") + " - " + night.ToString(@"hh\:mm");
-
-      
-       
+        //CustomThemeTime = morning.ToString(@"hh\:mm") + " - " + night.ToString(@"hh\:mm"); 
         //zapisanie ze auto 
     }
 
-    [ObservableProperty]
-    public bool _customThemeSelected;
-
     [RelayCommand]
-    public async void CustomThemeCommand()
+    public async void ThemeButtonVisSwitch()
     {
-     
+        WeakReferenceMessenger.Default.Send(new ThemeBtnVisMessage(ApperanceSettings.ThemeButtonVis));
+    }
 
+
+    private string lastCityImput = "";
+    private string _cityInput;
+    public string CityInput
+    {
+        get => _cityInput;
+        set
+        {
+            if (_cityInput != value)
+            {
+                _cityInput = value;
+                OnPropertyChanged(nameof(CityInput));
+                UpdateCitySuggestions();  // Wywołanie metody przy zmianie tekstu
+            }
+        }
     }
 
     private async void SaveSettings()
@@ -312,117 +235,20 @@ private CitySearchListTemplate? _selectedCity;
         Console.WriteLine(!WeatherController.AutoWeatherRefresh);
         await settingsManager.SaveSettingsAsync("Units", UnitSettings);
         await WeatherController.SaveSettings();
-
-    }
-   
-
-
-
-    [ObservableProperty]
-    public bool _themeButtonVis;
-
-    [RelayCommand]
-    public async void ThemeButtonVisSwitch()
-    {
-     //   Console.WriteLine(ThemeButtonVis);
-     //Tutaj inna zmienna do wyslania
-        WeakReferenceMessenger.Default.Send(new ThemeBtnVisMessage(ApperanceSettings.ThemeButtonVis));
-
-     //   ApperanceSettings Apperance = ApperanceSettings.Instance;
-     //   Apperance.ThemeButtonVis = ThemeButtonVis;
-        //Console.WriteLine($"Zapis widocznosci guzika {ThemeButtonVis}");
-       // await settingsManager.SaveSettingsAsync("Appearance", Apperance);
-    }
-
-    private bool _celsiusSelected = true;
-
-    private bool _fahrenheitSelected = false;
-    public bool CelsiusSelected
-    {
-        get => _celsiusSelected;
-        set
-        {
-            if (_celsiusSelected != value)
-            {
-                _celsiusSelected = value;
-                OnPropertyChanged(nameof(CelsiusSelected));
-
-                if (_celsiusSelected)
-                {
-                    FahrenheitSelected = false; // Upewnij się, że druga opcja jest odznaczona
-                    Console.WriteLine("celek");
-                    Units.GetInstance().ChangeTempUnit("C");
-                }
-            }
-        }
-    }
-
-    public bool FahrenheitSelected
-    {
-        get => _fahrenheitSelected;
-        set
-        {
-            if (_fahrenheitSelected != value)
-            {
-                _fahrenheitSelected = value;
-                OnPropertyChanged(nameof(FahrenheitSelected));
-
-                if (_fahrenheitSelected)
-                {
-                    CelsiusSelected = false; // Upewnij się, że pierwsza opcja jest odznaczona
-                    Console.WriteLine("farek");
-                    Units.GetInstance().ChangeTempUnit("F");
-                }
-            }
-        }
     }
 
 
 
-
-
-    private string lastCityImput = "";
-    private string _cityInput;
-    public string CityInput
-    {
-        get => _cityInput;
-        set
-        {
-            if (_cityInput != value)
-            {
-                _cityInput = value;
-                OnPropertyChanged(nameof(CityInput));
-                UpdateCitySuggestions();  // Wywołanie metody przy zmianie tekstu
-            }
-        }
-    }
-
-    [ObservableProperty]
-    public string _citySearchText;
-
-    AddressSearchController AddressSearchController = new AddressSearchController();
     public async Task UpdateCitySuggestions()
-    {
-       
-        Console.WriteLine($"Ostatni  input: {lastCityImput}");
-        Console.WriteLine($"Aktualny input: {CityInput}");
-
-
+    {    
         if (CityInput.Length < 3)
         {
-            Console.WriteLine("Mniejsze od 3 ");
             return;
-        }
-        else
-        {
-            Console.WriteLine("OK wieksze od 3 ");
         }
         if (CityInput.Length - lastCityImput.Length < 5)
         {
-            Console.WriteLine("Za mała różnica");
             if (CityInput.Length - lastCityImput.Length < -5)
             {
-                Console.WriteLine("ZERO");
                 lastCityImput = CityInput;
             }
             else
@@ -432,15 +258,9 @@ private CitySearchListTemplate? _selectedCity;
         }
         else
         {
-            Console.WriteLine("OK roznica ");
             lastCityImput = CityInput;
         }
-
-
-
         lastCityImput = CityInput;
-
-        Console.WriteLine("Szukam!!!!");
         var resuts = await AddressSearchController.Search(CityInput);
         if (resuts != null)
         {
@@ -450,24 +270,12 @@ private CitySearchListTemplate? _selectedCity;
 
             foreach (var a in resuts)
             {
-                Console.WriteLine("no cos jest!!!!");
                 CitySuggestion.Add(a.display_address);
-                Console.WriteLine(a.display_name);
             }
         }
-        else
-        {
-            Console.WriteLine("NULLLL");
-        }
-
-
     }
 
 
-    private void RaisePropertyChanged(string propertyName)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
 
  
 
