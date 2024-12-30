@@ -23,6 +23,13 @@ namespace AvaloniaTest.Models.AddressSearch
             url = string.Format("https://api.locationiq.com/v1/autocomplete?key={0}", APIkey);
         }
 
+        public AddressSearchController(HttpClient httpClient)
+        {
+            web = httpClient; // Użycie HttpClient dostarczonego z zewnątrz
+            url = string.Format("https://api.locationiq.com/v1/autocomplete?key={0}", APIkey);
+        }
+
+
         public async Task<List<Root>> Search(string name)
         {
 

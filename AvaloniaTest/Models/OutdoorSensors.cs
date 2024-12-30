@@ -1,6 +1,7 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Media;
 using AvaloniaTest.Helpers;
+using AvaloniaTest.Interfaces;
 using AvaloniaTest.Models.ObservablesProperties;
 using AvaloniaTest.Models.Sensors;
 using AvaloniaTest.Services;
@@ -70,17 +71,17 @@ namespace AvaloniaTest.Models
         [ObservableProperty]
         public int _nh3Position;
 
-        private DataBaseService DataBaseService;
+        private IDataBaseService DataBaseService;
 
         [ObservableProperty]
         private UnitsSettings _unit;
 
         private UnitsConverter Converter;
 
-        public OutdoorSensors(DataBaseService dataBase, UnitsSettings units, UnitsConverter convert)
+        public OutdoorSensors(IDataBaseService dataBase, UnitsSettings units, UnitsConverter convert)
         {
 
-
+            
             DataBaseService = dataBase;
             Unit = units;
             Converter = convert;

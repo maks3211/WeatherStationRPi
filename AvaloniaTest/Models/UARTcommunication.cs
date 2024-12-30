@@ -1,4 +1,5 @@
-﻿using AvaloniaTest.Services;
+﻿using AvaloniaTest.Interfaces;
+using AvaloniaTest.Services;
 using System;
 using System.Collections.Generic;
 using System.IO.Ports;
@@ -15,13 +16,14 @@ namespace AvaloniaTest.Models
         private SerialPort serialPort;
         private const int baudRate = 9600;
         private bool isOpen = false;
-        private DataBaseService dataBase;
+        private IDataBaseService dataBase;
         private DateTime currentDateTime;
-        public UARTcommunication(IndoorSensors indoorSensors, string portName, DataBaseService database)
+        public UARTcommunication(IndoorSensors indoorSensors, string portName, IDataBaseService database)
         {
             sensors = indoorSensors;
             serialPort = new SerialPort(portName, baudRate);
             dataBase = database;
+            
         }
 
 

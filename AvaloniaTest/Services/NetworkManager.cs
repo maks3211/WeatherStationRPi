@@ -70,7 +70,7 @@ namespace AvaloniaTest.Services
         private string LastPassword;
 
 
-        private bool ESPconnecting = false;
+        public bool ESPconnecting = false;
 
         public ObservableCollection<WifiListTemplate> WifiList { get; set; } = new();
 
@@ -388,7 +388,7 @@ namespace AvaloniaTest.Services
                         Console.WriteLine("Brak dostępnych sieci.");
                     }
 
-                    Console.WriteLine("xxxxxaaaaaKONIEC czytania dostępnych sieci");
+                    Console.WriteLine("KONIEC czytania dostępnych sieci");
                 }
             }
             catch (Exception ex)

@@ -5,6 +5,8 @@ VisualStudioVersion = 17.9.34701.34
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AvaloniaTest", "AvaloniaTest\AvaloniaTest.csproj", "{D1ED4606-6A61-4359-A28F-D5DF4C1B3D2E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{F74BEF6D-8E6F-499E-B81C-1658E6498216}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,14 @@ Global
 		{D1ED4606-6A61-4359-A28F-D5DF4C1B3D2E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D1ED4606-6A61-4359-A28F-D5DF4C1B3D2E}.Release|ARM32.ActiveCfg = Release|ARM32
 		{D1ED4606-6A61-4359-A28F-D5DF4C1B3D2E}.Release|ARM32.Build.0 = Release|ARM32
+		{F74BEF6D-8E6F-499E-B81C-1658E6498216}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F74BEF6D-8E6F-499E-B81C-1658E6498216}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F74BEF6D-8E6F-499E-B81C-1658E6498216}.Debug|ARM32.ActiveCfg = Debug|Any CPU
+		{F74BEF6D-8E6F-499E-B81C-1658E6498216}.Debug|ARM32.Build.0 = Debug|Any CPU
+		{F74BEF6D-8E6F-499E-B81C-1658E6498216}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F74BEF6D-8E6F-499E-B81C-1658E6498216}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F74BEF6D-8E6F-499E-B81C-1658E6498216}.Release|ARM32.ActiveCfg = Release|Any CPU
+		{F74BEF6D-8E6F-499E-B81C-1658E6498216}.Release|ARM32.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 
 namespace AvaloniaTest.Helpers
 {
+
+    //Class not used
     public partial class TimeManager : ObservableObject
     {
         private static TimeManager _instance;

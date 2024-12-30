@@ -13,6 +13,7 @@ using AvaloniaTest.Services.Enums;
 using Avalonia.Controls;
 using AvaloniaTest.Helpers;
 using System.Collections.ObjectModel;
+using AvaloniaTest.Interfaces;
 
 namespace AvaloniaTest.Models
 {
@@ -64,13 +65,13 @@ namespace AvaloniaTest.Models
         public int _coPosition;
 
 
-        private DataBaseService DataBaseService;
+        private IDataBaseService DataBaseService;
         [ObservableProperty]
         private UnitsSettings _unit;
         private UnitsConverter Converter;
 
 
-        public IndoorSensors(DataBaseService dataBase, UnitsSettings units, UnitsConverter convert)
+        public IndoorSensors(IDataBaseService dataBase, UnitsSettings units, UnitsConverter convert)
         {
             DataBaseService = dataBase;
             Unit = units;

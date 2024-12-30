@@ -1,5 +1,6 @@
 ﻿using Avalonia.Markup.Xaml.MarkupExtensions;
 using AvaloniaTest.Helpers;
+using AvaloniaTest.Interfaces;
 using Google.Protobuf.WellKnownTypes;
 using LiveChartsCore.Defaults;
 using LiveChartsCore.SkiaSharpView.Painting;
@@ -16,7 +17,7 @@ using Tmds.DBus.Protocol;
 
 namespace AvaloniaTest.Services
 {
-    public class DataBaseService
+    public class DataBaseService : IDataBaseService
     {
         private string connString = "server=sql7.freesqldatabase.com ; uid=sql7733142 ; pwd=BANKMcx6Gt ; database=sql7733142";
         private readonly MySqlConnection connection;
@@ -27,7 +28,6 @@ namespace AvaloniaTest.Services
             connection = new MySqlConnection(connString);
            Connect();
         }
-
 
         public void Connect()
         {

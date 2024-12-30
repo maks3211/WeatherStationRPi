@@ -25,6 +25,7 @@ using Mysqlx.Notice;
 using AvaloniaTest.Services.Enums;
 using AvaloniaTest.Helpers;
 using AvaloniaTest.Services;
+using AvaloniaTest.Interfaces;
 
 
 
@@ -32,11 +33,6 @@ namespace AvaloniaTest.Models
 {
     public class MQTTcommunication
     {
-
-      
-
-   
-
         private OutdoorSensors sensors;
 
         public void AddSensros(OutdoorSensors s)
@@ -46,8 +42,6 @@ namespace AvaloniaTest.Models
 
         public static bool IsConnected = false;
         public static string OutDoorTEMPERATURE = "";
-
-
 
         public double OutDoorTemp = -ErrorValues.GetErrorValue<double>();
         public double OutDoorPres = -ErrorValues.GetErrorValue<double>();
@@ -63,11 +57,12 @@ namespace AvaloniaTest.Models
         public double OutDoorWindAngle = ErrorValues.GetErrorValue<double>();
 
         DateTime currentDateTime;
-        MySqlConnection con;
-        MySqlCommand cmd;
+       // MySqlConnection con;
+      //  MySqlCommand cmd;
 
-        private DataBaseService database;
-        public MQTTcommunication(Services.DataBaseService database)
+        private IDataBaseService database;
+
+        public MQTTcommunication(IDataBaseService database)
         {
             this.database = database;
         }
@@ -78,11 +73,13 @@ namespace AvaloniaTest.Models
             Console.WriteLine("serwer start");
             //string broker = "192.168.0.91"; //192.168.0.91
            // int port = 1883;
+
+
             var options = new MqttClientOptionsBuilder()
             .WithTcpServer("7b21c793398043ab8fbde110f0ebc243.s1.eu.hivemq.cloud", 8883) //testuseR1
             .WithCredentials("testuser1", "testuseR1")
             .WithTls()
-            .Build();
+           .Build();
 
             var factory = new MqttFactory();
             var mqttClient = factory.CreateMqttClient();
@@ -161,22 +158,8 @@ namespace AvaloniaTest.Models
                     if (IsConnected)
                     {
                         Console.WriteLine("Polaczono z mqtt");
-                      //  var oTemp = await mqttClient.SubscribeAsync("outdoortemperature");
-                      //  
-                      //  var OPres = await mqttClient.SubscribeAsync("outdoorpreasure");
-                      //  var oAlti = await mqttClient.SubscribeAsync("outdooraltitude");
-                      //  var oHumi = await mqttClient.SubscribeAsync("outdoornhumidity");
-                      //  var oIlumi = await mqttClient.SubscribeAsync("outdooriluminance");
-                      //
-                      //  var oNo = await mqttClient.SubscribeAsync("outdoorno2");
-                      //  var oNh = await mqttClient.SubscribeAsync("outdoornh3");
-                      //  var oCo = await mqttClient.SubscribeAsync("outdoorco");
-                      //  var wind = await mqttClient.SubscribeAsync("outdoorwind");
-                      //  var windangle = await mqttClient.SubscribeAsync("outdoorwindangle");
-                      //  await mqttClient.SubscribeAsync("espSsid");
-                      //  await mqttClient.SubscribeAsync("espStrength");
                     }
-                    //await mqttClient.ConnectAsync(mqttClient.Options, cancellationToken);
+                    
                 }
             };
 

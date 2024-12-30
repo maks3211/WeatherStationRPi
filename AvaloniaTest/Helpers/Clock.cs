@@ -18,6 +18,8 @@ namespace AvaloniaTest.Helpers
         private DispatcherTimer _timer;
 
         private readonly Dictionary<string, (TimeSpan Interval, Action Task)> _tasks = new();
+        public Dictionary<string, (TimeSpan Interval, Action Task)> Tasks => _tasks;
+
         private readonly Dictionary<string, DateTime> _lastExecutionTimes = new();
 
         private readonly Dictionary<string, (List<TimeOnly> times, Action Task) > _specificTimeTasks = new();
