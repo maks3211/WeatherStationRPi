@@ -8,8 +8,7 @@
 - Arduino - C/C++
 <h2 id="hardware">⚙️Hardware</h2>
 
-The project uses Raspberry Pi 4 as the main unit with touch screen and indoor sensors.
-Additionally, RPi connects to ESP32 via Wi-Fi.
+The project uses a Raspberry Pi 4 as the main unit, equipped with a touchscreen and connected to indoor sensors. Additionally, the Raspberry Pi connects to an ESP32 via Wi-Fi to perform initial network configuration on the ESP32. Once configured, the ESP32 communicates with the Raspberry Pi using the MQTT protocol to transmit data from the outdoor sensors. 
 <br>Indoor sensors: AHT20 + BMP280 + DF Robot CO:   
 -Pressure
 <br> -Temperature
