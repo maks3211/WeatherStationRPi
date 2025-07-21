@@ -53,7 +53,7 @@ The project uses a Raspberry Pi 4 as the main unit, equipped with a touchscreen 
 </table>
 
 
-### Main Screen preview:
+### Main Screen preview (showing a combination of light and dark theme):
 <img src="https://github.com/user-attachments/assets/62a819bf-8f79-4c62-9f0c-20453709dce8" alt="motywy" width="770" />
 
 ### Plots Screen:
